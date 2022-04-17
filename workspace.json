@@ -1,4 +1,7 @@
 {
   "version": 2,
-  "projects": {}
+  "projects": {
+    "hn-react": "apps/hn-react",
+    "hn-react-e2e": "apps/hn-react-e2e"
+  }
 }
