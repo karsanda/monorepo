@@ -1,5 +1,5 @@
-import { Suspense } from "react"
-import { formatDistance } from "date-fns"
+import { formatDistance } from 'date-fns'
+import styled from '@emotion/styled'
 import useFetch from "../hooks/useFetch"
 
 interface ItemProps {
@@ -16,22 +16,37 @@ interface ItemData {
   score: number
 }
 
+const Container = styled.li`
+  & + & {
+    margin-top: 10px;
+  }
+`
+
+const Title = styled.h4`
+  color: var(--secondary-color);
+  font-weight: 400;
+`
+
+const Subtitle = styled.p`
+  margin-top: 5px;
+  color: var(--gray);
+  font-size: 0.8em;
+`
+
 function Item({ id }: ItemProps) {
   const { data } = useFetch<ItemData>(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
   const { url, title, score, by, time } =  data || {} 
   return (
-    <li>
-      <Suspense fallback={<article>Loading...</article>}>
-        <article>
-          <a href={url} target='_blank' rel="noreferrer">
-            <h4>{title}</h4>
-          </a>
-          <p>
-            {score} points by <b>{by}</b> {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
-          </p>
-        </article>
-      </Suspense>
-    </li>
+    <Container>
+      <article>
+        <a href={url} target='_blank' rel="noreferrer">
+          <Title>{title}</Title>
+        </a>
+        <Subtitle>
+          {score} points by <b>{by}</b> {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
+        </Subtitle>
+      </article>
+    </Container>
   )
 } 
 
