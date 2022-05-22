@@ -1,6 +1,6 @@
 {
-  "root": "apps/hn-react",
-  "sourceRoot": "apps/hn-react/src",
+  "root": "apps/hackernews-react",
+  "sourceRoot": "apps/hackernews-react/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,14 +9,17 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/apps/hn-react",
-        "index": "apps/hn-react/src/index.html",
+        "outputPath": "dist/apps/hackernews-react",
+        "index": "apps/hackernews-react/src/index.html",
         "baseHref": "/",
-        "main": "apps/hn-react/src/main.tsx",
-        "polyfills": "apps/hn-react/src/polyfills.ts",
-        "tsConfig": "apps/hn-react/tsconfig.app.json",
-        "assets": ["apps/hn-react/src/favicon.ico", "apps/hn-react/src/assets"],
-        "styles": ["apps/hn-react/src/styles.css"],
+        "main": "apps/hackernews-react/src/main.tsx",
+        "polyfills": "apps/hackernews-react/src/polyfills.ts",
+        "tsConfig": "apps/hackernews-react/tsconfig.app.json",
+        "assets": [
+          "apps/hackernews-react/src/favicon.ico",
+          "apps/hackernews-react/src/assets"
+        ],
+        "styles": ["apps/hackernews-react/src/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
@@ -24,8 +27,8 @@
         "production": {
           "fileReplacements": [
             {
-              "replace": "apps/hn-react/src/environments/environment.ts",
-              "with": "apps/hn-react/src/environments/environment.prod.ts"
+              "replace": "apps/hackernews-react/src/environments/environment.ts",
+              "with": "apps/hackernews-react/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -40,12 +43,12 @@
     "serve": {
       "executor": "@nrwl/web:dev-server",
       "options": {
-        "buildTarget": "hn-react:build",
+        "buildTarget": "hackernews-react:build",
         "hmr": true
       },
       "configurations": {
         "production": {
-          "buildTarget": "hn-react:build:production",
+          "buildTarget": "hackernews-react:build:production",
           "hmr": false
         }
       }
@@ -54,14 +57,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/hn-react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/hackernews-react/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/hn-react"],
+      "outputs": ["coverage/apps/hackernews-react"],
       "options": {
-        "jestConfig": "apps/hn-react/jest.config.js",
+        "jestConfig": "apps/hackernews-react/jest.config.js",
         "passWithNoTests": true
       }
     }

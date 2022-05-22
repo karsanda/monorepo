@@ -1,0 +1,28 @@
+{
+  "root": "apps/hackernews-react-e2e",
+  "sourceRoot": "apps/hackernews-react-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/hackernews-react-e2e/cypress.json",
+        "devServerTarget": "hackernews-react:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "hackernews-react:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/hackernews-react-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["hackernews-react"]
+}
