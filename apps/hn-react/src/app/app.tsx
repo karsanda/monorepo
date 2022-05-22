@@ -24,10 +24,8 @@ const List = styled.ol`
   margin: 0;
 `
 
-const TOP_STORIES_API = 'https://hacker-news.firebaseio.com/v0/topstories.json'
-
 function App() {
-  const { data } = useFetch<string[]>(TOP_STORIES_API)
+  const { data } = useFetch<string[]>('topstories')
   return (
     <>
       <Header>

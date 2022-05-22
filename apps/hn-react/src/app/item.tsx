@@ -34,7 +34,7 @@ const Subtitle = styled.p`
 `
 
 function Item({ id }: ItemProps) {
-  const { data } = useFetch<ItemData>(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+  const { data } = useFetch<ItemData>(`item/${id}`)
   const { url, title, score, by, time } =  data || {} 
   return (
     <Container>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useReducer } from 'react'
+import getData from './hackernews_api'
 
 interface State<T> {
   state: 'idle' | 'loading' | 'fetched' | 'error'
@@ -13,7 +14,7 @@ type Action<T> =
   | { type: 'fetched'; payload: T }
   | { type: 'error'; payload: Error }
 
-function useFetch<T = unknown>(url: string, options?: RequestInit): State<T> {
+function useFetch<T = unknown>(url: string): State<T> {
   const cache = useRef<Cache<T>>({})
   const cancelRequest = useRef<boolean>(false)
 
@@ -50,21 +51,18 @@ function useFetch<T = unknown>(url: string, options?: RequestInit): State<T> {
         return
       }
 
-      try {
-        const response = await fetch(url, options)
-        if (!response.ok) {
-          throw new Error(response.statusText)
+      getData(url, {
+        success: (snapshot) => {
+          const data = snapshot.val()
+          if (cancelRequest.current) return
+          cache.current[url] = data
+          dispatch({ type: 'fetched', payload: data })
+        },
+        error: (error: Error) => {
+          if (cancelRequest.current) return
+          dispatch({ type: 'error', payload: error as Error })
         }
-
-        const data = await response.json() as T
-        if (cancelRequest.current) return
-
-        cache.current[url] = data
-        dispatch({ type: 'fetched', payload: data })
-      } catch (error) {
-        if (cancelRequest.current) return
-        dispatch({ type: 'error', payload: error as Error })
-      }
+      })
     }
 
     fetchData()
