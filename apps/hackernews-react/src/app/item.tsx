@@ -1,9 +1,10 @@
-import { formatDistance } from 'date-fns';
-import styled from '@emotion/styled';
-import useFetch from '../hooks/useFetch';
+import { formatDistance } from 'date-fns'
+import styled from '@emotion/styled'
+import useFetch from '../hooks/useFetch'
 
 interface ItemProps {
   id: string;
+  index: number;
 }
 
 interface ItemData {
@@ -16,39 +17,51 @@ interface ItemData {
   score: number;
 }
 
-const Container = styled.li`
+const Container = styled.article`
+  display: flex;
+  color: var(--gray);
   & + & {
     margin-top: 10px;
   }
-`;
+`
+
+const Numbering = styled.div`
+  width: 28px;
+  margin-right: 5px;
+  text-align: right;
+`
 
 const Title = styled.h4`
+  display: inline;
   color: var(--secondary-color);
   font-weight: 400;
-`;
+`
 
 const Subtitle = styled.p`
   margin-top: 5px;
   color: var(--gray);
   font-size: 0.8em;
-`;
+`
 
-function Item({ id }: ItemProps) {
-  const { data } = useFetch<ItemData>(`item/${id}`);
-  const { url, title, score, by, time } = data || {};
+function Item({ id, index }: ItemProps) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+  const { url, title, score, by, time } = data || {}
   return (
     <Container>
-      <article>
-        <a href={url} target="_blank" rel="noreferrer">
-          <Title>{title}</Title>
-        </a>
+      <Numbering>{`${index}.`}</Numbering>
+      <div>
+        {url ? (
+          <a href={url} target="_blank" rel="noreferrer">
+            <Title>{title}</Title>
+          </a>
+        ) : <Title>{title}</Title>}
         <Subtitle>
           {score} points by <b>{by}</b>{' '}
           {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
         </Subtitle>
-      </article>
+      </div>
     </Container>
-  );
+  )
 }
 
-export default Item;
+export default Item

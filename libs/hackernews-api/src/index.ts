@@ -1,1 +1,1 @@
-export * from './lib/hackernews-api';
+export * from './lib/hackernews-api'
