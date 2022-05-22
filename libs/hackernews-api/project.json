@@ -1,0 +1,23 @@
+{
+  "root": "libs/hackernews-api",
+  "sourceRoot": "libs/hackernews-api/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/hackernews-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/hackernews-api"],
+      "options": {
+        "jestConfig": "libs/hackernews-api/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

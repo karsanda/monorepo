@@ -10,6 +10,7 @@ const Header = styled.header`
 
 const Main = styled.main`
   padding: 10px 15px 15px 0;
+  min-height: calc(100vh - 116px);
 `
 
 const Footer = styled.main`

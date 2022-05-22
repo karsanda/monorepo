@@ -1,5 +1,5 @@
 import { useEffect, useRef, useReducer } from 'react'
-import getData from './hackernews_api'
+import { getDataFromFirebase } from '@monorepo/hackernews-api'
 
 interface State<T> {
   state: 'idle' | 'loading' | 'fetched' | 'error'
@@ -51,7 +51,7 @@ function useFetch<T = unknown>(url: string): State<T> {
         return
       }
 
-      getData(url, {
+      getDataFromFirebase(url, {
         success: (snapshot) => {
           const data = snapshot.val()
           if (cancelRequest.current) return

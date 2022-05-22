@@ -9,7 +9,7 @@ const app = initializeApp(config)
 const database = getDatabase(app)
 const api = ref(database, '/v0')
 
-const getData = async (url: string, callback: {
+export const getDataFromFirebase = async (url: string, callback: {
   success: (snapshot: any) => void,
   error: (error: Error) => void
 }) => {
@@ -24,5 +24,3 @@ const getData = async (url: string, callback: {
     callback.error(error as Error)
   }
 }
-
-export default getData

@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "hackernews-api": "libs/hackernews-api",
     "hn-react": "apps/hn-react",
     "hn-react-e2e": "apps/hn-react-e2e"
   }
