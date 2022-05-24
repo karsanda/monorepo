@@ -20,8 +20,15 @@ interface ItemData {
 const Container = styled.article`
   display: flex;
   color: var(--gray);
+
   & + & {
     margin-top: 10px;
+  }
+`
+
+const Link = styled.a`
+  &:hover {
+    color: var(--secondary-color);
   }
 `
 
@@ -51,9 +58,9 @@ function Item({ id, index }: ItemProps) {
       <Numbering>{`${index}.`}</Numbering>
       <div>
         {url ? (
-          <a href={url} target="_blank" rel="noreferrer">
+          <Link href={url} target="_blank" rel="noreferrer">
             <Title>{title}</Title>
-          </a>
+          </Link>
         ) : <Title>{title}</Title>}
         <Subtitle>
           {score} points by <b>{by}</b>{' '}
