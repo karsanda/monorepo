@@ -15,7 +15,7 @@ const Main = styled.main`
 
 const LinkMore = styled.div`
   margin-top: 15px;
-  margin-left: 33px;
+  margin-left: 25px;
 `
 
 function List({ type }: ListProps) {

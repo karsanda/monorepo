@@ -13,7 +13,7 @@ const Footer = styled.footer`
   margin: 0 5px;
   padding: 10px 0;
   text-align: center;
-  font-size: 0.8em;
+  font-size: 11px;
 `
 
 function App() {

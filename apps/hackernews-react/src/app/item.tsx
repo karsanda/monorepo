@@ -33,7 +33,7 @@ const Link = styled.a`
 `
 
 const Numbering = styled.div`
-  width: 28px;
+  width: 20px;
   margin-right: 5px;
   text-align: right;
 `
@@ -42,6 +42,7 @@ const Title = styled.h4`
   display: inline;
   color: var(--secondary-color);
   font-weight: 400;
+  line-height: 1.25em;
 `
 
 const Subtitle = styled.p`
@@ -50,13 +51,17 @@ const Subtitle = styled.p`
   font-size: 0.8em;
 `
 
+const Content = styled.div`
+  width: calc(100% - 25px);
+`
+
 function Item({ id, index }: ItemProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
   const { url, title, score, by, time } = data || {}
   return (
     <Container>
       <Numbering>{`${index}.`}</Numbering>
-      <div>
+      <Content>
         {url ? (
           <Link href={url} target="_blank" rel="noreferrer">
             <Title>{title}</Title>
@@ -66,7 +71,7 @@ function Item({ id, index }: ItemProps) {
           {score} points by <b>{by}</b>{' '}
           {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
         </Subtitle>
-      </div>
+      </Content>
     </Container>
   )
 }
