@@ -5,6 +5,7 @@ import useFetch from '../hooks/useFetch'
 
 const Container = styled.article`
   margin-right: 10px;
+  margin-top: 10px;
 
   & + & {
     margin-top: 15px;
@@ -26,7 +27,7 @@ const CollapsibleButton = styled.button`
   cursor: pointer;
 `
 
-const Article = styled.p`
+const Info = styled.p`
   margin: 5px 0;
   color: var(--gray);
   font-size: 11px;
@@ -51,9 +52,11 @@ const Child = styled.div`
 
 interface CommentData {
   by: string;
-  kids: number[];
+  kids?: number[];
   text: string;
   time: number;
+  dead?: boolean;
+  deleted?: boolean;
 }
 
 function Comment({ id }: { id: number }) {
@@ -61,7 +64,23 @@ function Comment({ id }: { id: number }) {
   const [ isCollapse, setIsCollapse ] = useState(false)
 
   if (!data) return null
-  const { by, time, kids, text } = data
+
+  const { by, time, kids, text, dead, deleted } = data
+
+  if (dead) return null
+
+  if (deleted) {
+    return (
+      <Container>
+        <Header>
+          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
+            {isCollapse ? '▼' : '▲'}
+          </CollapsibleButton>
+          <Info>[deleted]</Info>
+        </Header>
+      </Container>
+    )
+  }
 
   return (
     <Container>
@@ -69,9 +88,9 @@ function Comment({ id }: { id: number }) {
         <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
           {isCollapse ? '▼' : '▲'}
         </CollapsibleButton>
-        <Article>
+        <Info>
           {by} {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
-        </Article>
+        </Info>
       </Header>
       <Content dangerouslySetInnerHTML={{ __html: text }} />
       {(kids && !isCollapse) && (
