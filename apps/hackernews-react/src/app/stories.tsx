@@ -5,7 +5,7 @@ import useFetch from '../hooks/useFetch'
 import { getPage, paginateData, PAGE_SIZE } from '../utils'
 
 interface StoriesProps {
-  type: 'topstories' | 'newstories' | 'beststories'
+  type: 'topstories' | 'newstories' | 'beststories' | 'askstories' | 'showstories' | 'jobstories'
 }
 
 const Main = styled.main`

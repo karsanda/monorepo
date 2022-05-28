@@ -28,6 +28,9 @@ function App() {
         <Route path='/topstories' element={<Stories type='topstories' />} />
         <Route path='/newstories' element={<Stories type='newstories' />} />
         <Route path='/beststories' element={<Stories type='beststories' />} />
+        <Route path='/askstories' element={<Stories type='askstories' />} />
+        <Route path='/showstories' element={<Stories type='showstories' />} />
+        <Route path='/jobstories' element={<Stories type='jobstories' />} />
         <Route path='/comments/:itemid' element={<Comments />} />
       </Routes>
       <Footer>

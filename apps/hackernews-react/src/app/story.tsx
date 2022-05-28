@@ -7,16 +7,18 @@ import useFetch from '../hooks/useFetch'
 interface ItemProps {
   id: string;
   index?: number;
+  showText?: boolean
 }
 
 interface ItemData {
   title: string;
   time: number;
-  url: string;
+  url?: string;
   type: string;
   by: string;
   score: number;
   descendants: number;
+  text?: string
 }
 
 const Container = styled.article`
@@ -99,6 +101,20 @@ const GradientAnimation = css`
   }
 `
 
+const Text = styled.div`
+  margin-top: 15px;
+  margin-left: 25px;
+  font-size: 12px;
+
+  & p {
+    margin: 10px 0;
+  }
+
+  & code, & pre {
+    white-space: pre-wrap;
+  }
+`
+
 function StoryShimmer({ index }: { index?: number }) {
   return (
     <Container>
@@ -111,30 +127,38 @@ function StoryShimmer({ index }: { index?: number }) {
   )
 }
 
-function Story({ id, index }: ItemProps) {
+function Story({ id, index, showText = false }: ItemProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
 
   if (!data) return <StoryShimmer index={index} />
 
-  const { url, title, score, by, time, descendants } = data || {}
+  const { url, title, score, by, time, descendants, type, text } = data || {}
+  const articleLink = url ? url : `/comments/${id}`
   return (
-    <Container>
-      <Numbering>{index && `${index}.`}</Numbering>
-      <Content>
-        {url ? (
-          <TitleLink href={url} target="_blank" rel="noreferrer">
+    <>
+      <Container>
+        <Numbering>{index && `${index}.`}</Numbering>
+        <Content>
+          <TitleLink href={articleLink} target="_blank" rel="noreferrer">
             <Title>{title}</Title>
           </TitleLink>
-        ) : <Title>{title}</Title>}
-        <Subtitle>
-          {score} points by <b>{by}</b>{' '}
-          {time && formatDistance(time * 1000, new Date(), { addSuffix: true })} {' | '}
-          <Link to={`/comments/${id}`} css={CommentLink}>
-            {descendants === 0 ? 'discuss' : `${descendants} comments`}
-          </Link>
-        </Subtitle>
-      </Content>
-    </Container>
+          {type === 'job' ? (
+            <Subtitle>
+              {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
+            </Subtitle>
+          ) : (
+            <Subtitle>
+              {score} points by <b>{by}</b>{' '}
+              {time && formatDistance(time * 1000, new Date(), { addSuffix: true })} {' | '}
+              <Link to={`/comments/${id}`} css={CommentLink}>
+                {descendants === 0 ? 'discuss' : `${descendants} comments`}
+              </Link>
+            </Subtitle>
+          )}
+        </Content>
+      </Container>
+      {(showText && text) && <Text dangerouslySetInnerHTML={{ __html: text }} />}
+    </>
   )
 }
 

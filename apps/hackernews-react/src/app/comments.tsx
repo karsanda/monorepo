@@ -27,9 +27,9 @@ function Comments() {
   const { kids } = data
   return (
     <Main>
-      <Story id={params['itemid']} />
+      <Story id={params['itemid']} showText />
       <CommentsList>
-        {kids.map(kid => <Comment id={kid} key={kid} />)}
+        {kids && kids.map(kid => <Comment id={kid} key={kid} />)}
       </CommentsList>
     </Main>
   )
