@@ -1,21 +1,22 @@
 import { formatDistance } from 'date-fns'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
+import { Link } from "react-router-dom"
 import useFetch from '../hooks/useFetch'
 
 interface ItemProps {
   id: string;
-  index: number;
+  index?: number;
 }
 
 interface ItemData {
-  id: number;
   title: string;
   time: number;
   url: string;
   type: string;
   by: string;
   score: number;
+  descendants: number;
 }
 
 const Container = styled.article`
@@ -24,12 +25,6 @@ const Container = styled.article`
 
   & + & {
     margin-top: 10px;
-  }
-`
-
-const Link = styled.a`
-  &:hover {
-    color: var(--secondary-color);
   }
 `
 
@@ -46,10 +41,20 @@ const Title = styled.h4`
   line-height: 1.25em;
 `
 
+const TitleLink = styled.a`
+  &:hover {
+    color: var(--secondary-color);
+  }
+`
+
+const CommentLink = css`
+  color: inherit;
+`
+
 const Subtitle = styled.p`
   margin-top: 5px;
   color: var(--gray);
-  font-size: 12px;
+  font-size: 11px;
 `
 
 const Content = styled.div`
@@ -63,7 +68,7 @@ const TitleShimmer = styled.div`
 
 const SubtitleShimmer = styled.div`
   margin-top: 5px;
-  height: 12px;
+  height: 11px;
   width: 160px;
 `
 
@@ -94,38 +99,43 @@ const GradientAnimation = css`
   }
 `
 
-function Item({ id, index }: ItemProps) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
-
-  if (!data) {
-    return (
-      <Container>
-        <Numbering>{`${index}.`}</Numbering>
-        <Content>
-          <TitleShimmer css={GradientAnimation} />
-          <SubtitleShimmer css={GradientAnimation} />
-        </Content>
-      </Container>
-    )
-  }
-
-  const { url, title, score, by, time } = data || {}
+function StoryShimmer({ index }: { index?: number }) {
   return (
     <Container>
-      <Numbering>{`${index}.`}</Numbering>
+      <Numbering>{index && `${index}.`}</Numbering>
+      <Content>
+        <TitleShimmer css={GradientAnimation} />
+        <SubtitleShimmer css={GradientAnimation} />
+      </Content>
+    </Container>
+  )
+}
+
+function Story({ id, index }: ItemProps) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+
+  if (!data) return <StoryShimmer index={index} />
+
+  const { url, title, score, by, time, descendants } = data || {}
+  return (
+    <Container>
+      <Numbering>{index && `${index}.`}</Numbering>
       <Content>
         {url ? (
-          <Link href={url} target="_blank" rel="noreferrer">
+          <TitleLink href={url} target="_blank" rel="noreferrer">
             <Title>{title}</Title>
-          </Link>
+          </TitleLink>
         ) : <Title>{title}</Title>}
         <Subtitle>
           {score} points by <b>{by}</b>{' '}
-          {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
+          {time && formatDistance(time * 1000, new Date(), { addSuffix: true })} {' | '}
+          <Link to={`/comments/${id}`} css={CommentLink}>
+            {descendants === 0 ? 'discuss' : `${descendants} comments`}
+          </Link>
         </Subtitle>
       </Content>
     </Container>
   )
 }
 
-export default Item
+export default Story

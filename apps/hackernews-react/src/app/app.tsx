@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import List from './list'
+import Stories from './stories'
 import NavBar from './navbar'
+import Comments from './comments'
 
 const Header = styled.header`
   padding: 5px 10px;
@@ -23,10 +24,11 @@ function App() {
         <NavBar />
       </Header>
       <Routes>
-        <Route index element={<List type='topstories' />} />
-        <Route path='/topstories' element={<List type='topstories' />} />
-        <Route path='/newstories' element={<List type='newstories' />} />
-        <Route path='/beststories' element={<List type='beststories' />} />
+        <Route index element={<Stories type='topstories' />} />
+        <Route path='/topstories' element={<Stories type='topstories' />} />
+        <Route path='/newstories' element={<Stories type='newstories' />} />
+        <Route path='/beststories' element={<Stories type='beststories' />} />
+        <Route path='/comments/:itemid' element={<Comments />} />
       </Routes>
       <Footer>
         ©{new Date().getFullYear()} Karsanda |{' '}
