@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Stories from './stories'
 import NavBar from './navbar'
 import Comments from './comments'
+import Users from './users'
 
 const Header = styled.header`
   padding: 5px 10px;
@@ -32,6 +33,7 @@ function App() {
         <Route path='/showstories' element={<Stories type='showstories' />} />
         <Route path='/jobstories' element={<Stories type='jobstories' />} />
         <Route path='/comments/:itemid' element={<Comments />} />
+        <Route path='/user/:userid' element={<Users />} />
       </Routes>
       <Footer>
         ©{new Date().getFullYear()} Karsanda |{' '}

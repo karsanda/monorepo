@@ -1,7 +1,9 @@
-import styled from '@emotion/styled'
-import { formatDistance } from 'date-fns'
 import { useState } from 'react'
-import useFetch from '../hooks/useFetch'
+import styled from '@emotion/styled'
+import { css } from '@emotion/react'
+import { formatDistance } from 'date-fns'
+import { Link } from "react-router-dom"
+import Item from './item'
 
 const Container = styled.article`
   margin-right: 10px;
@@ -46,42 +48,31 @@ const Content = styled.div`
   }
 `
 
-const Child = styled.div`
+const Children = styled.div`
   margin-left: 25px;
 `
 
-interface CommentData {
-  by: string;
-  kids?: number[];
-  text: string;
-  time: number;
-  dead?: boolean;
-  deleted?: boolean;
-}
+const SubtitleLink = css`
+  color: inherit;
+`
 
-function Comment({ id }: { id: number }) {
-  const { data } = useFetch<CommentData>(`item/${id}`)
+function Comment({ data }: { data: ItemData }) {
   const [ isCollapse, setIsCollapse ] = useState(false)
 
-  if (!data) return null
+  if (data.dead) return null
 
-  const { by, time, kids, text, dead, deleted } = data
-
-  if (dead) return null
-
-  if (deleted) {
+  if (data.deleted) {
     return (
       <Container>
         <Header>
-          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
-            {isCollapse ? '▼' : '▲'}
-          </CollapsibleButton>
+          <CollapsibleButton>▼</CollapsibleButton>
           <Info>[deleted]</Info>
         </Header>
       </Container>
     )
   }
 
+  const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
   return (
     <Container>
       <Header>
@@ -89,12 +80,17 @@ function Comment({ id }: { id: number }) {
           {isCollapse ? '▼' : '▲'}
         </CollapsibleButton>
         <Info>
-          {by} {time && formatDistance(time * 1000, new Date(), { addSuffix: true })}
+          <Link to={`/user/${data.by}`} css={SubtitleLink}>
+            <b>{data.by}</b>
+          </Link>
+          {` ${createdTime}`}
         </Info>
       </Header>
-      <Content dangerouslySetInnerHTML={{ __html: text }} />
-      {(kids && !isCollapse) && (
-        <Child>{kids.map(kid => <Comment id={kid} key={kid} /> )}</Child>
+      {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
+      {(data.kids && !isCollapse) && (
+        <Children>
+          {data.kids.map(kid => <Item id={kid.toString()} key={kid} />)}
+        </Children>
       )}
     </Container>
   )

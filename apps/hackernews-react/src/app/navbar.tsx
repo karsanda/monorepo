@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom"
 
 const Nav = styled.nav`
   display: flex;
+  align-items: center;
 `
 
 const Title = styled.h1`
