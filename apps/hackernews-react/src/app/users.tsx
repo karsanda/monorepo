@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { format } from 'date-fns'
 import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
+import Item from './item';
 
 interface UserData {
   id: string;
@@ -17,6 +18,7 @@ const Main = styled.main`
 `
 
 const Grid = styled.div`
+  margin-left: 5px;
   display: grid;
   grid-template-columns: 80px calc(100% - 80px);
 `
@@ -25,13 +27,26 @@ const About = styled.span`
   word-break: break-word;
 `
 
+const Submissions = styled.div`
+  margin-top: 15px;
+
+  & > h4 {
+    margin-left: 5px;
+    margin-bottom: 10px;
+  }
+
+  & > article {
+    margin-left: -20px;
+  }
+`
+
 function Users() {
-  const params = useParams()
-  const { data } = useFetch<UserData>(`user/${params['userid']}`)
+  const { userid } = useParams()
+  const { data } = useFetch<UserData>(`user/${userid}`)
 
   if (!data) return <Main /> 
 
-  const { id, created, karma, about } = data
+  const { id, created, karma, about, submitted } = data
   return (
     <Main>
       <Grid>
@@ -48,6 +63,12 @@ function Users() {
           </>
         )}
       </Grid>
+      <Submissions>
+        <h4>Submissions</h4>
+        {(submitted && submitted.length > 0) && submitted.map(item => (
+          <Item key={item} id={item} filter='STORIES' />
+        ))}
+      </Submissions>
     </Main>
   )
 }

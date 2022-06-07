@@ -8,6 +8,7 @@ interface ItemProps {
   id: string;
   index?: number;
   showText?: boolean
+  filter?: 'STORIES' | 'NONE'
 }
 
 const Container = styled.article`
@@ -79,15 +80,17 @@ function Shimmer({ index }: { index?: number }) {
   )
 }
 
-function Item({ id, index, showText = false }: ItemProps) {
+function Item({ id, index, showText = false, filter='NONE' }: ItemProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
 
   if (!data) return <Shimmer index={index} /> 
+
   switch(data.type) {
     case 'story':
     case 'job':
       return <Story data={data} index={index} showText={showText} />
     case 'comment':
+      if (filter === 'STORIES') return null
       return <Comment data={data} />
     default:
       return null

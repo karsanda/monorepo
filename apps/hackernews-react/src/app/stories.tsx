@@ -20,7 +20,7 @@ const LinkMore = styled.div`
 
 function Stories({ type }: StoriesProps) {
   const response = useFetch<string[]>(type)
-  const [params] = useSearchParams()
+  const [ params ] = useSearchParams()
   const page = getPage(params)
 
   const data = response.data || []
