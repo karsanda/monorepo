@@ -58,6 +58,10 @@ const TabButton = styled.button`
   & + article {
     margin-top: 0;
   }
+
+  &.active {
+    font-weight: 700;
+  }
 `
 
 function Users() {
@@ -86,8 +90,12 @@ function Users() {
         )}
       </Grid>
       <Submissions data-filter={filter}>
-        <TabButton onClick={() => setFilter('STORIES')}>Submissions</TabButton>
-        <TabButton onClick={() => setFilter('COMMENTS')}>Comments</TabButton>
+        <TabButton onClick={() => setFilter('STORIES')} className={filter === 'STORIES' ? 'active' : undefined }>
+          Submissions
+        </TabButton>
+        <TabButton onClick={() => setFilter('COMMENTS')} className={filter === 'COMMENTS' ? 'active' : undefined}>
+          Comments
+        </TabButton>
         {(submitted && submitted.length > 0) && submitted.map(item => (
           <Item key={item} id={item} filter={filter} />
         ))}
