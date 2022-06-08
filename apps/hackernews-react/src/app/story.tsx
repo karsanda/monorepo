@@ -1,12 +1,12 @@
 import { formatDistance } from 'date-fns'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom'
 
 interface StoryProps {
   data: ItemData
-  index?: number;
-  showText: boolean;
+  index?: number
+  showText: boolean
 }
 
 const Container = styled.article`
@@ -65,7 +65,7 @@ const Text = styled.div`
   }
 `
 
-function InfoDetails({ data }: { data: ItemData}) {
+function InfoDetails({ data }: { data: ItemData }) {
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
 
   if (data.type === 'job') {

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Link, useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from 'react-router-dom'
 import Item from './item'
 import useFetch from '../hooks/useFetch'
 import { getPage, paginateData, PAGE_SIZE } from '../utils'

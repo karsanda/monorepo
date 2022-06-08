@@ -2,8 +2,13 @@ import { useState } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { formatDistance } from 'date-fns'
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom'
 import Item from './item'
+
+interface CommentProps {
+  data: ItemData
+  disableChildren?: boolean
+}
 
 const Container = styled.article`
   margin-right: 10px;
@@ -56,7 +61,7 @@ const SubtitleLink = css`
   color: inherit;
 `
 
-function Comment({ data }: { data: ItemData }) {
+function Comment({ data, disableChildren = false }: CommentProps) {
   const [ isCollapse, setIsCollapse ] = useState(false)
 
   if (data.dead) return null
@@ -87,7 +92,7 @@ function Comment({ data }: { data: ItemData }) {
         </Info>
       </Header>
       {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
-      {(data.kids && !isCollapse) && (
+      {(!disableChildren && data.kids && !isCollapse) && (
         <Children>
           {data.kids.map(kid => <Item id={kid.toString()} key={kid} />)}
         </Children>

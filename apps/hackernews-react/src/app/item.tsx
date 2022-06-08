@@ -2,11 +2,11 @@ import useFetch from '../hooks/useFetch'
 import Story from './story'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
-import Comment from './comment';
+import Comment from './comment'
 
 interface ItemProps {
-  id: string;
-  index?: number;
+  id: string
+  index?: number
   showText?: boolean
   filter?: 'STORIES' | 'COMMENTS' | 'NONE'
 }
@@ -92,7 +92,7 @@ function Item({ id, index, showText = false, filter='NONE' }: ItemProps) {
       return <Story data={data} index={index} showText={showText} />
     case 'comment':
       if (filter === 'STORIES') return null
-      return <Comment data={data} />
+      return <Comment data={data} disableChildren={filter === 'COMMENTS'} />
     default:
       return null
   }

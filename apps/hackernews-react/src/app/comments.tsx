@@ -4,7 +4,7 @@ import Item from './item'
 import useFetch from '../hooks/useFetch'
 
 interface ItemData {
-  kids: number[];
+  kids: number[]
 }
 
 const Main = styled.main`
