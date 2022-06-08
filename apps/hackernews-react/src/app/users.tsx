@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { format } from 'date-fns'
+import { useState } from 'react';
 import { useParams } from 'react-router-dom'
 import useFetch from '../hooks/useFetch'
 import Item from './item';
@@ -11,6 +12,8 @@ interface UserData {
   about?: string;
   submitted?: string[];
 }
+
+type ItemFilter = 'STORIES' | 'COMMENTS' | 'NONE'
 
 const Main = styled.main`
   padding: 10px 5px;
@@ -35,18 +38,37 @@ const Submissions = styled.div`
     margin-bottom: 10px;
   }
 
-  & > article {
+  &[data-filter="STORIES"] > article {
     margin-left: -20px;
+  }
+`
+
+const TabButton = styled.button`
+  background: transparent;
+  outline: none;
+  border: none;
+  margin-bottom: 10px;
+  cursor: pointer;
+  line-height: 1em;
+
+  & + & {
+    border-left: 1px solid var(--secondary-color);
+  }
+
+  & + article {
+    margin-top: 0;
   }
 `
 
 function Users() {
   const { userid } = useParams()
   const { data } = useFetch<UserData>(`user/${userid}`)
+  const [filter, setFilter] = useState<ItemFilter>('STORIES')
 
   if (!data) return <Main /> 
 
   const { id, created, karma, about, submitted } = data
+
   return (
     <Main>
       <Grid>
@@ -63,10 +85,11 @@ function Users() {
           </>
         )}
       </Grid>
-      <Submissions>
-        <h4>Submissions</h4>
+      <Submissions data-filter={filter}>
+        <TabButton onClick={() => setFilter('STORIES')}>Submissions</TabButton>
+        <TabButton onClick={() => setFilter('COMMENTS')}>Comments</TabButton>
         {(submitted && submitted.length > 0) && submitted.map(item => (
-          <Item key={item} id={item} filter='STORIES' />
+          <Item key={item} id={item} filter={filter} />
         ))}
       </Submissions>
     </Main>

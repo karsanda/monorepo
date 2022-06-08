@@ -8,7 +8,7 @@ interface ItemProps {
   id: string;
   index?: number;
   showText?: boolean
-  filter?: 'STORIES' | 'NONE'
+  filter?: 'STORIES' | 'COMMENTS' | 'NONE'
 }
 
 const Container = styled.article`
@@ -88,6 +88,7 @@ function Item({ id, index, showText = false, filter='NONE' }: ItemProps) {
   switch(data.type) {
     case 'story':
     case 'job':
+      if (filter === 'COMMENTS') return null
       return <Story data={data} index={index} showText={showText} />
     case 'comment':
       if (filter === 'STORIES') return null
