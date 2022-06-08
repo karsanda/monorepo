@@ -37,7 +37,7 @@ function App() {
       </Routes>
       <Footer>
         ©{new Date().getFullYear()} Karsanda |{' '}
-        <a href="https://github.com/karsanda/monorepo/tree/main/apps/hn-react">
+        <a href="https://github.com/karsanda/monorepo/tree/main/apps/hackernews-react">
           Hacker News - React
         </a>
       </Footer>
