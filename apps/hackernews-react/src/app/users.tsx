@@ -2,8 +2,10 @@ import styled from '@emotion/styled'
 import { format } from 'date-fns'
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import Story from './story'
+import Comment from './comment'
+import { CommentShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
-import Item from './item'
 
 interface UserData {
   id: string
@@ -14,6 +16,12 @@ interface UserData {
 }
 
 type ItemFilter = 'STORIES' | 'COMMENTS' | 'NONE'
+
+interface ItemProps {
+  id: string
+  showText?: boolean
+  filter?: ItemFilter
+}
 
 const Main = styled.main`
   padding: 10px 5px;
@@ -36,10 +44,6 @@ const Submissions = styled.div`
   & > h4 {
     margin-left: 5px;
     margin-bottom: 10px;
-  }
-
-  &[data-filter="STORIES"] > article {
-    margin-left: -20px;
   }
 `
 
@@ -64,30 +68,49 @@ const TabButton = styled.button`
   }
 `
 
+const List = styled.section`
+  margin-left: 2px;
+
+  article + article {
+    margin-top: 10px;
+  }
+`
+
+function SubmissionRenderer({ id, showText = false, filter='NONE' }: ItemProps) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+  if (!data) return <CommentShimmer /> 
+
+  switch(data.type) {
+    case 'story':
+    case 'job':
+      if (filter === 'COMMENTS') return null
+      return <Story data={data} showText={showText} />
+    case 'comment':
+      if (filter === 'STORIES') return null
+      return <Comment data={data} disableChildren={filter === 'COMMENTS'} />
+    default:
+      return null
+  }
+}
+
 function Users() {
   const { userid } = useParams()
   const { data } = useFetch<UserData>(`user/${userid}`)
   const [filter, setFilter] = useState<ItemFilter>('STORIES')
 
   if (!data) return <Main /> 
-
   const { id, created, karma, about, submitted } = data
 
   return (
     <Main>
       <Grid>
-        <span>User:</span>
-        <span>{id}</span>
-        <span>Karma:</span>
-        <span>{karma}</span>
-        <span>Created:</span>
-        <span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
-        {about && (
-          <>
-            <span>About:</span>
-            <About dangerouslySetInnerHTML={{ __html: about }} />
-          </>
-        )}
+        <span>User:</span><span>{id}</span>
+        <span>Karma:</span><span>{karma}</span>
+        <span>Created:</span><span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
+        {about && <>
+          <span>About:</span>
+          <About dangerouslySetInnerHTML={{ __html: about }} />
+        </>}
       </Grid>
       <Submissions data-filter={filter}>
         <TabButton onClick={() => setFilter('STORIES')} className={filter === 'STORIES' ? 'active' : undefined }>
@@ -96,9 +119,11 @@ function Users() {
         <TabButton onClick={() => setFilter('COMMENTS')} className={filter === 'COMMENTS' ? 'active' : undefined}>
           Comments
         </TabButton>
-        {(submitted && submitted.length > 0) && submitted.map(item => (
-          <Item key={item} id={item} filter={filter} />
-        ))}
+        <List>
+          {(submitted && submitted.length > 0) && submitted.map(item => (
+            <SubmissionRenderer key={item} id={item} filter={filter} />
+          ))}
+        </List>
       </Submissions>
     </Main>
   )

@@ -1,11 +1,9 @@
 import styled from '@emotion/styled'
 import { useParams } from 'react-router-dom'
-import Item from './item'
+import Story from './story'
+import Comment from './comment'
+import { CommentShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
-
-interface ItemData {
-  kids: number[]
-}
 
 const Main = styled.main`
   padding: 10px 5px;
@@ -13,22 +11,29 @@ const Main = styled.main`
 `
 
 const CommentsList = styled.section`
-  margin-left: 25px;
-  margin-top: 30px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 `
+
+function CommentRenderer({ id }: { id: number }) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+  return !data ? <CommentShimmer /> : <Comment data={data} />
+}
 
 function Comments() {
   const params = useParams()
   const { data } = useFetch<ItemData>(`item/${params['itemid']}`)
 
-  if (!params || !params['itemid'] || !data) return <Main />
+  if (!params || !params['itemid'] || !data) {
+    return <Main><CommentShimmer /></Main>
+  }
 
   const { kids } = data
   return (
     <Main>
-      <Item id={params['itemid']} showText />
+      <Story data={data} showText />
       <CommentsList>
-        {kids && kids.map(kid => <Item id={kid.toString()} key={kid} />)}
+        {kids && kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>
     </Main>
   )

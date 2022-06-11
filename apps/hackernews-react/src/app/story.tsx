@@ -5,24 +5,8 @@ import { Link } from 'react-router-dom'
 
 interface StoryProps {
   data: ItemData
-  index?: number
   showText: boolean
 }
-
-const Container = styled.article`
-  display: flex;
-  color: var(--gray);
-
-  & + & {
-    margin-top: 10px;
-  }
-`
-
-const Numbering = styled.div`
-  width: 20px;
-  margin-right: 5px;
-  text-align: right;
-`
 
 const Title = styled.h4`
   display: inline;
@@ -45,16 +29,19 @@ const Subtitle = styled.p`
   margin-top: 5px;
   color: var(--gray);
   font-size: 11px;
+  height: 12px;
 `
 
-const Content = styled.div`
+const Content = styled.article`
   width: calc(100% - 25px);
+  margin-left: 5px;
 `
 
 const Text = styled.div`
   margin-top: 15px;
-  margin-left: 25px;
+  margin-left: 6px;
   font-size: 12px;
+  color: var(--gray);
 
   & p {
     margin: 10px 0;
@@ -68,9 +55,7 @@ const Text = styled.div`
 function InfoDetails({ data }: { data: ItemData }) {
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
 
-  if (data.type === 'job') {
-    return <Subtitle>{createdTime}</Subtitle>
-  }
+  if (data.type === 'job') return <Subtitle>{createdTime}</Subtitle>
 
   return (
     <Subtitle>
@@ -86,20 +71,17 @@ function InfoDetails({ data }: { data: ItemData }) {
   )
 }
 
-function Story({ data, index, showText }: StoryProps) {
+function Story({ data, showText }: StoryProps) {
   if (data.dead || data.deleted) return null
 
   return (
     <>
-      <Container>
-        <Numbering>{index && `${index}.`}</Numbering>
-        <Content>
-          <TitleLink href={data.url ? data.url : `/comments/${data.id}`} target="_blank" rel="noreferrer">
-            <Title>{data.title}</Title>
-          </TitleLink>
-          <InfoDetails data={data} />
-        </Content>
-      </Container>
+      <Content>
+        <TitleLink href={data.url ? data.url : `/comments/${data.id}`} target="_blank" rel="noreferrer">
+          <Title>{data.title}</Title>
+        </TitleLink>
+        <InfoDetails data={data} />
+      </Content>
       {(showText && data.text) && <Text dangerouslySetInnerHTML={{ __html: data.text }} />}
     </>
   )

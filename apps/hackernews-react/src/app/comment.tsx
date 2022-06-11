@@ -3,7 +3,8 @@ import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { formatDistance } from 'date-fns'
 import { Link } from 'react-router-dom'
-import Item from './item'
+import { CommentShimmer } from './shimmer'
+import useFetch from '../hooks/useFetch'
 
 interface CommentProps {
   data: ItemData
@@ -12,10 +13,13 @@ interface CommentProps {
 
 const Container = styled.article`
   margin-right: 10px;
-  margin-top: 10px;
 
   & + & {
     margin-top: 15px;
+  }
+
+  &[data-disable-children="true"] > div {
+    margin-left: 5px;
   }
 `
 
@@ -61,6 +65,11 @@ const SubtitleLink = css`
   color: inherit;
 `
 
+function CommentRenderer({ id }: { id: number }) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+  return !data ? <CommentShimmer /> : <Comment data={data} />
+}
+
 function Comment({ data, disableChildren = false }: CommentProps) {
   const [ isCollapse, setIsCollapse ] = useState(false)
 
@@ -68,9 +77,9 @@ function Comment({ data, disableChildren = false }: CommentProps) {
 
   if (data.deleted) {
     return (
-      <Container>
+      <Container data-disable-children={disableChildren}>
         <Header>
-          <CollapsibleButton>▼</CollapsibleButton>
+          {!disableChildren && <CollapsibleButton>▼</CollapsibleButton>}
           <Info>[deleted]</Info>
         </Header>
       </Container>
@@ -79,11 +88,13 @@ function Comment({ data, disableChildren = false }: CommentProps) {
 
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
   return (
-    <Container>
+    <Container data-disable-children={disableChildren}>
       <Header>
-        <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
-          {isCollapse ? '▼' : '▲'}
-        </CollapsibleButton>
+        {!disableChildren && (
+          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
+            {isCollapse ? '▼' : '▲'}
+          </CollapsibleButton>
+        )}
         <Info>
           <Link to={`/user/${data.by}`} css={SubtitleLink}>
             <b>{data.by}</b>
@@ -94,7 +105,7 @@ function Comment({ data, disableChildren = false }: CommentProps) {
       {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
       {(!disableChildren && data.kids && !isCollapse) && (
         <Children>
-          {data.kids.map(kid => <Item id={kid.toString()} key={kid} />)}
+          {data.kids.map(kid => <CommentRenderer id={kid} key={kid} />)}
         </Children>
       )}
     </Container>
