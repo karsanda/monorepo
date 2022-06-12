@@ -25,13 +25,17 @@ function Comments() {
   const { data } = useFetch<ItemData>(`item/${params['itemid']}`)
 
   if (!params || !params['itemid'] || !data) {
-    return <Main><CommentShimmer /></Main>
+    return (
+      <Main>
+        <CommentShimmer />
+      </Main>
+    )
   }
 
   const { kids } = data
   return (
     <Main>
-      <Story data={data} showText />
+      <Story data={data} showText numbering={false} />
       <CommentsList>
         {kids && kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>

@@ -24,25 +24,11 @@ const LinkMore = styled.div`
   margin-left: 32px;
 `
 
-export const Container = styled.li`
-  height: 35px;
-  color: var(--gray);
-
-  & + & {
-    margin-top: 10px;
-  }
-`
-
 function StoryRenderer({ id }: { id: string }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
   if (!data) return <StoryShimmer />
 
-  if (data.dead || data.deleted) return null
-  return (
-    <Container>
-      <Story data={data} showText={false} />
-    </Container>
-  )
+  return <Story data={data} showText={false} />
 }
 
 function Stories({ type }: StoriesProps) {

@@ -83,15 +83,14 @@ function CommentRenderer({ id, showParent = false }: { id: number, showParent?: 
   const { data } = useFetch<ItemData>(`item/${id}`)
   if (!data) return <CommentShimmer />
 
-  if (data.dead || data.deleted) return null
   return <Comment data={data} showParent={showParent} />
 }
 
 function ParentRenderer({ id }: { id?: number }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
   if (!data) return null
-
   if (data.dead || data.deleted) return null
+
   switch(data.type) {
     case 'story':
       return (
@@ -111,7 +110,6 @@ function ParentRenderer({ id }: { id?: number }) {
 
 function Comment({ data, disableChildren = false, showParent = false }: CommentProps) {
   const [ isCollapse, setIsCollapse ] = useState(false)
-
   if (data.dead || data.deleted) return null
 
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })

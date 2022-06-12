@@ -1,11 +1,11 @@
 import { formatDistance } from 'date-fns'
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
 import { Link } from 'react-router-dom'
 
 interface StoryProps {
   data: ItemData
   showText: boolean
+  numbering?: boolean
 }
 
 const Title = styled.h4`
@@ -52,9 +52,17 @@ const Text = styled.div`
   }
 `
 
+export const Container = styled.li`
+  height: 35px;
+  color: var(--gray);
+
+  & + & {
+    margin-top: 10px;
+  }
+`
+
 function InfoDetails({ data }: { data: ItemData }) {
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
-
   if (data.type === 'job') return <Subtitle>{createdTime}</Subtitle>
 
   return (
@@ -71,10 +79,10 @@ function InfoDetails({ data }: { data: ItemData }) {
   )
 }
 
-function Story({ data, showText }: StoryProps) {
+function Story({ data, showText, numbering = true }: StoryProps) {
   if (data.dead || data.deleted) return null
-
-  return (
+  
+  const StoryContent = (
     <>
       <Content>
         <TitleLink href={data.url ? data.url : `/comments/${data.id}`} target="_blank" rel="noreferrer">
@@ -85,6 +93,12 @@ function Story({ data, showText }: StoryProps) {
       {(showText && data.text) && <Text dangerouslySetInnerHTML={{ __html: data.text }} />}
     </>
   )
+
+  return numbering ? (
+    <Container>
+      {StoryContent}
+    </Container>
+  ) : StoryContent
 }
 
 export default Story

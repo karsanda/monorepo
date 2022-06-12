@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Story from './story'
 import Comment from './comment'
-import { CommentShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
 
 interface UserData {
@@ -77,12 +76,6 @@ const List = styled.ol`
   }
 `
 
-const StoryList = styled.li`
-  &::marker {
-    color: var(--gray);
-  }
-`
-
 const CommentList = styled.li`
   list-style: '▲';
 
@@ -94,17 +87,12 @@ const CommentList = styled.li`
 
 function SubmissionRenderer({ id, showText = false, filter='NONE' }: ItemProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <CommentShimmer />
+  if (!data) return null
 
-  if (data.dead || data.deleted) return null
   switch(data.type) {
     case 'story':
       if (filter === 'COMMENTS') return null
-      return (
-        <StoryList>
-          <Story data={data} showText={showText} />
-        </StoryList>
-      )
+      return <Story data={data} showText={showText} />
     case 'comment':
       if (filter === 'STORIES') return null
       return (

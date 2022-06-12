@@ -13,7 +13,7 @@ const Content = styled.div`
   width: calc(100% - 25px);
 `
 
-const Title = styled.span`
+const Title = styled.div`
   height: 16px;
   width: 320px;
 `
@@ -51,12 +51,23 @@ const GradientAnimation = css`
   }
 `
 
+export const Container = styled.li`
+  height: 35px;
+  color: var(--gray);
+
+  & + & {
+    margin-top: 10px;
+  }
+`
+
 export function StoryShimmer() {
   return (
-    <Content>
-      <Title css={GradientAnimation} />
-      <Subtitle css={GradientAnimation} />
-    </Content>
+    <Container>
+      <Content>
+        <Title css={GradientAnimation} />
+        <Subtitle css={GradientAnimation} />
+      </Content>
+    </Container>
   )
 }
 
