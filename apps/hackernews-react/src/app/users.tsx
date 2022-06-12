@@ -68,26 +68,50 @@ const TabButton = styled.button`
   }
 `
 
-const List = styled.section`
-  margin-left: 2px;
+const List = styled.ol`
+  margin: 0;
+  padding-left: 28px;
 
-  article + article {
+  li + li {
     margin-top: 10px;
+  }
+`
+
+const StoryList = styled.li`
+  &::marker {
+    color: var(--gray);
+  }
+`
+
+const CommentList = styled.li`
+  list-style: '▲';
+
+  &::marker {
+    font-size: 11px;
+    color: var(--gray);
   }
 `
 
 function SubmissionRenderer({ id, showText = false, filter='NONE' }: ItemProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <CommentShimmer /> 
+  if (!data) return <CommentShimmer />
 
+  if (data.dead || data.deleted) return null
   switch(data.type) {
     case 'story':
-    case 'job':
       if (filter === 'COMMENTS') return null
-      return <Story data={data} showText={showText} />
+      return (
+        <StoryList>
+          <Story data={data} showText={showText} />
+        </StoryList>
+      )
     case 'comment':
       if (filter === 'STORIES') return null
-      return <Comment data={data} disableChildren={filter === 'COMMENTS'} />
+      return (
+        <CommentList>
+          <Comment data={data} disableChildren={filter === 'COMMENTS'} showParent />
+        </CommentList>
+      )
     default:
       return null
   }

@@ -11,4 +11,5 @@ interface ItemData {
   dead?: boolean
   deleted?: boolean
   kids?: number[]
+  parent?: number
 }

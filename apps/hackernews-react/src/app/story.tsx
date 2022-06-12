@@ -21,15 +21,15 @@ const TitleLink = styled.a`
   }
 `
 
-const SubtitleLink = css`
-  color: inherit;
-`
-
 const Subtitle = styled.p`
   margin-top: 5px;
   color: var(--gray);
   font-size: 11px;
   height: 12px;
+
+  & > a {
+    color: var(--gray);
+  }
 `
 
 const Content = styled.article`
@@ -60,11 +60,11 @@ function InfoDetails({ data }: { data: ItemData }) {
   return (
     <Subtitle>
       {`${data.score} points by `}
-      <Link to={`/user/${data.by}`} css={SubtitleLink}>
+      <Link to={`/user/${data.by}`}>
         <b>{data.by}</b>
       </Link>
       {` ${createdTime} | `}
-      <Link to={`/comments/${data.id}`} css={SubtitleLink}>
+      <Link to={`/comments/${data.id}`}>
         {data.descendants === 0 ? 'discuss' : `${data.descendants} comments`}
       </Link>
     </Subtitle>

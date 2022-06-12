@@ -13,12 +13,12 @@ const Content = styled.div`
   width: calc(100% - 25px);
 `
 
-const TitleShimmer = styled.div`
+const Title = styled.span`
   height: 16px;
   width: 320px;
 `
 
-const SubtitleShimmer = styled.div`
+const Subtitle = styled.div`
   margin-top: 5px;
   height: 12px;
   width: 160px;
@@ -54,8 +54,8 @@ const GradientAnimation = css`
 export function StoryShimmer() {
   return (
     <Content>
-      <TitleShimmer css={GradientAnimation} />
-      <SubtitleShimmer css={GradientAnimation} />
+      <Title css={GradientAnimation} />
+      <Subtitle css={GradientAnimation} />
     </Content>
   )
 }

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
 import { formatDistance } from 'date-fns'
 import { Link } from 'react-router-dom'
 import { CommentShimmer } from './shimmer'
@@ -9,6 +8,7 @@ import useFetch from '../hooks/useFetch'
 interface CommentProps {
   data: ItemData
   disableChildren?: boolean
+  showParent?: boolean
 }
 
 const Container = styled.article`
@@ -36,12 +36,18 @@ const CollapsibleButton = styled.button`
   margin: 0 5px 0 0;
   padding: 0;
   cursor: pointer;
+  color: var(--gray);
 `
 
 const Info = styled.p`
   margin: 5px 0;
   color: var(--gray);
   font-size: 11px;
+  line-height: 1em;
+
+  & > a {
+    color: var(--gray);
+  }
 `
 
 const Content = styled.div`
@@ -59,32 +65,54 @@ const Content = styled.div`
 
 const Children = styled.div`
   margin-left: 25px;
+
+  ${Header} {
+    margin-top: 10px;
+  }
 `
 
-const SubtitleLink = css`
-  color: inherit;
+const StoryLink = styled.span`
+  color: var(--gray);
+
+  & > a {
+    color: var(--gray);
+  }
 `
 
-function CommentRenderer({ id }: { id: number }) {
+function CommentRenderer({ id, showParent = false }: { id: number, showParent?: boolean }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  return !data ? <CommentShimmer /> : <Comment data={data} />
+  if (!data) return <CommentShimmer />
+
+  if (data.dead || data.deleted) return null
+  return <Comment data={data} showParent={showParent} />
 }
 
-function Comment({ data, disableChildren = false }: CommentProps) {
+function ParentRenderer({ id }: { id?: number }) {
+  const { data } = useFetch<ItemData>(`item/${id}`)
+  if (!data) return null
+
+  if (data.dead || data.deleted) return null
+  switch(data.type) {
+    case 'story':
+      return (
+        <StoryLink>
+          {` on `}
+          <Link to={`/comments/${data.id}`} target="_blank" rel="noreferrer">
+            {data.title}
+          </Link>
+        </StoryLink>
+      )
+    case 'comment':
+      return <ParentRenderer id={data.parent} />
+    default:
+      return null
+  }
+}
+
+function Comment({ data, disableChildren = false, showParent = false }: CommentProps) {
   const [ isCollapse, setIsCollapse ] = useState(false)
 
-  if (data.dead) return null
-
-  if (data.deleted) {
-    return (
-      <Container data-disable-children={disableChildren}>
-        <Header>
-          {!disableChildren && <CollapsibleButton>▼</CollapsibleButton>}
-          <Info>[deleted]</Info>
-        </Header>
-      </Container>
-    )
-  }
+  if (data.dead || data.deleted) return null
 
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
   return (
@@ -96,10 +124,11 @@ function Comment({ data, disableChildren = false }: CommentProps) {
           </CollapsibleButton>
         )}
         <Info>
-          <Link to={`/user/${data.by}`} css={SubtitleLink}>
+          <Link to={`/user/${data.by}`}>
             <b>{data.by}</b>
           </Link>
           {` ${createdTime}`}
+          {(showParent && data.parent) && <ParentRenderer id={data.parent} />}
         </Info>
       </Header>
       {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }

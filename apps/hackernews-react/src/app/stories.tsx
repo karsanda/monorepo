@@ -35,9 +35,12 @@ export const Container = styled.li`
 
 function StoryRenderer({ id }: { id: string }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
+  if (!data) return <StoryShimmer />
+
+  if (data.dead || data.deleted) return null
   return (
     <Container>
-      {!data ? <StoryShimmer /> : <Story data={data} showText={false} />}
+      <Story data={data} showText={false} />
     </Container>
   )
 }
