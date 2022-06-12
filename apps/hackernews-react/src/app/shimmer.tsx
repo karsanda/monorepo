@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 
 const ShimmerContainer = styled.article`
+  padding-left: 5px;
   height: 35px;
 
   & + & {
@@ -15,7 +16,7 @@ const Content = styled.div`
 
 const Title = styled.div`
   height: 16px;
-  width: 320px;
+  width: 260px;
 `
 
 const Subtitle = styled.div`
@@ -74,7 +75,10 @@ export function StoryShimmer() {
 export function CommentShimmer() {
   return (
     <ShimmerContainer>
-      <StoryShimmer />
+      <Content>
+        <Title css={GradientAnimation} />
+        <Subtitle css={GradientAnimation} />
+      </Content>
     </ShimmerContainer>
   )
 }

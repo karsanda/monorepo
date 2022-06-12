@@ -25,10 +25,13 @@ const Subtitle = styled.p`
   margin-top: 5px;
   color: var(--gray);
   font-size: 11px;
-  height: 12px;
 
   & > a {
     color: var(--gray);
+  }
+
+  @media only screen and (max-width: 400px) {
+    font-size: 11px;
   }
 `
 
@@ -53,11 +56,14 @@ const Text = styled.div`
 `
 
 export const Container = styled.li`
-  height: 35px;
   color: var(--gray);
 
   & + & {
     margin-top: 10px;
+  }
+
+  @media only screen and (max-width: 400px) {
+    font-size: 13px;
   }
 `
 

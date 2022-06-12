@@ -13,6 +13,7 @@ interface CommentProps {
 
 const Container = styled.article`
   margin-right: 10px;
+  margin-left: 5px;
 
   & + & {
     margin-top: 15px;
@@ -43,7 +44,6 @@ const Info = styled.p`
   margin: 5px 0;
   color: var(--gray);
   font-size: 11px;
-  line-height: 1em;
 
   & > a {
     color: var(--gray);
@@ -53,6 +53,7 @@ const Info = styled.p`
 const Content = styled.div`
   margin-left: 17px;
   font-size: 12px;
+  word-break: break-word;
 
   & p {
     margin: 10px 0;

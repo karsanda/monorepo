@@ -9,11 +9,6 @@ interface StoriesProps {
   type: 'topstories' | 'newstories' | 'beststories' | 'askstories' | 'showstories' | 'jobstories'
 }
 
-const Main = styled.main`
-  padding: 10px 5px 10px 0;
-  min-height: calc(100vh - 97px);
-`
-
 const List = styled.ol`
   padding-left: 28px;
   margin: 0;
@@ -39,7 +34,7 @@ function Stories({ type }: StoriesProps) {
   const data = response.data || []
   const renderedData = paginateData(data, page)
   return (
-    <Main>
+    <>
       <List start={(page * 30) - 29}>
         {renderedData.map((id: string) => <StoryRenderer key={id} id={id} />)}
       </List>
@@ -48,7 +43,7 @@ function Stories({ type }: StoriesProps) {
           <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">More</Link>
         </LinkMore>
       )}
-    </Main>
+    </>
   )
 }
 

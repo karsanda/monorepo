@@ -22,15 +22,14 @@ interface ItemProps {
   filter?: ItemFilter
 }
 
-const Main = styled.main`
-  padding: 10px 5px;
-  min-height: calc(100vh - 97px);
-`
-
 const Grid = styled.div`
   margin-left: 5px;
   display: grid;
   grid-template-columns: 80px calc(100% - 80px);
+
+  @media only screen and (max-width: 400px) {
+    font-size: 12px;
+  }
 `
 
 const About = styled.span`
@@ -110,11 +109,11 @@ function Users() {
   const { data } = useFetch<UserData>(`user/${userid}`)
   const [filter, setFilter] = useState<ItemFilter>('STORIES')
 
-  if (!data) return <Main /> 
+  if (!data) return null
   const { id, created, karma, about, submitted } = data
 
   return (
-    <Main>
+    <>
       <Grid>
         <span>User:</span><span>{id}</span>
         <span>Karma:</span><span>{karma}</span>
@@ -137,7 +136,7 @@ function Users() {
           ))}
         </List>
       </Submissions>
-    </Main>
+    </>
   )
 }
 
