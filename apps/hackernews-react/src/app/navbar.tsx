@@ -7,10 +7,6 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   line-height: 1em;
-
-  @media only screen and (max-width: 400px) {
-    font-size: 13px;
-  }
 `
 
 const Title = styled.h1`
@@ -20,20 +16,30 @@ const Title = styled.h1`
   font-weight: 600;
 
   @media only screen and (max-width: 400px) {
-    font-size: 12px;
+    font-size: 14px;
+  }
+
+  @media only screen and (max-width: 360px) {
+    font-size: 13px;
     margin-right: 7px;
   }
 `
 
 const NavLink = (path: string, type: string) => css`
   color: var(--white);
-  padding: 0 10px;
+  padding: 0 8px;
   font-weight: ${path.includes(type) ? 600 : 400};
   height: 14px;
 
   @media only screen and (max-width: 400px) {
+    font-size: 13px;
+    height: 13px;
+  }
+
+  @media only screen and (max-width: 400px) {
+    font-size: 12px;
     padding: 0 7px;
-    height: 11px;
+    height: 12px;
   }
 `
 
