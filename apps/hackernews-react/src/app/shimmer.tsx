@@ -1,17 +1,24 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 
-const ShimmerContainer = styled.article`
-  padding-left: 5px;
+export const ListItem = styled.li`
   height: 35px;
+  width: calc(100% - 25px);
+  color: var(--gray);
 
   & + & {
     margin-top: 10px;
   }
 `
 
-const Content = styled.div`
+const Article = styled.article`
+  padding-left: 5px;
   width: calc(100% - 25px);
+  height: 35px;
+
+  & + & {
+    margin-top: 10px;
+  }
 `
 
 const Title = styled.div`
@@ -52,33 +59,20 @@ const GradientAnimation = css`
   }
 `
 
-export const Container = styled.li`
-  height: 35px;
-  color: var(--gray);
-
-  & + & {
-    margin-top: 10px;
-  }
-`
-
-export function StoryShimmer() {
+export function ListItemShimmer() {
   return (
-    <Container>
-      <Content>
-        <Title css={GradientAnimation} />
-        <Subtitle css={GradientAnimation} />
-      </Content>
-    </Container>
+    <ListItem>
+      <Title css={GradientAnimation} />
+      <Subtitle css={GradientAnimation} />
+    </ListItem>
   )
 }
 
-export function CommentShimmer() {
+export function ArticleShimmer() {
   return (
-    <ShimmerContainer>
-      <Content>
-        <Title css={GradientAnimation} />
-        <Subtitle css={GradientAnimation} />
-      </Content>
-    </ShimmerContainer>
+    <Article>
+      <Title css={GradientAnimation} />
+      <Subtitle css={GradientAnimation} />
+    </Article>
   )
 }

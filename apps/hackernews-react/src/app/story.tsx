@@ -8,9 +8,10 @@ interface StoryProps {
   numbering?: boolean
 }
 
-const Title = styled.h4`
+const Title = styled.h2`
   display: inline;
   color: var(--secondary-color);
+  font-size: 1em;
   font-weight: 400;
   line-height: 1.25em;
 `

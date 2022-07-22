@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Story from './story'
 import Comment from './comment'
+import { Main } from './app'
 import useFetch from '../hooks/useFetch'
 
 interface UserData {
@@ -14,12 +15,11 @@ interface UserData {
   submitted?: string[]
 }
 
-type ItemFilter = 'STORIES' | 'COMMENTS' | 'NONE'
+type SubmissionFilter = 'STORIES' | 'COMMENTS'
 
-interface ItemProps {
+interface SubmissionProps {
   id: string
-  showText?: boolean
-  filter?: ItemFilter
+  filter?: SubmissionFilter
 }
 
 const Grid = styled.div`
@@ -75,7 +75,7 @@ const List = styled.ol`
   }
 `
 
-const CommentList = styled.li`
+const CommentItem = styled.li`
   list-style: '▲';
 
   &::marker {
@@ -84,20 +84,21 @@ const CommentList = styled.li`
   }
 `
 
-function SubmissionRenderer({ id, showText = false, filter='NONE' }: ItemProps) {
+function Submission({ id, filter }: SubmissionProps) {
   const { data } = useFetch<ItemData>(`item/${id}`)
+
   if (!data) return null
 
   switch(data.type) {
     case 'story':
       if (filter === 'COMMENTS') return null
-      return <Story data={data} showText={showText} />
+      return <Story data={data} showText={false} />
     case 'comment':
       if (filter === 'STORIES') return null
       return (
-        <CommentList>
+        <CommentItem>
           <Comment data={data} disableChildren={filter === 'COMMENTS'} showParent />
-        </CommentList>
+        </CommentItem>
       )
     default:
       return null
@@ -107,13 +108,16 @@ function SubmissionRenderer({ id, showText = false, filter='NONE' }: ItemProps) 
 function Users() {
   const { userid } = useParams()
   const { data } = useFetch<UserData>(`user/${userid}`)
-  const [filter, setFilter] = useState<ItemFilter>('STORIES')
+  const [filter, setFilter] = useState<SubmissionFilter>('STORIES')
 
-  if (!data) return null
+  if (!data) return <Main aria-label='user' />
+
   const { id, created, karma, about, submitted } = data
+  const switchTab = (state: SubmissionFilter) => () => setFilter(state)
+  const setActiveClass = (state: SubmissionFilter) => filter === state ? 'active' : undefined
 
   return (
-    <>
+    <Main aria-label='user'>
       <Grid>
         <span>User:</span><span>{id}</span>
         <span>Karma:</span><span>{karma}</span>
@@ -124,19 +128,19 @@ function Users() {
         </>}
       </Grid>
       <Submissions data-filter={filter}>
-        <TabButton onClick={() => setFilter('STORIES')} className={filter === 'STORIES' ? 'active' : undefined }>
+        <TabButton onClick={switchTab('STORIES')} className={setActiveClass('STORIES')}>
           Submissions
         </TabButton>
-        <TabButton onClick={() => setFilter('COMMENTS')} className={filter === 'COMMENTS' ? 'active' : undefined}>
+        <TabButton onClick={switchTab('COMMENTS')} className={setActiveClass('COMMENTS')}>
           Comments
         </TabButton>
         <List>
           {(submitted && submitted.length > 0) && submitted.map(item => (
-            <SubmissionRenderer key={item} id={item} filter={filter} />
+            <Submission key={item} id={item} filter={filter} />
           ))}
         </List>
       </Submissions>
-    </>
+    </Main>
   )
 }
 

@@ -2,7 +2,8 @@ import styled from '@emotion/styled'
 import { useParams } from 'react-router-dom'
 import Story from './story'
 import Comment from './comment'
-import { CommentShimmer } from './shimmer'
+import { ArticleShimmer } from './shimmer'
+import { Main } from './app'
 import useFetch from '../hooks/useFetch'
 
 const CommentsList = styled.section`
@@ -12,7 +13,7 @@ const CommentsList = styled.section`
 
 function CommentRenderer({ id }: { id: number }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  return !data ? <CommentShimmer /> : <Comment data={data} />
+  return !data ? <ArticleShimmer /> : <Comment data={data} />
 }
 
 function Comments() {
@@ -20,17 +21,21 @@ function Comments() {
   const { data } = useFetch<ItemData>(`item/${params['itemid']}`)
 
   if (!params || !params['itemid'] || !data) {
-    return <CommentShimmer />
+    return (
+      <Main aria-label='comments'>
+        <ArticleShimmer />
+      </Main>
+    )
   }
 
   const { kids } = data
   return (
-    <>
+    <Main aria-label='comments'>
       <Story data={data} showText numbering={false} />
       <CommentsList>
         {kids && kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>
-    </>
+    </Main>
   )
 }
 

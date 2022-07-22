@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Stories from './stories'
 import NavBar from './navbar'
 import Comments from './comments'
@@ -10,7 +10,7 @@ const Header = styled.header`
   background-color: var(--dark-bg);
 `
 
-const Main = styled.main`
+export const Main = styled.main`
   padding: 10px 5px 10px 0;
   min-height: calc(100vh - 97px);
 
@@ -29,30 +29,28 @@ const Footer = styled.footer`
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Header>
         <NavBar />
       </Header>
-      <Main>
-        <Routes>
-          <Route index element={<Stories type='topstories' />} />
-          <Route path='/topstories' element={<Stories type='topstories' />} />
-          <Route path='/newstories' element={<Stories type='newstories' />} />
-          <Route path='/beststories' element={<Stories type='beststories' />} />
-          <Route path='/askstories' element={<Stories type='askstories' />} />
-          <Route path='/showstories' element={<Stories type='showstories' />} />
-          <Route path='/jobstories' element={<Stories type='jobstories' />} />
-          <Route path='/comments/:itemid' element={<Comments />} />
-          <Route path='/user/:userid' element={<Users />} />
-        </Routes>
-      </Main>
-      <Footer>
+      <Routes>
+        <Route index element={<Stories type='topstories' />} />
+        <Route path='/topstories' element={<Stories type='topstories' />} />
+        <Route path='/newstories' element={<Stories type='newstories' />} />
+        <Route path='/beststories' element={<Stories type='beststories' />} />
+        <Route path='/askstories' element={<Stories type='askstories' />} />
+        <Route path='/showstories' element={<Stories type='showstories' />} />
+        <Route path='/jobstories' element={<Stories type='jobstories' />} />
+        <Route path='/comments/:itemid' element={<Comments />} />
+        <Route path='/user/:userid' element={<Users />} />
+      </Routes>
+      <Footer aria-label='footer'>
         ©{new Date().getFullYear()} Karsanda |{' '}
         <a href="https://github.com/karsanda/monorepo/tree/main/apps/hackernews-react">
           Hacker News - React
         </a>
       </Footer>
-    </BrowserRouter>
+    </>
   )
 }
 

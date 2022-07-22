@@ -2,7 +2,7 @@ import { useState } from 'react'
 import styled from '@emotion/styled'
 import { formatDistance } from 'date-fns'
 import { Link } from 'react-router-dom'
-import { CommentShimmer } from './shimmer'
+import { ArticleShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
 
 interface CommentProps {
@@ -82,7 +82,7 @@ const StoryLink = styled.span`
 
 function CommentRenderer({ id, showParent = false }: { id: number, showParent?: boolean }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <CommentShimmer />
+  if (!data) return <ArticleShimmer />
 
   return <Comment data={data} showParent={showParent} />
 }

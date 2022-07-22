@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
 import { Link, useSearchParams } from 'react-router-dom'
 import Story from './story'
-import { StoryShimmer } from './shimmer'
+import { Main } from './app'
+import { ListItemShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
 import { getPage, paginateData, PAGE_SIZE } from '../utils'
 
@@ -14,14 +15,14 @@ const List = styled.ol`
   margin: 0;
 `
 
-const LinkMore = styled.div`
+const SeeMore = styled.div`
   margin-top: 15px;
   margin-left: 32px;
 `
 
 function StoryRenderer({ id }: { id: string }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <StoryShimmer />
+  if (!data) return <ListItemShimmer />
 
   return <Story data={data} showText={false} />
 }
@@ -29,21 +30,21 @@ function StoryRenderer({ id }: { id: string }) {
 function Stories({ type }: StoriesProps) {
   const response = useFetch<string[]>(type)
   const [ params ] = useSearchParams()
-  const page = getPage(params)
 
+  const page = getPage(params)
   const data = response.data || []
-  const renderedData = paginateData(data, page)
+
   return (
-    <>
+    <Main aria-label={type}>
       <List start={(page * 30) - 29}>
-        {renderedData.map((id: string) => <StoryRenderer key={id} id={id} />)}
+        {paginateData(data, page).map((id: string) => <StoryRenderer key={id} id={id} />)}
       </List>
       {page < Math.ceil(data.length / PAGE_SIZE) && (
-        <LinkMore>
-          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">More</Link>
-        </LinkMore>
+        <SeeMore>
+          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">Next Page</Link>
+        </SeeMore>
       )}
-    </>
+    </Main>
   )
 }
 

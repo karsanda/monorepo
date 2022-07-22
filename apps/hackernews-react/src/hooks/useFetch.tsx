@@ -66,8 +66,7 @@ function useFetch<T = unknown>(url: string): State<T> {
     }
 
     fetchData()
-    return () => { cancelRequest.current = true
-    }
+    return () => { cancelRequest.current = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
