@@ -6,7 +6,7 @@ interface ItemData {
   type: string
   by: string
   score: number
-  descendants: number
+  descendants?: number
   text?: string
   dead?: boolean
   deleted?: boolean

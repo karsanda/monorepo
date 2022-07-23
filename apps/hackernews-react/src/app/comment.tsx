@@ -80,14 +80,14 @@ const StoryLink = styled.span`
   }
 `
 
-function CommentRenderer({ id, showParent = false }: { id: number, showParent?: boolean }) {
+function CommentChildren({ id, showParent = false }: { id: number, showParent?: boolean }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
   if (!data) return <ArticleShimmer />
 
   return <Comment data={data} showParent={showParent} />
 }
 
-function ParentRenderer({ id }: { id?: number }) {
+function ParentStory({ id }: { id?: number }) {
   const { data } = useFetch<ItemData>(`item/${id}`)
   if (!data) return null
   if (data.dead || data.deleted) return null
@@ -103,7 +103,7 @@ function ParentRenderer({ id }: { id?: number }) {
         </StoryLink>
       )
     case 'comment':
-      return <ParentRenderer id={data.parent} />
+      return <ParentStory id={data.parent} />
     default:
       return null
   }
@@ -127,13 +127,13 @@ function Comment({ data, disableChildren = false, showParent = false }: CommentP
             <b>{data.by}</b>
           </Link>
           {` ${createdTime}`}
-          {(showParent && data.parent) && <ParentRenderer id={data.parent} />}
+          {(showParent && data.parent) && <ParentStory id={data.parent} />}
         </Info>
       </Header>
       {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
       {(!disableChildren && data.kids && !isCollapse) && (
         <Children>
-          {data.kids.map(kid => <CommentRenderer id={kid} key={kid} />)}
+          {data.kids.map(kid => <CommentChildren id={kid} key={kid} />)}
         </Children>
       )}
     </Container>

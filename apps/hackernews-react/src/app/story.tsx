@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 interface StoryProps {
   data: ItemData
-  showText: boolean
+  showText?: boolean
   numbering?: boolean
 }
 
@@ -78,15 +78,20 @@ function InfoDetails({ data }: { data: ItemData }) {
       <Link to={`/user/${data.by}`}>
         <b>{data.by}</b>
       </Link>
-      {` ${createdTime} | `}
-      <Link to={`/comments/${data.id}`}>
-        {data.descendants === 0 ? 'discuss' : `${data.descendants} comments`}
-      </Link>
+      {` ${createdTime}`}
+      {(data.descendants && data.descendants > 0) && (
+        <>
+          {` | `}
+          <Link to={`/comments/${data.id}`}>
+            {data.descendants} comments
+          </Link>
+        </>
+      )}
     </Subtitle>
   )
 }
 
-function Story({ data, showText, numbering = true }: StoryProps) {
+function Story({ data, showText = false, numbering = true }: StoryProps) {
   if (data.dead || data.deleted) return null
   
   const StoryContent = (
