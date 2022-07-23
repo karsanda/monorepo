@@ -18,9 +18,9 @@ function CommentRenderer({ id }: { id: number }) {
 
 function Comments() {
   const params = useParams()
-  const { data } = useFetch<ItemData>(`item/${params['itemid']}`)
+  const response = useFetch<ItemData>(`item/${params['itemid']}`)
 
-  if (!params || !params['itemid'] || !data) {
+  if (!response.data) {
     return (
       <Main aria-label='comments'>
         <ArticleShimmer />
@@ -28,10 +28,10 @@ function Comments() {
     )
   }
 
-  const { kids } = data
+  const { kids } = response.data
   return (
     <Main aria-label='comments'>
-      <Story data={data} showText numbering={false} />
+      <Story data={response.data} showText numbering={false} />
       <CommentsList>
         {kids && kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>

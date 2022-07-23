@@ -22,15 +22,15 @@ test('should be able to render successfully', () => {
 test('should be able to render next page link if data is > 30', () => {
   mockedUseFetch.mockImplementation((url: string) => {
     if (url === 'topstories') {
-      return { loading: 'fetched', data: mockStories(35) }
+      return { state: 'fetched', data: mockStories(35) }
     }
 
     if (url.includes('item/')) {
       const id = url.split('/')[1]
-      return { loading: 'fetched', data: mockStory(id) }
+      return { state: 'fetched', data: mockStory(id) }
     }
 
-    return {}
+    return { state: 'fetched' }
   })
 
   render(<Stories type='topstories' />, { wrapper: BrowserRouter })
@@ -41,15 +41,15 @@ test('should be able to render next page link if data is > 30', () => {
 test('numbering should start from 31 in page 2', () => {
   mockedUseFetch.mockImplementation((url: string) => {
     if (url === 'topstories') {
-      return { loading: 'fetched', data: mockStories(40) }
+      return { state: 'fetched', data: mockStories(40) }
     }
 
     if (url.includes('item/')) {
       const id = url.split('/')[1]
-      return { loading: 'fetched', data: mockStory(id) }
+      return { state: 'fetched', data: mockStory(id) }
     }
 
-    return {}
+    return { state: 'fetched' }
   })
 
   render(

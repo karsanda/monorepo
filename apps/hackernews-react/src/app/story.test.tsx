@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { mockAsk, mockJob, mockNewStory, mockStory } from '../utils'
+import { mockStoryWithText, mockJob, mockNewStory, mockStory } from '../utils'
 import { subHours } from 'date-fns'
 import Story from './story'
 
@@ -26,7 +26,7 @@ test('should be able to render without numbering', () => {
 })
 
 test('should be able to render text when showText is true', () => {
-  render(<Story data={mockAsk('3')} showText />, { wrapper: BrowserRouter })
+  render(<Story data={mockStoryWithText('3')} showText />, { wrapper: BrowserRouter })
   expect(screen.getByTestId('dummy-paragraph')).toHaveTextContent('This is a paragraph')
 })
 
