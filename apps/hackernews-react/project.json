@@ -16,7 +16,7 @@
         "polyfills": "apps/hackernews-react/src/polyfills.ts",
         "tsConfig": "apps/hackernews-react/tsconfig.app.json",
         "assets": [
-          "apps/hackernews-react/src/favicon.ico",
+          "apps/hackernews-react/src/favicons",
           "apps/hackernews-react/src/assets"
         ],
         "styles": ["apps/hackernews-react/src/styles.css"],
