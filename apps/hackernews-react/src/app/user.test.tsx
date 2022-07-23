@@ -1,12 +1,13 @@
 import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import Stories from './stories'
+import Users from './users'
 
 test('should be able to render successfully', () => {
   const { baseElement } = render(
-    <MemoryRouter initialEntries={['/']}>
-      <Stories type='topstories' />
+    <MemoryRouter initialEntries={['/topstories']}>
+      <Users />
     </MemoryRouter>
   )
+
   expect(baseElement).toBeTruthy()
 })

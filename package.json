@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@emotion/babel-plugin": "11.7.2",
+    "@faker-js/faker": "^7.3.0",
     "@nrwl/cli": "13.10.2",
     "@nrwl/cypress": "13.10.2",
     "@nrwl/eslint-plugin-nx": "13.10.2",

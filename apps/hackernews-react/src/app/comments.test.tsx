@@ -8,5 +8,6 @@ test('should be able to render successfully', () => {
       <Comments />
     </MemoryRouter>
   )
+
   expect(baseElement).toBeTruthy()
 })

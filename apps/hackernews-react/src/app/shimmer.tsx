@@ -61,7 +61,7 @@ const GradientAnimation = css`
 
 export function ListItemShimmer() {
   return (
-    <ListItem>
+    <ListItem data-testid='list-item-shimmer'>
       <Title css={GradientAnimation} />
       <Subtitle css={GradientAnimation} />
     </ListItem>
@@ -70,7 +70,7 @@ export function ListItemShimmer() {
 
 export function ArticleShimmer() {
   return (
-    <Article>
+    <Article data-testid='article-shimmer'>
       <Title css={GradientAnimation} />
       <Subtitle css={GradientAnimation} />
     </Article>
