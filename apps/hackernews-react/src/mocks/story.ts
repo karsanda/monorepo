@@ -5,26 +5,8 @@ function randomize(range: number) {
   return Math.ceil(Math.random() * range)
 }
 
-export function mockStories(n: number) {
-  return [...Array(n).keys()]
-}
-
-export function mockStory(id: string) {
+export function mockStory(id: string): StoryData {
   const descendants = randomize(5)
-  return {
-    id,
-    by: faker.name.firstName(), 
-    score: randomize(100),
-    title: faker.lorem.lines(1),
-    type: 'story',
-    url: faker.fake('https://www.{{word.noun}}.com'),
-    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
-    descendants,
-    kids: [...Array(descendants)].map(() => randomize(1000))
-  }
-}
-
-export function mockNewStory(id: string) {
   return {
     id,
     by: faker.name.firstName(),
@@ -33,18 +15,32 @@ export function mockNewStory(id: string) {
     type: 'story',
     url: faker.fake('https://www.{{word.noun}}.com'),
     time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
-    descendants: 0,
+    descendants,
+    kids: [...Array(descendants)].map(() => randomize(10))
   }
 }
 
-export function mockStoryWithText(id: string) {
+export function mockNewStory(id: string): StoryData {
+  return {
+    id,
+    by: faker.name.firstName(),
+    descendants: 0,
+    score: randomize(100),
+    title: faker.lorem.lines(1),
+    type: 'story',
+    url: faker.fake('https://www.{{word.noun}}.com'),
+    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
+  }
+}
+
+export function mockStoryWithText(id: string): StoryData {
   return {
     ...mockStory(id),
     text: '<p data-testid="dummy-paragraph">This is a paragraph</p>'
   }
 }
 
-export function mockJob(id: string) {
+export function mockJob(id: string): StoryData {
   return {
     id,
     by: faker.name.firstName(),
@@ -53,18 +49,5 @@ export function mockJob(id: string) {
     time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
     url: faker.fake('https://www.{{word.noun}}.com'),
     type: 'job'
-  }
-}
-
-export function mockComment(id: string, parent: string) {
-  const descendants = randomize(3)
-  return {
-    id,
-    by: faker.name.firstName(),
-    parent,
-    text: faker.lorem.lines(2),
-    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
-    type: 'comment',
-    kids: [...Array(descendants)].map(() => randomize(1000))
   }
 }

@@ -5,38 +5,34 @@ import Comment from './comment'
 import { ArticleShimmer } from './shimmer'
 import { Main } from './app'
 import useFetch from '../hooks/useFetch'
+import { itemURI } from '../utils/api-list'
 
 const CommentsList = styled.section`
   margin-top: 15px;
   margin-bottom: 10px;
 `
 
-function CommentRenderer({ id }: { id: number }) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
-  return !data ? <ArticleShimmer /> : <Comment data={data} />
-}
-
-function Comments() {
+export default function Comments() {
   const params = useParams()
-  const response = useFetch<ItemData>(`item/${params['itemid']}`)
+  const { data } = useFetch<StoryData | CommentData>(itemURI(params['itemid']))
 
-  if (!response.data) {
-    return (
-      <Main aria-label='comments'>
-        <ArticleShimmer />
-      </Main>
-    )
+  if (!data) return (
+    <Main aria-label='comments'>
+      <ArticleShimmer />
+    </Main>
+  )
+
+  function CommentRenderer({ id }: { id: number }) {
+    const { data } = useFetch<CommentData>(itemURI(id.toString()))
+    return !data ? <ArticleShimmer /> : <Comment data={data} />
   }
 
-  const { kids } = response.data
   return (
     <Main aria-label='comments'>
-      <Story data={response.data} showText numbering={false} />
+      {data.type === 'story' && <Story data={data} showText />}
       <CommentsList>
-        {kids && kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
+        {data.kids && data.kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>
     </Main>
   )
 }
-
-export default Comments

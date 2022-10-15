@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 
 interface StoryProps {
-  data: ItemData
+  data: StoryData
   showText?: boolean
   numbering?: boolean
 }
@@ -56,61 +56,32 @@ const Text = styled.div`
   }
 `
 
-export const Container = styled.li`
-  color: var(--gray);
-
-  & + & {
-    margin-top: 10px;
-  }
-
-  @media only screen and (max-width: 400px) {
-    font-size: 13px;
-  }
-`
-
-function InfoDetails({ data }: { data: ItemData }) {
+function Information({ data }: { data: StoryData }) {
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
+
   if (data.type === 'job') return <Subtitle>{createdTime}</Subtitle>
 
-  return (
-    <Subtitle>
-      {`${data.score} points by `}
-      <Link to={`/user/${data.by}`}>
-        <b>{data.by}</b>
-      </Link>
-      {` ${createdTime}`}
-      {(data.descendants && data.descendants > 0) && (
-        <>
-          {` | `}
-          <Link to={`/comments/${data.id}`}>
-            {data.descendants} comments
-          </Link>
-        </>
-      )}
-    </Subtitle>
-  )
+  const UserLink = () => <Link to={`/user/${data.by}`}><b>{data.by}</b></Link>
+
+  const CommentLink = () => <Link to={`/comments/${data.id}`}>{data.descendants} comments</Link>
+
+  return data.descendants && data.descendants > 0
+    ? <Subtitle>{data.score} points by <UserLink /> {createdTime} | <CommentLink/></Subtitle>
+    : <Subtitle>{data.score} points by <UserLink /> {createdTime}</Subtitle>
 }
 
-function Story({ data, showText = false, numbering = true }: StoryProps) {
+export default function Story({ data, showText = false }: StoryProps) {
   if (data.dead || data.deleted) return null
   
-  const StoryContent = (
+  return (
     <>
-      <Content>
+      <Content data-testid={`story-${data.id}`}>
         <TitleLink href={data.url ? data.url : `/comments/${data.id}`} target="_blank" rel="noreferrer">
           <Title>{data.title}</Title>
         </TitleLink>
-        <InfoDetails data={data} />
+        <Information data={data} />
       </Content>
       {(showText && data.text) && <Text dangerouslySetInnerHTML={{ __html: data.text }} />}
     </>
   )
-
-  return numbering ? (
-    <Container>
-      {StoryContent}
-    </Container>
-  ) : StoryContent
 }
-
-export default Story

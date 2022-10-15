@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import Comments from './comments'
 import useFetch from '../hooks/useFetch'
-import { mockComment, mockStoryWithText } from '../utils'
+import { mockStoryWithText } from '../mocks/story'
+import { mockComment } from '../mocks/comment'
 
 jest.mock('../hooks/useFetch.tsx', () => jest.fn())
 const mockedUseFetch = useFetch as jest.Mock
@@ -28,7 +29,7 @@ test('should be able to render successfully', () => {
 
 test('should render story with text and comment', () => {
   mockedUseFetch.mockImplementation((url: string) => {
-    if (url === 'item/777') {
+    if (url === '/item/777') {
       return {
         state: 'fetched',
         data: {
@@ -39,11 +40,11 @@ test('should render story with text and comment', () => {
       }
     }
 
-    if (url === 'item/444') {
+    if (url === '/item/444') {
       return { state: 'fetched' }
     }
 
-    if (url === 'item/555') {
+    if (url === '/item/555') {
       return {
         state: 'fetched',
         data: {
@@ -62,7 +63,7 @@ test('should render story with text and comment', () => {
 
 test('it should render shimmer on comment if data is undefined', () => {
   mockedUseFetch.mockImplementation((url: string) => {
-    if (url === 'item/777') {
+    if (url === '/item/777') {
       return {
         state: 'fetched',
         data: {

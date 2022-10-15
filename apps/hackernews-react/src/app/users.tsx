@@ -6,14 +6,7 @@ import Story from './story'
 import Comment from './comment'
 import { Main } from './app'
 import useFetch from '../hooks/useFetch'
-
-interface UserData {
-  id: string
-  created: number
-  karma: number
-  about?: string
-  submitted?: string[]
-}
+import { itemURI, userURI } from '../utils/api-list'
 
 type SubmissionFilter = 'STORIES' | 'COMMENTS'
 
@@ -85,34 +78,33 @@ const CommentItem = styled.li`
 `
 
 function Submission({ id, filter }: SubmissionProps) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
+  const { data } = useFetch<StoryData | CommentData>(itemURI(id))
 
   if (!data) return null
 
   switch(data.type) {
     case 'story':
-      if (filter === 'COMMENTS') return null
-      return <Story data={data} showText={false} />
+      return filter !== 'COMMENTS' ? <Story data={data} showText={false} /> : null
     case 'comment':
-      if (filter === 'STORIES') return null
-      return (
+      return filter !== 'STORIES' ? (
         <CommentItem>
           <Comment data={data} disableChildren={filter === 'COMMENTS'} showParent />
         </CommentItem>
-      )
+      ) : null
     default:
       return null
   }
 }
 
-function Users() {
+export default function Users() {
   const { userid } = useParams()
-  const { data } = useFetch<UserData>(`user/${userid}`)
+  const { data } = useFetch<UserData>(userURI(userid))
   const [filter, setFilter] = useState<SubmissionFilter>('STORIES')
 
   if (!data) return <Main aria-label='user' />
 
   const { id, created, karma, about, submitted } = data
+
   const switchTab = (state: SubmissionFilter) => () => setFilter(state)
   const setActiveClass = (state: SubmissionFilter) => filter === state ? 'active' : undefined
 
@@ -122,10 +114,7 @@ function Users() {
         <span>User:</span><span>{id}</span>
         <span>Karma:</span><span>{karma}</span>
         <span>Created:</span><span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
-        {about && <>
-          <span>About:</span>
-          <About dangerouslySetInnerHTML={{ __html: about }} />
-        </>}
+        {about && <><span>About:</span><About dangerouslySetInnerHTML={{ __html: about }} /></>}
       </Grid>
       <Submissions data-filter={filter}>
         <TabButton onClick={switchTab('STORIES')} className={setActiveClass('STORIES')}>
@@ -143,5 +132,3 @@ function Users() {
     </Main>
   )
 }
-
-export default Users

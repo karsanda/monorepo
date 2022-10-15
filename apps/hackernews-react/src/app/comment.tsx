@@ -4,11 +4,17 @@ import { formatDistance } from 'date-fns'
 import { Link } from 'react-router-dom'
 import { ArticleShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
+import { itemURI } from '../utils/api-list'
 
 interface CommentProps {
-  data: ItemData
+  data: CommentData
   disableChildren?: boolean
   showParent?: boolean
+}
+
+type ParentProps = {
+  id: string
+  title: string
 }
 
 const Container = styled.article`
@@ -72,7 +78,7 @@ const Children = styled.div`
   }
 `
 
-const StoryLink = styled.span`
+const Story = styled.span`
   color: var(--gray);
 
   & > a {
@@ -81,54 +87,55 @@ const StoryLink = styled.span`
 `
 
 function CommentChildren({ id, showParent = false }: { id: number, showParent?: boolean }) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <ArticleShimmer />
-
-  return <Comment data={data} showParent={showParent} />
+  const { data } = useFetch<CommentData>(itemURI(id.toString()))
+  return data ? <Comment data={data} showParent={showParent} /> : <ArticleShimmer />
 }
 
-function ParentStory({ id }: { id?: number }) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return null
-  if (data.dead || data.deleted) return null
+function StoryLink({ id, title }: ParentProps) {
+  return <Link to={`/comments/${id}`} target="_blank" rel="noreferrer">{title}</Link>
+}
+
+function Parent({ id }: { id?: number }) {
+  const { data } = useFetch<StoryData | CommentData>(itemURI(id?.toString()))
+
+  if (!data || data.dead || data.deleted) return null
 
   switch(data.type) {
     case 'story':
-      return (
-        <StoryLink>
-          {` on `}
-          <Link to={`/comments/${data.id}`} target="_blank" rel="noreferrer">
-            {data.title}
-          </Link>
-        </StoryLink>
-      )
+      return <Story data-testid={`story-${data.id}`}>on <StoryLink id={data.id} title={data.title} /></Story>
     case 'comment':
-      return <ParentStory id={data.parent} />
+      return <Parent id={data.parent} />
     default:
       return null
   }
 }
 
-function Comment({ data, disableChildren = false, showParent = false }: CommentProps) {
+function Information({ data, showParent }: CommentProps) {
+  const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
+
+  const UserLink = () => <Link to={`/user/${data.by}`}><b>{data.by}</b></Link>
+
+  return (
+    <Info>
+      <UserLink /> {createdTime} {(showParent && data.parent) && <Parent id={data.parent} />}
+    </Info>
+  )
+}
+
+export default function Comment({ data, disableChildren = false, showParent = false }: CommentProps) {
   const [ isCollapse, setIsCollapse ] = useState(false)
+
   if (data.dead || data.deleted) return null
 
-  const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
   return (
-    <Container data-disable-children={disableChildren}>
+    <Container data-disable-children={disableChildren} data-testid={`comment-${data.id}`}>
       <Header>
         {!disableChildren && (
-          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)}>
+          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)} aria-label={`collapsible-button-${data.id}`}>
             {isCollapse ? '▼' : '▲'}
           </CollapsibleButton>
         )}
-        <Info>
-          <Link to={`/user/${data.by}`}>
-            <b>{data.by}</b>
-          </Link>
-          {` ${createdTime}`}
-          {(showParent && data.parent) && <ParentStory id={data.parent} />}
-        </Info>
+        <Information data={data} showParent={showParent} />
       </Header>
       {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
       {(!disableChildren && data.kids && !isCollapse) && (
@@ -139,5 +146,3 @@ function Comment({ data, disableChildren = false, showParent = false }: CommentP
     </Container>
   )
 }
-
-export default Comment

@@ -1,52 +1,55 @@
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter, MemoryRouter } from 'react-router-dom'
-import Stories from './stories'
-import { mockStories, mockStory } from '../utils'
 import useFetch from '../hooks/useFetch'
+import { mockStories } from '../mocks/stories'
+import Stories from './stories'
 
 jest.mock('../hooks/useFetch.tsx', () => jest.fn())
 const mockedUseFetch = useFetch as jest.Mock
 
 test('should be able to render successfully', () => {
-  mockedUseFetch
-    .mockReturnValueOnce({ loading: 'fetched', data: mockStories(1) })
-    .mockReturnValueOnce({ loading: 'fetched' })
+  mockedUseFetch.mockImplementation((url: string) => {
+    if (url === '/topstories') {
+      return {
+        state: 'fetched',
+        data: mockStories(5)
+      }
+    }
+
+    return { state: 'fetched' }
+  })
 
   const { baseElement } = render(<Stories type='topstories' />, { wrapper: BrowserRouter })
 
   expect(baseElement).toBeTruthy()
-  expect(screen.getByTestId('list-item-shimmer')).toBeTruthy()
   expect(screen.queryByRole('link', { name: 'Next Page'})).not.toBeInTheDocument()
 })
 
 test('should be able to render next page link if data is > 30', () => {
   mockedUseFetch.mockImplementation((url: string) => {
-    if (url === 'topstories') {
-      return { state: 'fetched', data: mockStories(35) }
-    }
-
-    if (url.includes('item/')) {
-      const id = url.split('/')[1]
-      return { state: 'fetched', data: mockStory(id) }
+    if (url === '/topstories') {
+      return {
+        state: 'fetched',
+        data: mockStories(35)
+      }
     }
 
     return { state: 'fetched' }
   })
 
   render(<Stories type='topstories' />, { wrapper: BrowserRouter })
+
   expect(screen.getAllByRole('listitem').length).toEqual(30)
   expect(screen.getByRole('link', { name: 'Next Page'})).toHaveAttribute('href', '/topstories?page=2')
 })
 
 test('numbering should start from 31 in page 2', () => {
   mockedUseFetch.mockImplementation((url: string) => {
-    if (url === 'topstories') {
-      return { state: 'fetched', data: mockStories(40) }
-    }
-
-    if (url.includes('item/')) {
-      const id = url.split('/')[1]
-      return { state: 'fetched', data: mockStory(id) }
+    if (url === '/topstories') {
+      return {
+        state: 'fetched',
+        data: mockStories(40)
+      }
     }
 
     return { state: 'fetched' }

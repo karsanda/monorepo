@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
-import { mockStoryWithText, mockJob, mockNewStory, mockStory } from '../utils'
+import { mockStory, mockNewStory, mockStoryWithText, mockJob } from '../mocks/story'
 import { subHours } from 'date-fns'
 import Story from './story'
 
@@ -10,7 +10,6 @@ test('should render story item correctly', () => {
   const story = { ...mockStory('1'), time: oneHourAgo }
   render(<Story data={story} />, { wrapper: BrowserRouter })
 
-  expect(screen.getByRole('listitem')).toBeInTheDocument()
   expect(screen.getByRole('link', { name: story.title })).toHaveAttribute('href', story.url)
   expect(screen.getByRole('link', { name: story.by })).toHaveAttribute('href', `/user/${story.by}`)
   expect(screen.getByRole('link', { name: `${story.descendants} comments` })).toHaveAttribute('href', '/comments/1')
@@ -18,11 +17,6 @@ test('should render story item correctly', () => {
   expect(screen.getByText(`points`, { exact: false })).toHaveTextContent(
     `${story.score} points by ${story.by} about 1 hour ago | ${story.descendants} comments`
   )
-})
-
-test('should be able to render without numbering', () => {
-  render(<Story data={mockStory('2')} numbering={false} />, { wrapper: BrowserRouter })
-  expect(screen.queryByRole('listitem')).not.toBeInTheDocument()
 })
 
 test('should be able to render text when showText is true', () => {

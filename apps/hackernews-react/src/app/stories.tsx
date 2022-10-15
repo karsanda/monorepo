@@ -4,7 +4,8 @@ import Story from './story'
 import { Main } from './app'
 import { ListItemShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
-import { getPage, paginateData, PAGE_SIZE } from '../utils'
+import { getPage, paginateData, PAGE_SIZE } from '../utils/pagination'
+import { itemURI, typeURI } from '../utils/api-list'
 
 interface StoriesProps {
   type: 'topstories' | 'newstories' | 'beststories' | 'askstories' | 'showstories' | 'jobstories'
@@ -20,19 +21,31 @@ const SeeMore = styled.div`
   margin-left: 32px;
 `
 
-function StoryRenderer({ id }: { id: string }) {
-  const { data } = useFetch<ItemData>(`item/${id}`)
-  if (!data) return <ListItemShimmer />
+export const Container = styled.li`
+  color: var(--gray);
 
-  return <Story data={data} showText={false} />
-}
+  & + & {
+    margin-top: 10px;
+  }
 
-function Stories({ type }: StoriesProps) {
-  const response = useFetch<string[]>(type)
+  @media only screen and (max-width: 400px) {
+    font-size: 13px;
+  }
+`
+
+export default function Stories({ type }: StoriesProps) {
   const [ params ] = useSearchParams()
+  const response = useFetch<string[]>(typeURI(type))
 
   const page = getPage(params)
   const data = response.data || []
+
+  const StoryRenderer = ({ id }: { id: string }) => {
+    const { data } = useFetch<StoryData>(itemURI(id))
+    return data
+      ? <Container><Story data={data} showText={false} /></Container>
+      : <ListItemShimmer />
+  }
 
   return (
     <Main aria-label={type}>
@@ -47,5 +60,3 @@ function Stories({ type }: StoriesProps) {
     </Main>
   )
 }
-
-export default Stories
