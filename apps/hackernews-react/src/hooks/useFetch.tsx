@@ -14,7 +14,7 @@ type Action<T> =
   | { type: 'fetched'; payload: T }
   | { type: 'error'; payload: Error }
 
-function useFetch<T = unknown>(url: string, options?: RequestInit): State<T> {
+function useFetch<T = unknown>(url: string): State<T> {
   const cache = useRef<Cache<T>>({})
   const cancelRequest = useRef<boolean>(false)
 
