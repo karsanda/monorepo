@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getDatabase, ref, child, get } from "firebase/database"
+import { getDatabase, ref, child, get, DataSnapshot } from "firebase/database"
 
 const config = {
   databaseURL: 'https://hacker-news.firebaseio.com'
@@ -10,7 +10,7 @@ const database = getDatabase(app)
 const api = ref(database, '/v0')
 
 export const getDataFromFirebase = async (url: string, callback: {
-  success?: (snapshot: any) => void,
+  success?: (snapshot: DataSnapshot) => void,
   error?: (error: Error) => void
 }) => {
   try {
