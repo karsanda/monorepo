@@ -1,13 +1,28 @@
-import { getGreeting } from '../support/app.po';
-
 describe('hackernews-react', () => {
-  beforeEach(() => cy.visit('/'));
+  beforeEach(() => cy.visit('/'))
 
-  it('should display welcome message', () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login('my-email@something.com', 'myPassword');
+  it('navbar link should function properly', () => {
+    cy.get('nav').contains('Hacker News - React')
+    cy.get('main[aria-label="topstories"]')
 
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome hn-react');
-  });
-});
+    cy.get('a[data-page="newstories"]').click()
+    cy.url().should('include', '/newstories')
+    cy.get('main[aria-label="newstories"]')
+
+    cy.get('a[data-page="beststories"]').click()
+    cy.url().should('include', '/beststories')
+    cy.get('main[aria-label="beststories"]')
+
+    cy.get('a[data-page="askstories"]').click()
+    cy.url().should('include', '/askstories')
+    cy.get('main[aria-label="askstories"]')
+
+    cy.get('a[data-page="showstories"]').click()
+    cy.url().should('include', '/showstories')
+    cy.get('main[aria-label="showstories"]')
+
+    cy.get('a[data-page="jobstories"]').click()
+    cy.url().should('include', '/jobstories')
+    cy.get('main[aria-label="jobstories"]')
+  })
+})
