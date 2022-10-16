@@ -1,1 +1,3 @@
-export * from './lib/hackernews-api'
+import FirebaseAdapter from "./lib/firebase-adapter";
+
+export default FirebaseAdapter

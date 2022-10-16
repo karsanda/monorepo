@@ -1,6 +1,6 @@
 import { getGreeting } from '../support/app.po';
 
-describe('hn-react', () => {
+describe('hackernews-react', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {

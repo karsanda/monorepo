@@ -1,5 +1,5 @@
-import { useEffect, useRef, useReducer } from 'react'
-import { getDataFromFirebase } from '@monorepo/hackernews-api'
+import { useEffect, useRef, useReducer, useMemo } from 'react'
+import FirebaseAdapter from '@monorepo/hackernews-api'
 
 interface State<T> {
   state: 'idle' | 'loading' | 'fetched' | 'error'
@@ -32,8 +32,6 @@ function useFetch<T = unknown>(url: string): State<T> {
         return { ...initialState, state: action.type, data: action.payload }
       case 'error':
         return { ...initialState, state: action.type, error: action.payload }
-      default:
-        return state
     }
   }
 
@@ -43,7 +41,20 @@ function useFetch<T = unknown>(url: string): State<T> {
     if (!url) return
     cancelRequest.current = false
 
-    const fetchData = async () => {
+    const firebaseAdapter = new FirebaseAdapter({
+      onSuccess: (snapshot) => {
+        const data = snapshot.val()
+        if (cancelRequest.current) return
+        cache.current[url] = data
+        dispatch({ type: 'fetched', payload: data })
+      },
+      onError: (error) => {
+        if (cancelRequest.current) return
+        dispatch({ type: 'error', payload: error as Error })
+      }
+    })
+
+    const fetchDataFromFirebase = () => {
       dispatch({ type: 'loading' })
 
       if (cache.current[url]) {
@@ -51,23 +62,11 @@ function useFetch<T = unknown>(url: string): State<T> {
         return
       }
 
-      getDataFromFirebase(url, {
-        success: (snapshot) => {
-          const data = snapshot.val()
-          if (cancelRequest.current) return
-          cache.current[url] = data
-          dispatch({ type: 'fetched', payload: data })
-        },
-        error: (error: Error) => {
-          if (cancelRequest.current) return
-          dispatch({ type: 'error', payload: error as Error })
-        }
-      })
+      firebaseAdapter.fetchData(url)
     }
 
-    fetchData()
+    fetchDataFromFirebase()
     return () => { cancelRequest.current = true }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
   return state
