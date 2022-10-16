@@ -1,20 +1,20 @@
 {
-  "root": "libs/hackernews-api",
-  "sourceRoot": "libs/hackernews-api/src",
+  "root": "libs/firebase-adapter",
+  "sourceRoot": "libs/firebase-adapter/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/hackernews-api/**/*.ts"]
+        "lintFilePatterns": ["libs/firebase-adapter/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/hackernews-api"],
+      "outputs": ["coverage/libs/firebase-adapter"],
       "options": {
-        "jestConfig": "libs/hackernews-api/jest.config.js",
+        "jestConfig": "libs/firebase-adapter/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@monorepo/hackernews-api": ["libs/hackernews-api/src/index.ts"]
+      "@monorepo/firebase-adapter": ["libs/firebase-adapter/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
