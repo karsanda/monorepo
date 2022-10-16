@@ -1,4 +1,4 @@
-import { useEffect, useRef, useReducer, useMemo } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import FirebaseAdapter from '@monorepo/firebase-adapter';
 
 interface State<T> {
