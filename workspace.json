@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "projects": {
-    "firebase-adapter": "libs/firebase-adapter",
-    "hackernews-react": "apps/hackernews-react",
-    "hackernews-react-e2e": "apps/hackernews-react-e2e"
-  }
-}

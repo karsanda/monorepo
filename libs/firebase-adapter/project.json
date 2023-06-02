@@ -1,20 +1,21 @@
 {
-  "root": "libs/firebase-adapter",
+  "name": "firebase-adapter",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/firebase-adapter/src",
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/firebase-adapter/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/firebase-adapter"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/firebase-adapter"],
       "options": {
-        "jestConfig": "libs/firebase-adapter/jest.config.js",
+        "jestConfig": "libs/firebase-adapter/jest.config.ts",
         "passWithNoTests": true
       }
     }

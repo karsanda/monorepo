@@ -19,5 +19,5 @@ test('active page should be bold', () => {
     </MemoryRouter>
   )
 
-  expect(screen.getByRole('link', { name: 'Ask'})).toHaveStyle('font-weight: 600')
+  expect(screen.getByRole('link', { name: 'Ask' })).toHaveStyle('font-weight: 600')
 })
