@@ -1,6 +1,6 @@
-import FirebaseAdapter from '@monorepo/firebase-adapter';
+import FirebaseAdapter from 'firebase-adapter';
 import { renderHook, waitFor } from '@testing-library/react';
-import { DataSnapshot } from 'firebase/database';
+import type { DataSnapshot } from 'firebase/database';
 import useFetch from './useFetch';
 
 test('should return loading state when fetch is in progress', () => {

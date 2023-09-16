@@ -1,5 +1,5 @@
 import { useEffect, useRef, useReducer } from 'react';
-import FirebaseAdapter from '@monorepo/firebase-adapter';
+import FirebaseAdapter from 'firebase-adapter';
 
 interface State<T> {
   state: 'idle' | 'loading' | 'fetched' | 'error';
@@ -24,7 +24,7 @@ function useFetch<T = unknown>(url: string): State<T> {
     error: undefined,
   };
 
-  const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
+  const fetchReducer = (_state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case 'loading':
         return { ...initialState, state: action.type };

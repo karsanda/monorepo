@@ -9,12 +9,12 @@ export function mockStory(id: string): StoryData {
   const descendants = randomize(5)
   return {
     id,
-    by: faker.name.firstName(),
+    by: faker.person.firstName(),
     score: randomize(100),
     title: faker.lorem.lines(1),
     type: 'story',
-    url: faker.fake('https://www.{{word.noun}}.com'),
-    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
+    url: faker.helpers.fake('https://www.{{word.noun}}.com'),
+    time: Math.floor(faker.date.between({ from: subDays(new Date(), 2), to: new Date() }).getTime() / 1000),
     descendants,
     kids: [...Array(descendants)].map(() => randomize(10))
   }
@@ -23,13 +23,13 @@ export function mockStory(id: string): StoryData {
 export function mockNewStory(id: string): StoryData {
   return {
     id,
-    by: faker.name.firstName(),
+    by: faker.person.firstName(),
     descendants: 0,
     score: randomize(100),
     title: faker.lorem.lines(1),
     type: 'story',
-    url: faker.fake('https://www.{{word.noun}}.com'),
-    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
+    url: faker.helpers.fake('https://www.{{word.noun}}.com'),
+    time: Math.floor(faker.date.between({ from: subDays(new Date(), 2), to: new Date() }).getTime() / 1000),
   }
 }
 
@@ -43,11 +43,11 @@ export function mockStoryWithText(id: string): StoryData {
 export function mockJob(id: string): StoryData {
   return {
     id,
-    by: faker.name.firstName(),
+    by: faker.person.firstName(),
     score: 1,
     title: faker.lorem.lines(1),
-    time: Math.floor(faker.date.between(subDays(new Date(), 2), new Date).getTime() / 1000),
-    url: faker.fake('https://www.{{word.noun}}.com'),
+    time: Math.floor(faker.date.between({ from: subDays(new Date(), 2), to: new Date() }).getTime() / 1000),
+    url: faker.helpers.fake('https://www.{{word.noun}}.com'),
     type: 'job'
   }
 }
