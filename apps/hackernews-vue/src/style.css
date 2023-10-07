@@ -3,7 +3,7 @@
   --secondary-color: #132b32;
   --gray: #6d6d6d;
   --dark-bg: #282c34;
-  --light-bg: #dff7fe;
+  --light-bg: #def3ea;
   --white: #ffffff;
 }
 
@@ -46,7 +46,7 @@ nav a:last-child {
   border-right: none;
 }
 
-#root {
+#app {
   width: 85%;
   margin: 0 auto;
   background-color: var(--light-bg);
@@ -57,7 +57,7 @@ nav a:last-child {
     margin: 0;
   }
 
-  #root {
+  #app {
     min-width: 100vw;
   }
 }

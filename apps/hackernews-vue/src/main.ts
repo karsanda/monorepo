@@ -13,7 +13,9 @@ const router = createRouter({
     { path: '/beststories', component: Stories, props: { type: 'beststories' } },
     { path: '/askstories', component: Stories, props: { type: 'askstories' } },
     { path: '/showstories', component: Stories, props: { type: 'showstories' } },
-    { path: '/jobstories', component: Stories, props: { type: 'jobstories' } }
+    { path: '/jobstories', component: Stories, props: { type: 'jobstories' } },
+    { path: '/user/:userId', component: { template: '<div />' } },
+    { path: '/comments/:storyId', component: { template: '<div />' } },
   ]
 })
 
