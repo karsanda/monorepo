@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/vue": "^2.0.0",
     "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/test-utils": "^2.4.3",
     "date-fns": "^2.30.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
