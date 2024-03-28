@@ -32,11 +32,6 @@ const NavLink = (path: string, type: string) => css`
   height: 14px;
 
   @media only screen and (max-width: 400px) {
-    font-size: 13px;
-    height: 13px;
-  }
-
-  @media only screen and (max-width: 400px) {
     font-size: 12px;
     padding: 0 7px;
     height: 12px;
