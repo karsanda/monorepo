@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import FirebaseAdapter from 'firebase-adapter'
+  import { ref, onBeforeMount } from 'vue'
   import Information from './information.vue'
   import { itemURI } from '../utils/api-list'
+  import getData from '../utils/get-data'
 
   interface StoryProps {
     storyId: number 
@@ -13,14 +13,10 @@
   const { storyId } = defineProps<StoryProps>()
   const story = ref({} as StoryData)
 
-  const firebaseAdapter = new FirebaseAdapter({
-    onSuccess: (snapshot) => {
-      const data = snapshot.val()
-      story.value = data
-    }
+  onBeforeMount(async () => {
+    const { data } = await getData<StoryData>(itemURI(storyId.toString()))
+    if (data?.value) story.value = data.value
   })
-
-  firebaseAdapter.fetchData(itemURI(storyId.toString()))
 </script>
 
 <template>

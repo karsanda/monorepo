@@ -1,5 +1,12 @@
 import { mount } from '@vue/test-utils'
 import Information from './information.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import { routes } from '../routes'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: routes,
+})
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -14,6 +21,9 @@ afterEach(() => {
 
 test('should render created time only if story type is job', () => {
   const wrapper = mount(Information, {
+    global: {
+      plugins: [router]
+    },
     props: {
       story: {
         time: 1701489130,
@@ -27,6 +37,9 @@ test('should render created time only if story type is job', () => {
 
 test('should render story point, user, created time, and # of comment if story.descendants exists', () => {
   const wrapper = mount(Information, {
+    global: {
+      plugins: [router]
+    },
     props: {
       story: {
         by: 'dummy user',
@@ -43,6 +56,9 @@ test('should render story point, user, created time, and # of comment if story.d
 
 test('should render story point, user, create time if story.descendants exists', () => {
   const wrapper = mount(Information, {
+    global: {
+      plugins: [router]
+    },
     props: {
       story: {
         by: 'dummy user',
@@ -55,3 +71,4 @@ test('should render story point, user, create time if story.descendants exists',
 
   expect(wrapper.text()).toContain('320 points by dummy user about 5 hours ago')
 })
+

@@ -33,19 +33,19 @@ export const Container = styled.li`
   }
 `
 
+const StoryRenderer = ({ id }: { id: string }) => {
+  const { data } = useFetch<StoryData>(itemURI(id))
+  return data
+    ? <Container><Story data={data} showText={false} /></Container>
+    : <ListItemShimmer />
+}
+
 export default function Stories({ type }: StoriesProps) {
   const [ params ] = useSearchParams()
   const response = useFetch<string[]>(typeURI(type))
 
   const page = getPage(params)
   const data = response.data || []
-
-  const StoryRenderer = ({ id }: { id: string }) => {
-    const { data } = useFetch<StoryData>(itemURI(id))
-    return data
-      ? <Container><Story data={data} showText={false} /></Container>
-      : <ListItemShimmer />
-  }
 
   return (
     <Main aria-label={type}>
