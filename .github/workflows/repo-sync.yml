@@ -13,7 +13,7 @@ jobs:
     - name: repo-sync
       uses: repo-sync/github-sync@v2
       with:
-        source_repo: "https://${{ secrets.PAT }}@github.com/karsanda/monorepo.git"
+        source_repo: "https://github.com/karsanda/monorepo.git"
         source_branch: "main"
-        destination_branch: "main"
+        destination_branch: "master"
         github_token: ${{ secrets.PAT }}
