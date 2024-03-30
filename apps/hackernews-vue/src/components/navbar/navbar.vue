@@ -46,7 +46,6 @@
     font-weight: 600;
   }
 
-
   @media only screen and (max-width: 400px) {
     .title {
       font-size: 14px;

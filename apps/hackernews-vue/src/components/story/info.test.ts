@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
-import Information from './information.vue'
+import Info from './info.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from '../routes'
+import { routes } from '../../main'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -20,7 +20,7 @@ afterEach(() => {
 })
 
 test('should render created time only if story type is job', () => {
-  const wrapper = mount(Information, {
+  const wrapper = mount(Info, {
     global: {
       plugins: [router]
     },
@@ -28,6 +28,10 @@ test('should render created time only if story type is job', () => {
       story: {
         time: 1701489130,
         type: 'job',
+        by: '',
+        id: '',
+        score: 0,
+        title: ''
       }
     }
   })
@@ -36,7 +40,7 @@ test('should render created time only if story type is job', () => {
 })
 
 test('should render story point, user, created time, and # of comment if story.descendants exists', () => {
-  const wrapper = mount(Information, {
+  const wrapper = mount(Info, {
     global: {
       plugins: [router]
     },
@@ -47,6 +51,8 @@ test('should render story point, user, created time, and # of comment if story.d
         score: 320,
         time: 1701489130,
         type: 'story',
+        id: '',
+        title: ''
       }
     }
   })
@@ -55,7 +61,7 @@ test('should render story point, user, created time, and # of comment if story.d
 })
 
 test('should render story point, user, create time if story.descendants exists', () => {
-  const wrapper = mount(Information, {
+  const wrapper = mount(Info, {
     global: {
       plugins: [router]
     },
@@ -65,6 +71,8 @@ test('should render story point, user, create time if story.descendants exists',
         score: 320,
         time: 1701489130,
         type: 'story',
+        id: '',
+        title: ''
       }
     }
   })
