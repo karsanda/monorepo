@@ -52,6 +52,15 @@ nav a:last-child {
   background-color: var(--light-bg);
 }
 
+.main {
+  padding: 10px 5px 10px 0;
+}
+
+.list {
+  padding-left: 28px;
+  margin: 0;
+}
+
 @media only screen and (max-width: 768px) {
   body {
     margin: 0;
@@ -59,5 +68,11 @@ nav a:last-child {
 
   #app {
     min-width: 100vw;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .container {
+    font-size: 13px;
   }
 }

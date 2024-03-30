@@ -1,30 +1,21 @@
 <script setup lang="ts">
-  import { ref, onBeforeMount } from 'vue'
-  import Information from './information.vue'
-  import { itemURI } from '../utils/api-list'
-  import getData from '../utils/get-data'
+  import Info from './info.vue'
 
-  interface StoryProps {
-    storyId: number 
+  defineProps<{
+    story: StoryData
     showText?: boolean
-    numbering?: boolean
-  }
-
-  const { storyId } = defineProps<StoryProps>()
-  const story = ref({} as StoryData)
-
-  onBeforeMount(async () => {
-    const { data } = await getData<StoryData>(itemURI(storyId.toString()))
-    if (data?.value) story.value = data.value
-  })
+  }>()
 </script>
 
 <template>
   <article class="content">
-    <a class="title-link" :href="story.url ? story.url : `/comments/${story.id}`" target="_blank" rel="noreferrer">
+    <a v-if="story.url" :href="story.url" class="title-link" target="_blank" rel="noreferrer">
       <h2 class="title">{{ story.title }}</h2>
     </a>
-    <Information :story="story" />
+    <router-link v-else :to="`/comments/${story.id}`" class="title-link" target="_blank" rel="noreferrer">
+      <h2 class="title">{{ story.title }}</h2>
+    </router-link>
+    <Info :story="story" />
   </article>
   <div class="text" v-if="showText && story.text" v-html="story.text" />
 </template>

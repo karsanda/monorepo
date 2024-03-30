@@ -84,7 +84,11 @@ function Submission({ id, filter }: SubmissionProps) {
 
   switch(data.type) {
     case 'story':
-      return filter !== 'COMMENTS' ? <Story data={data} showText={false} /> : null
+      return filter !== 'COMMENTS' ? (
+        <li>
+          <Story data={data} showText={false} />
+        </li>
+      ) : null
     case 'comment':
       return filter !== 'STORIES' ? (
         <CommentItem>

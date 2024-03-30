@@ -32,3 +32,5 @@ interface UserData {
   about?: string
   submitted?: string[]
 }
+
+type SubmissionFilter = 'STORIES' | 'COMMENTS'

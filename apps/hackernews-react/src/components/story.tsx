@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 interface StoryProps {
   data: StoryData
   showText?: boolean
-  numbering?: boolean
 }
 
 const Title = styled.h2`
