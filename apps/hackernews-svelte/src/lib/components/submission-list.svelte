@@ -7,27 +7,28 @@
   export let submissions: number[]
 
   let activeTab = 'STORIES'
-  // let items = [] as Array<CommentData|StoryData>
+  let stories = [] as Array<StoryData>
+  let comments = [] as Array<CommentData>
 
   function switchTab(tab: 'STORIES' | 'COMMENTS') {
     activeTab = tab
   }
 
-  // const firebaseAdapter = new FirebaseAdapter({
-  //   onSuccess: (snapshot) => {
-  //     const data = snapshot.val();
-  //     return data
-  //   },
-  //   onError: (error) => {
-  //     console.error(error)
-  //   }
-  // })
+  const firebaseAdapter = new FirebaseAdapter({
+    onSuccess: (snapshot) => { return snapshot.val() },
+    onError: (error) => { console.error(error) }
+  })
+
+  async function fetchItems(itemId: number) {
+    return await firebaseAdapter.fetchData(`/item/${itemId}`) as CommentData|StoryData
+  }
 
   onMount(async () => {
-    // const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${submissions}.json`)
-    // const data = await res.json()
+    const data = await Promise.all(submissions.map(fetchItems))
+    const filteredData = data.filter(item => !item.dead && !item.deleted)
 
-    // items.push(data)
+    stories = filteredData.filter(item => item.type === 'story') as Array<StoryData>
+    comments = filteredData.filter(item => item.type === 'comment') as Array<CommentData>
 	})
 </script>
 
@@ -39,20 +40,29 @@
     Comments
   </button>
 
-  {submissions}
-  <!-- <ol class='list'>
-    {#each items as item}
-      {#if item.type === 'story'}
-        <li>
-          <Story data={item} />
-        </li>
-      {:else if item.type === 'comment'}
-        <li class='comment-item'>
-          <Comment data={item} disableChildren={activeTab === 'COMMENTS'} showParent={true} />
-        </li>
-      {/if}
-    {/each}
-  </ol> -->
+  {#await stories then stories}
+    {#if activeTab === 'STORIES'}
+      <ol class='list'>
+        {#each stories as story}
+          <li>
+            <Story data={story} />
+          </li>
+        {/each}
+      </ol>
+    {/if}
+  {/await}
+
+  {#await comments then comments}
+    {#if activeTab === 'COMMENTS'}
+      <ol class='list'>
+        {#each comments as comment}
+          <li class='comment-item'>
+            <Comment data={comment} disableChildren={activeTab === 'COMMENTS'} showParent={true} />
+          </li>
+        {/each}
+      </ol>
+    {/if}
+  {/await}
 </div>
 
 <style>

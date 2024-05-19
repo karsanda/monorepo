@@ -3,6 +3,7 @@ module.exports = {
 	root: true,
 	extends: [
 		'eslint:recommended',
+		'eslint-config-custom/index.js',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:svelte/recommended'
 	],

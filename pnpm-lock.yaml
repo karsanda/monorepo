@@ -148,9 +148,15 @@ importers:
       eslint:
         specifier: ^8.56.0
         version: 8.57.0
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
       eslint-plugin-svelte:
         specifier: ^2.35.1
         version: 2.39.0(eslint@8.57.0)(svelte@4.2.16)(ts-node@10.9.2(@types/node@20.12.11)(typescript@5.4.5))
+      firebase-adapter:
+        specifier: workspace:*
+        version: link:../../packages/firebase-adapter
       svelte:
         specifier: ^4.2.7
         version: 4.2.16
