@@ -1,0 +1,78 @@
+:root {
+  --primary-color: #ff3e00;
+  --secondary-color: #132b32;
+  --gray: #6d6d6d;
+  --dark-bg: #282c34;
+  --light-bg: #ffb29a;
+  --white: #ffffff;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 1.15;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+nav a + a {
+  border-right: 1px solid var(--white);
+}
+
+nav a:last-child {
+  border-right: none;
+}
+
+body > div {
+  width: 85%;
+  margin: 0 auto;
+  background-color: var(--light-bg);
+}
+
+.main {
+  padding: 10px 5px 10px 0;
+  min-height: calc(100vh - 97px);
+}
+
+@media only screen and (max-width: 768px) {
+  body {
+    margin: 0;
+  }
+
+  body > div {
+    min-width: 100vw;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .main {
+    min-height: calc(100vh - 81px);
+  }
+}
