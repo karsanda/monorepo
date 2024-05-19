@@ -1,53 +1,79 @@
 <script>
-	import Header from './Header.svelte';
 	import './styles.css';
 </script>
 
-<div class="app">
-	<Header />
+<div class='app'>
+	<header class='header'>
+		<nav class='navbar'>
+			<a class='navlink' href='/'><h1 class='title'>Hacker News - Svelte</h1></a>
+			<a class='navlink' href='/newstories'>New</a>
+			<a class='navlink' href='/beststories'>Best</a>
+			<a class='navlink' href='/askstories'>Ask</a>
+			<a class='navlink' href='/showstories'>Show</a>
+			<a class='navlink' href='/jobstories'>Jobs</a>
+		</nav>
+	</header>
 
-	<main>
-		<slot />
-	</main>
+	<slot />
 
-	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+	<footer class='footer'>
+		©{new Date().getFullYear()} Karsanda
+		<a href='https://github.com/karsanda/monorepo/tree/main/apps/hackernews-svelte'>
+			Hacker News - Svelte
+		</a>
 	</footer>
 </div>
 
 <style>
-	.app {
+	.navbar {
 		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		align-items: center;
-		padding: 12px;
+		line-height: 1em;
 	}
 
-	footer a {
-		font-weight: bold;
+	.navlink {
+		color: var(--white);
+		padding: 0 8px;
+		font-weight: 400;
+		height: 14px;
 	}
 
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
+	.title {
+		color: var(--primary-color);
+		font-size: 14px;
+		margin-right: 10px;
+		font-weight: 600;
+	}
+
+	.header {
+		padding: 10px;
+		background-color: var(--dark-bg);
+	}
+
+	.footer {
+		border-top: 2px solid var(--primary-color);
+		margin: 0 5px;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 11px;
+	}
+
+	@media only screen and (max-width: 400px) {
+		.title {
+			font-size: 14px;
+		}
+
+		.navlink {
+			font-size: 12px;
+			padding: 0 7px;
+			height: 12px;
+		}
+	}
+
+	@media only screen and (max-width: 360px) {
+		.title {
+			font-size: 13px;
+			margin-right: 7px;
 		}
 	}
 </style>

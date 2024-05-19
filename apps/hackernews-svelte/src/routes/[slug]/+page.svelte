@@ -6,7 +6,7 @@
 	export let data: PageData
 </script>
 
-<main class='main' aria-label='topstories'>
+<main class='main' aria-label={data.slug}>
   <ol start={(data.pagination.page * 30) - 29}>
     {#await data.stories then stories}
       {#each stories as story}
@@ -17,7 +17,7 @@
     {/await}
   </ol>
 
-  <SeeMore slug='topstories' pagination={data.pagination} />
+  <SeeMore slug={data.slug} pagination={data.pagination} />
 </main>
 
 <style>
