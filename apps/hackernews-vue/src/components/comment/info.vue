@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
+  import type { CommentData } from '@repo/hn-core'
   import Parent from './parent.vue'
 
   defineProps<{
-    comment: CommentData 
+    comment: CommentData
     showParent: boolean
   }>()
 </script>

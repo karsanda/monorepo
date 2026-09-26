@@ -1,38 +1,34 @@
 <script setup lang="ts">
-  import { ref, onBeforeMount } from 'vue'
-  import Story from './story.vue'
-  import { itemURI } from '../../utils/api-list'
-  import getData from '../../utils/get-data'
+import { ref, onBeforeMount } from 'vue'
+import { itemURI, type StoryData } from '@repo/hn-core'
+import Story from './story.vue'
+import getData from '../../utils/get-data'
 
-  interface Props {
-    storyId: number
-    showText?: boolean
-    renderAsList?: boolean
-  }
+const {
+  storyId,
+  showText = false,
+  renderAsList = false,
+} = defineProps<{
+  storyId: number
+  showText?: boolean
+  renderAsList?: boolean
+}>()
 
-  const props = withDefaults(defineProps<Props>(), {
-    showText: false,
-    renderAsList: false
-  })
+const story = ref<StoryData>()
 
-  const story = ref({} as StoryData)
-  const shouldBeRendered = ref(false)
-
-  onBeforeMount(async () => {
-    const { data } = await getData<StoryData>(itemURI(props.storyId.toString()))
-
-    if (data?.value) {
-      story.value = data.value
-      shouldBeRendered.value = story.value.type === 'story'
-    }
-  })
+onBeforeMount(async () => {
+  const data = await getData<StoryData>(itemURI(storyId))
+  if (data?.type === 'story') story.value = data
+})
 </script>
 
 <template>
-  <li class="list-item" v-if="renderAsList && shouldBeRendered">
-    <Story :story="story" :showText="showText" />
-  </li>
-  <Story v-else-if="!renderAsList && shouldBeRendered" :story="story" :showText="showText" />
+  <template v-if="story">
+    <li v-if="renderAsList" class="list-item">
+      <Story :story="story" :show-text="showText" />
+    </li>
+    <Story v-else :story="story" :show-text="showText" />
+  </template>
 </template>
 
 <style scoped>

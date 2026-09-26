@@ -1,25 +1,27 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
-  import { useRoute } from 'vue-router'
-  import StoryRenderer from './components/story/story-renderer.vue'
-  import CommentRenderer from './components/comment/comment-renderer.vue'
-  import { itemURI } from './utils/api-list'
-  import getData from './utils/get-data'
+import { ref, watch } from 'vue'
+import { itemURI, type CommentData, type StoryData } from '@repo/hn-core'
+import StoryRenderer from './components/story/story-renderer.vue'
+import CommentRenderer from './components/comment/comment-renderer.vue'
+import getData from './utils/get-data'
 
-  const route = useRoute()
-  const comments = ref({} as StoryData | CommentData)
+const { storyId } = defineProps<{ storyId: string }>()
+const item = ref<StoryData | CommentData>()
 
-  watch(() => route.params.storyId, async () => {
-    const { data } = await getData<StoryData | CommentData>(itemURI(route.params.storyId.toString()))
-    if (data?.value) comments.value = data.value
-  }, { immediate: true })
+watch(
+  () => storyId,
+  async (id) => {
+    item.value = await getData<StoryData | CommentData>(itemURI(id))
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <main class='main' aria-label="comments">
-    <StoryRenderer :storyId="parseInt(route.params.storyId.toString())" :showText=true v-if="comments.type === 'story'" />
+    <StoryRenderer v-if="item?.type === 'story'" :story-id="item.id" :show-text="true" />
     <section class="comment-list">
-      <CommentRenderer :commentId="comment" v-for="comment in comments.kids" :key="comment" />
+      <CommentRenderer v-for="comment in item?.kids" :key="comment" :comment-id="comment" />
     </section>
   </main>
 </template>

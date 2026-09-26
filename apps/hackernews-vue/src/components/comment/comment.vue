@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import type { CommentData } from '@repo/hn-core'
   import CommentInfo from './info.vue'
-  import CommentRenderer from './comment-renderer.vue';
+  import CommentRenderer from './comment-renderer.vue'
 
   defineProps<{
-    comment: CommentData 
+    comment: CommentData
     disableChildren: boolean
     showParent: boolean
   }>()
@@ -17,7 +18,7 @@
 </script>
 
 <template>
-  <article class="container" :data-disable-children=disableChildren>
+  <article class="container" :data-disable-children="disableChildren">
     <div class="header">
       <button class="collapsible-button" :aria-label="`collapsible-button-${comment.id}`" @click="collapse()" v-if="comment.kids && !disableChildren">
         <span v-if="isCollapse">▼</span>
@@ -56,11 +57,11 @@
     font-size: 12px;
     word-break: break-word;
 
-    & > ::deep p {
+    & > :deep(p) {
       margin: 10px 0;
     }
 
-    & ::deep code, & ::deep pre {
+    & :deep(code), & :deep(pre) {
       white-space: pre-wrap;
     }
   }

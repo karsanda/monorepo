@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
+  import type { StoryData } from '@repo/hn-core'
 
   const { story } = defineProps<{ story: StoryData }>()
 

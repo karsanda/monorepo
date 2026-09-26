@@ -1,34 +1,11 @@
-import { reactive, toRefs } from 'vue'
-import FirebaseAdapter from 'firebase-adapter'
+import FirebaseAdapter from '@repo/firebase-adapter'
 
-interface State<T> {
-  state: 'idle' | 'loading' | 'fetched' | 'error';
-  data?: T;
-  error?: Error;
-}
-
-async function useFetch<T = unknown>(url: string) {
-  const payload = reactive<State<T>>({
-    state: 'idle',
-    data: undefined,
-    error: undefined,
-  })
-
+/** Fetches a Hacker News path via Firebase; resolves `undefined` when missing or on error. */
+export default async function getData<T>(url: string): Promise<T | undefined> {
   const firebaseAdapter = new FirebaseAdapter({
-    onSuccess: (snapshot) => {
-      const data = snapshot.val();
-      payload.state = 'fetched'
-      payload.data = data
-    },
-    onError: (error) => {
-      payload.state = 'error'
-      payload.error = error as Error
-    },
+    onSuccess: (snapshot) => snapshot.val() as T,
+    onError: (error) => console.error(error),
   })
 
-  await firebaseAdapter.fetchData(url);
-
-  return { ...toRefs(payload) }
+  return (await firebaseAdapter.fetchData(url)) as T | undefined
 }
-
-export default useFetch

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { StoryData } from '@repo/hn-core'
   import Info from './info.vue'
 
   defineProps<{
@@ -45,11 +46,11 @@
     color: var(--gray);
   }
 
-  .text p {
+  .text :deep(p) {
     margin: 10px 0;
   }
 
-  .text code, .text pre {
+  .text :deep(code), .text :deep(pre) {
     white-space: pre-wrap;
   }
 

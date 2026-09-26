@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import Info from './info.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { routes } from '../../main'
+import { routes } from '../../router'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -29,7 +29,7 @@ test('should render created time only if story type is job', () => {
         time: 1701489130,
         type: 'job',
         by: '',
-        id: '',
+        id: 1,
         score: 0,
         title: ''
       }
@@ -51,7 +51,7 @@ test('should render story point, user, created time, and # of comment if story.d
         score: 320,
         time: 1701489130,
         type: 'story',
-        id: '',
+        id: 1,
         title: ''
       }
     }
@@ -71,7 +71,7 @@ test('should render story point, user, create time if story.descendants exists',
         score: 320,
         time: 1701489130,
         type: 'story',
-        id: '',
+        id: 1,
         title: ''
       }
     }
