@@ -16,6 +16,11 @@ export const APPS = {
     port: 4173,
     command: `${bin('vite')} build && exec ${bin('vite')} preview --port 4173 --strictPort`,
   },
+  next: {
+    dir: 'apps/hackernews-next',
+    port: 3000,
+    command: `${bin('next')} build && exec ${bin('next')} start --port 3000`,
+  },
 } satisfies Record<string, AppTarget>
 
 export type AppName = keyof typeof APPS
