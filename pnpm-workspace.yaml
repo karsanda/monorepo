@@ -2,6 +2,10 @@ packages:
   - apps/*
   - packages/*
 
+# Only install versions that have been public for at least a day (pnpm's default,
+# made explicit so it's enforced strictly everywhere — Vercel already does).
+minimumReleaseAge: 1440
+
 allowBuilds:
   cypress: true
   esbuild: true
