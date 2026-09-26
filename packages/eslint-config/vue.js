@@ -17,5 +17,7 @@ export default defineConfig([
   {
     languageOptions: { globals: globals.browser },
   },
+  // Service workers served from public/, e.g. sw.js.
+  { files: ['public/**/*.js'], languageOptions: { globals: globals.serviceworker } },
   prettier,
 ])

@@ -1,19 +1,18 @@
 # Hacker News, three ways
 
-The same [Hacker News](https://news.ycombinator.com/) reader built three times, in **Next.js**, **Vue** and **SvelteKit**. The apps live side by side in one pnpm + Turborepo monorepo, so you can compare how each framework handles the same features. All three read from the public [Hacker News API](https://github.com/HackerNews/API) and share their types and helpers through local packages.
+The same [Hacker News](https://news.ycombinator.com/) reader built three times, in **Next.js**, **Nuxt** and **SvelteKit**. The apps live side by side in one pnpm + Turborepo monorepo, so you can compare how each framework handles the same features. All three read from the public [Hacker News API](https://github.com/HackerNews/API) and share their types and helpers through local packages.
 
 ## What's in this repo
 
 ```
 apps/
   hackernews-next/     Next.js 16 server-rendered app (React 19, App Router)
-  hackernews-vue/      Vue 3.5 client-side app
+  hackernews-nuxt/     Nuxt 4 server-rendered app (Vue 3.5)
   hackernews-svelte/   SvelteKit 2 server-rendered app
 packages/
   hn-core/             shared HN types, data client, formatting and pagination helpers
   hn-styles/           shared CSS: light/dark theme tokens and component classes
   e2e/                 one Playwright suite that every app must pass
-  firebase-adapter/    wrapper around the HN Firebase database
   eslint-config/       shared ESLint configs
   typescript-config/   shared tsconfig bases
 ```
@@ -39,12 +38,12 @@ Every app implements the same pages at the same URLs:
 - **Tests:** Vitest + Testing Library unit tests for the data loaders and client components, plus the shared Playwright suite.
 - **Dev server:** http://localhost:3000
 
-### [Vue](apps/hackernews-vue) (`apps/hackernews-vue`)
+### [Nuxt](apps/hackernews-nuxt) (`apps/hackernews-nuxt`)
 
-- **Stack:** Vue 3.5 single-file components with `<script setup>`, vue-router 5, Vite 8.
-- **Data:** fetched in the browser through `@repo/firebase-adapter`; route params arrive as component props.
-- **UI details:** "Prev Page" / "Next Page" pagination.
-- **Tests:** Vitest + Vue Test Utils unit tests for the story info line.
+- **Stack:** Nuxt 4 (Vue 3.5 `<script setup>` single-file components, Nitro server), deployed to Vercel.
+- **Data:** pages load through the shared `@repo/hn-core` client with `useAsyncData`. The first visit is fully server-rendered; on client-side navigation, `useLazyAsyncData` switches the page at once and shows a skeleton while stories, comment threads and search results load. Missing items and users throw `createError({ statusCode: 404 })`, and unknown story lists fail the route's `validate`.
+- **Features:** the same as the SvelteKit app: search, a light/dark theme toggle kept in a cookie through `useCookie` (no flash on load), hidden and read stories, story domains, `useHead` titles, an `error.vue` 404/error page, and offline support through a web app manifest and a small service worker.
+- **Tests:** Vitest with `@nuxt/test-utils` (`mountSuspended`) for the components and data loaders, plus the shared Playwright suite.
 - **Dev server:** http://localhost:3001
 
 ### [SvelteKit](apps/hackernews-svelte) (`apps/hackernews-svelte`)
@@ -62,7 +61,6 @@ Every app implements the same pages at the same URLs:
 | [`@repo/hn-core`](packages/hn-core)                     | HN types, a fetch-based client for the HN REST API and Algolia (caching, concurrency limit, one-request comment threads, search), date/domain formatting, nav tabs and pagination |
 | [`@repo/hn-styles`](packages/hn-styles)                 | Shared CSS: light/dark theme tokens derived from one `--brand` color, base styles and component classes                                                                           |
 | [`@repo/e2e`](packages/e2e)                             | The shared Playwright suite; `APP=<name>` picks the app to build, serve and test                                                                                                  |
-| [`@repo/firebase-adapter`](packages/firebase-adapter)   | Small wrapper around the HN Firebase database, used by the Vue app                                                                                                                |
 | [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `next`, `vue`, `svelte`                                                                                                                              |
 | [`@repo/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                                                                                                                                           |
 
@@ -81,29 +79,29 @@ pnpm dev          # all three apps
 pnpm build
 pnpm test         # Vitest unit tests
 pnpm lint         # ESLint
-pnpm typecheck    # tsc / vue-tsc / svelte-check
+pnpm typecheck    # tsc / nuxt typecheck / svelte-check
 pnpm format       # Prettier (write)
 pnpm format:check # Prettier (check only, as in CI)
 ```
 
-Scope to one app with a filter, e.g. `pnpm --filter hackernews-vue dev`.
+Scope to one app with a filter, e.g. `pnpm --filter hackernews-nuxt dev`.
 
 ## Testing
 
-Unit tests use Vitest everywhere and never touch the network. The one live test in `packages/firebase-adapter` is opt-in: `HN_LIVE=1 pnpm --filter @repo/firebase-adapter test`.
+Unit tests use Vitest everywhere and never touch the network.
 
 End-to-end tests run against a production build and hit the live HN API.
 
-[`packages/e2e`](packages/e2e) holds the shared suite that every app has to pass: same routes, same accessible names, same behavior (search, dark mode, hidden stories, 404s, per-page titles and more). The SvelteKit and Next.js apps pass it today; the Vue app joins when it moves to Nuxt.
+[`packages/e2e`](packages/e2e) holds the shared suite that every app has to pass: same routes, same accessible names, same behavior (search, dark mode, hidden stories, 404s, per-page titles and more). All three apps pass it.
 
 ```sh
 pnpm --filter @repo/e2e exec playwright install chromium   # once
-APP=svelte pnpm --filter @repo/e2e e2e   # or APP=next
+APP=svelte pnpm --filter @repo/e2e e2e   # or APP=next, APP=nuxt
 ```
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (currently `svelte` and `next`) and uploads traces when a test fails.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (`svelte`, `next` and `nuxt`) and uploads traces when a test fails.
 
 To reproduce a CI run locally:
 
@@ -112,6 +110,8 @@ pnpm install --frozen-lockfile
 pnpm format:check
 TZ=UTC pnpm turbo run lint typecheck test build --force
 ```
+
+`nuxt build` clears and regenerates `.nuxt`, which the Nuxt app's tests and typecheck read, so [`turbo.json`](turbo.json) runs that app's build after its `test` and `typecheck` tasks instead of alongside them.
 
 GitHub runners use UTC, so any test that involves dates should freeze time to an absolute instant (e.g. `new Date('2023-12-02T09:00:00Z')`), never a local-time constructor.
 
@@ -125,7 +125,7 @@ GitHub runners use UTC, so any test that involves dates should freeze time to an
 
 ## Deployment
 
-The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Vue app builds to a static `dist/` folder.
+The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Nuxt app deploys to Vercel through Nitro's `vercel` preset, which Nitro picks automatically when it builds on Vercel (project root `apps/hackernews-nuxt`, Nuxt.js framework preset).
 
 ## License
 

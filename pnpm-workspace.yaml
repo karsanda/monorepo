@@ -8,6 +8,3 @@ minimumReleaseAge: 1440
 
 allowBuilds:
   esbuild: true
-  # Not needed: firebase is configured explicitly, and protobufjs only runs a version check.
-  '@firebase/util': false
-  protobufjs: false

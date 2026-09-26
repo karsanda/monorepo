@@ -35,8 +35,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# playwright / cypress
+# playwright
 **/test-results
 **/playwright-report
-**/cypress/videos
-**/cypress/screenshots
