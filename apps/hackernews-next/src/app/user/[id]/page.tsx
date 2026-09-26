@@ -6,7 +6,7 @@ import { loadUser } from '@/lib/data'
 
 export async function generateMetadata({ params }: PageProps<'/user/[id]'>): Promise<Metadata> {
   const data = await loadUser((await params).id)
-  return data ? { title: `Profile: ${data.user.id}` } : {}
+  return data ? { title: `Profile: ${data.user.id}` } : { title: 'Not found' }
 }
 
 export default async function UserPage({ params }: PageProps<'/user/[id]'>) {

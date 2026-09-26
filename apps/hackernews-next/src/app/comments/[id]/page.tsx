@@ -12,7 +12,7 @@ import { loadItem, loadThread } from '@/lib/data'
 
 export async function generateMetadata({ params }: PageProps<'/comments/[id]'>): Promise<Metadata> {
   const item = await loadItem((await params).id)
-  if (!item) return {}
+  if (!item) return { title: 'Not found' }
   return { title: item.type === 'comment' ? `Comment by ${item.by}` : item.title }
 }
 

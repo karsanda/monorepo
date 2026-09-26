@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { APP_NAME } from '@/lib/meta'
 
-export const metadata: Metadata = { title: 'Not found' }
+// Beside the root layout, so its title template doesn't apply here.
+export const metadata: Metadata = { title: { absolute: `Not found | ${APP_NAME}` } }
 
 export default function NotFound() {
   return (
