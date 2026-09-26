@@ -30,16 +30,47 @@ pnpm build
 pnpm test         # Vitest unit tests
 pnpm lint         # ESLint
 pnpm typecheck    # tsc / vue-tsc / svelte-check
-pnpm format       # Prettier
+pnpm format       # Prettier (write)
+pnpm format:check # Prettier (check only, as in CI)
 ```
 
 Scope to one app with a filter, e.g. `pnpm --filter hackernews-vue dev`.
 
-End-to-end tests (hit the live HN API):
+## Testing
+
+Unit tests use Vitest everywhere and never touch the network. The one live test in `packages/firebase-adapter` is opt-in: `HN_LIVE=1 pnpm --filter @repo/firebase-adapter test`.
+
+End-to-end tests run against a production build (`vite preview`) and hit the live HN API:
 
 ```sh
-pnpm --filter hackernews-react e2e              # Cypress against `vite preview`
-pnpm --filter hackernews-svelte test:integration  # Playwright against `vite preview`
+pnpm --filter hackernews-react e2e                               # Cypress, port 3000
+pnpm --filter hackernews-svelte exec playwright install chromium # once, to get the browser
+pnpm --filter hackernews-svelte test:integration                 # Playwright, port 4173
 ```
 
-`packages/firebase-adapter` has one opt-in live test: `HN_LIVE=1 pnpm --filter @repo/firebase-adapter test`.
+The Vue app has no e2e suite.
+
+## CI
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. E2E tests don't run in CI.
+
+To reproduce a CI run locally:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm format:check
+TZ=UTC pnpm turbo run lint typecheck test build --force
+```
+
+GitHub runners use UTC, so any test that involves dates should freeze time to an absolute instant (e.g. `new Date('2023-12-02T09:00:00Z')`), never a local-time constructor.
+
+## Dependency policy
+
+[`pnpm-workspace.yaml`](pnpm-workspace.yaml) sets two supply-chain rules that apply locally, in CI and on Vercel:
+
+- **`minimumReleaseAge: 1440`.** pnpm won't install a package version that has been public for less than 24 hours. If `pnpm install` fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, either wait or use the previous release.
+- **`allowBuilds`.** Dependency install scripts are blocked unless listed there. Only `cypress` and `esbuild` are allowed. If a new dependency needs its install script, add it with `pnpm approve-builds`.
+
+## Deployment
+
+The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`. The React and Vue apps build to static `dist/` folders.
