@@ -1,81 +1,76 @@
-# Turborepo starter
+# Hacker News, three ways
 
-This is an official starter Turborepo.
+The same [Hacker News](https://news.ycombinator.com/) reader built in **React**, **Vue** and **SvelteKit**, sharing data-access code in a pnpm + Turborepo monorepo. Each app has top/new/best/ask/show/job story lists with pagination, threaded comments with collapsing, and user pages with a submissions/comments filter.
 
-## Using this example
+## Apps and packages
 
-Run the following command:
+| Path                                                       | What                                                               | Dev port |
+| ---------------------------------------------------------- | ------------------------------------------------------------------ | -------- |
+| [`apps/hackernews-react`](apps/hackernews-react)           | React 19, React Router 8, Emotion, client-side via Firebase SDK    | 3000     |
+| [`apps/hackernews-vue`](apps/hackernews-vue)               | Vue 3.5 (`<script setup>`), vue-router 5, client-side via Firebase | 3001     |
+| [`apps/hackernews-svelte`](apps/hackernews-svelte)         | Svelte 5 (runes) + SvelteKit 2, server loads over REST, Vercel     | 5173     |
+| [`packages/hn-core`](packages/hn-core)                     | Shared types (`StoryData`, …), pagination and API path helpers     |          |
+| [`packages/firebase-adapter`](packages/firebase-adapter)   | Thin wrapper around the HN Firebase Realtime Database              |          |
+| [`packages/eslint-config`](packages/eslint-config)         | Shared ESLint flat configs (base / react / vue / svelte)           |          |
+| [`packages/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                            |          |
+
+## Requirements
+
+- Node.js ≥ 22.22
+- pnpm 12 (pinned via `packageManager`; `corepack enable` or a pnpm that auto-switches versions)
+
+## Commands
+
+Run from the repo root (Turborepo fans each out to every package):
 
 ```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
+pnpm install
+pnpm dev          # all three apps
 pnpm build
+pnpm test         # Vitest unit tests
+pnpm lint         # ESLint
+pnpm typecheck    # tsc / vue-tsc / svelte-check
+pnpm format       # Prettier (write)
+pnpm format:check # Prettier (check only, as in CI)
 ```
 
-### Develop
+Scope to one app with a filter, e.g. `pnpm --filter hackernews-vue dev`.
 
-To develop all apps and packages, run the following command:
+## Testing
 
-```
-cd my-turborepo
-pnpm dev
-```
+Unit tests use Vitest everywhere and never touch the network. The one live test in `packages/firebase-adapter` is opt-in: `HN_LIVE=1 pnpm --filter @repo/firebase-adapter test`.
 
-### Remote Caching
+End-to-end tests run against a production build (`vite preview`) and hit the live HN API:
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```sh
+pnpm --filter hackernews-react e2e                               # Cypress, port 3000
+pnpm --filter hackernews-svelte exec playwright install chromium # once, to get the browser
+pnpm --filter hackernews-svelte test:integration                 # Playwright, port 4173
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+The Vue app has no e2e suite.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## CI
 
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. E2E tests don't run in CI.
+
+To reproduce a CI run locally:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm format:check
+TZ=UTC pnpm turbo run lint typecheck test build --force
 ```
-npx turbo link
-```
 
-## Useful Links
+GitHub runners use UTC, so any test that involves dates should freeze time to an absolute instant (e.g. `new Date('2023-12-02T09:00:00Z')`), never a local-time constructor.
 
-Learn more about the power of Turborepo:
+## Dependency policy
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+[`pnpm-workspace.yaml`](pnpm-workspace.yaml) sets two supply-chain rules that apply locally, in CI and on Vercel:
+
+- **`minimumReleaseAge: 1440`.** pnpm won't install a package version that has been public for less than 24 hours. If `pnpm install` fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, either wait or use the previous release.
+- **`allowBuilds`.** Dependency install scripts are blocked unless listed there. Only `cypress` and `esbuild` are allowed. If a new dependency needs its install script, add it with `pnpm approve-builds`.
+
+## Deployment
+
+The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`. The React and Vue apps build to static `dist/` folders.

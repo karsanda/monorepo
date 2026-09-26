@@ -1,16 +1,15 @@
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vitest/config'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  resolve: {
-    alias: {
-      vue: 'vue/dist/vue.esm-bundler.js',
-    }
-  },
   server: {
     host: true,
-    port: 3001
-  }
+    port: 3001,
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    include: ['src/**/*.test.ts'],
+  },
 })

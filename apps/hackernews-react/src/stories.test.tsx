@@ -1,18 +1,19 @@
+import type { Mock } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter } from 'react-router'
 import useFetch from './hooks/useFetch'
 import { mockStories } from './mocks/stories'
 import Stories from './stories'
 
-jest.mock('./hooks/useFetch.tsx', () => jest.fn())
-const mockedUseFetch = useFetch as jest.Mock
+vi.mock('./hooks/useFetch.tsx', () => ({ default: vi.fn() }))
+const mockedUseFetch = useFetch as Mock
 
 test('should be able to render successfully', () => {
   mockedUseFetch.mockImplementation((url: string) => {
     if (url === '/topstories') {
       return {
         state: 'fetched',
-        data: mockStories(5)
+        data: mockStories(5),
       }
     }
 
@@ -21,12 +22,12 @@ test('should be able to render successfully', () => {
 
   const { baseElement } = render(
     <BrowserRouter>
-      <Stories type='topstories' />
-    </BrowserRouter>
+      <Stories type="topstories" />
+    </BrowserRouter>,
   )
 
   expect(baseElement).toBeTruthy()
-  expect(screen.queryByRole('link', { name: 'Next Page'})).not.toBeInTheDocument()
+  expect(screen.queryByRole('link', { name: 'Next Page' })).not.toBeInTheDocument()
 })
 
 test('should be able to render next page link if data is > 30', () => {
@@ -34,7 +35,7 @@ test('should be able to render next page link if data is > 30', () => {
     if (url === '/topstories') {
       return {
         state: 'fetched',
-        data: mockStories(35)
+        data: mockStories(35),
       }
     }
 
@@ -43,12 +44,15 @@ test('should be able to render next page link if data is > 30', () => {
 
   render(
     <BrowserRouter>
-      <Stories type='topstories' />
-    </BrowserRouter>
+      <Stories type="topstories" />
+    </BrowserRouter>,
   )
 
   expect(screen.getAllByRole('listitem').length).toEqual(30)
-  expect(screen.getByRole('link', { name: 'Next Page'})).toHaveAttribute('href', '/topstories?page=2')
+  expect(screen.getByRole('link', { name: 'Next Page' })).toHaveAttribute(
+    'href',
+    '/topstories?page=2',
+  )
 })
 
 test('numbering should start from 31 in page 2', () => {
@@ -56,7 +60,7 @@ test('numbering should start from 31 in page 2', () => {
     if (url === '/topstories') {
       return {
         state: 'fetched',
-        data: mockStories(40)
+        data: mockStories(40),
       }
     }
 
@@ -65,10 +69,10 @@ test('numbering should start from 31 in page 2', () => {
 
   render(
     <MemoryRouter initialEntries={['/?page=2']}>
-      <Stories type='topstories' />
-    </MemoryRouter>
+      <Stories type="topstories" />
+    </MemoryRouter>,
   )
 
   expect(screen.getByRole('list')).toHaveAttribute('start', '31')
-  expect(screen.queryByRole('link', { name: 'Next Page'})).not.toBeInTheDocument()
+  expect(screen.queryByRole('link', { name: 'Next Page' })).not.toBeInTheDocument()
 })

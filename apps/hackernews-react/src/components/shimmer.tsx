@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 
-export const ListItem = styled.li`
+const ListItem = styled.li`
   height: 35px;
   width: calc(100% - 25px);
   color: var(--gray);
@@ -41,27 +41,45 @@ const GradientAnimation = css`
   animation: gradient 1s ease infinite;
 
   @-webkit-keyframes gradient {
-    0%{ background-position: 0% 50% }
-    50%{ background-position: 100% 50% }
-    100%{ background-position: 0% 50% }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @-moz-keyframes gradient {
-    0%{ background-position: 0% 50% }
-    50%{ background-position: 100% 50% }
-    100%{ background-position: 0% 50% }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes gradient {
-    0%{ background-position: 0% 50% }
-    50%{ background-position: 100% 50% }
-    100%{ background-position: 0% 50% }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 `
 
 export function ListItemShimmer() {
   return (
-    <ListItem data-testid='list-item-shimmer'>
+    <ListItem data-testid="list-item-shimmer">
       <Title css={GradientAnimation} />
       <Subtitle css={GradientAnimation} />
     </ListItem>
@@ -70,7 +88,7 @@ export function ListItemShimmer() {
 
 export function ArticleShimmer() {
   return (
-    <Article data-testid='article-shimmer'>
+    <Article data-testid="article-shimmer">
       <Title css={GradientAnimation} />
       <Subtitle css={GradientAnimation} />
     </Article>

@@ -1,28 +1,34 @@
-<script lang='ts'>
+<script lang="ts">
+  import type { StoryData } from '@repo/hn-core'
+  import { resolve } from '$app/paths'
   import { formatDistance } from 'date-fns'
 
-	export let data: StoryData
-	export let showText: boolean = false
+  let { data, showText = false }: { data: StoryData; showText?: boolean } = $props()
 
-  const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
+  const createdTime = $derived(
+    data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true }),
+  )
 </script>
 
 {#if data.type === 'job'}
-  <p class='subtitle'>{createdTime}</p>
+  <p class="subtitle">{createdTime}</p>
 {:else if data.descendants && data.descendants > 0}
-  <p class='subtitle'>
+  <p class="subtitle">
     {data.score} points by
-    <a href={`/user/${data.by}`}><strong>{data.by}</strong></a> |
-    <a href={`/comments/${data.id}`}>{data.descendants} comments</a>
+    <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
+    {createdTime} |
+    <a href={resolve('/comments/[id]', { id: String(data.id) })}>{data.descendants} comments</a>
   </p>
 {:else}
-  <p class='subtitle'>
-    {data.score} points by <a href={`/user/${data.by}`}><strong>{data.by}</strong></a>
+  <p class="subtitle">
+    {data.score} points by
+    <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
+    {createdTime}
   </p>
 {/if}
 
 {#if showText && data.text}
-  <div class='text'>{@html data.text}</div>
+  <div class="text">{@html data.text}</div>
 {/if}
 
 <style>
@@ -43,11 +49,12 @@
     color: var(--gray);
   }
 
-  .text p {
+  .text :global(p) {
     margin: 10px 0;
   }
 
-  .text code, .text pre {
+  .text :global(code),
+  .text :global(pre) {
     white-space: pre-wrap;
   }
 

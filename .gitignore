@@ -8,9 +8,9 @@ node_modules
 # testing
 coverage
 
-# next.js
-.next/
-out/
+# build output
+dist
+.svelte-kit
 build
 
 # misc
@@ -34,3 +34,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# playwright / cypress
+**/test-results
+**/playwright-report
+**/cypress/videos
+**/cypress/screenshots

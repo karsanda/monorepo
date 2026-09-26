@@ -1,19 +1,21 @@
 {
-  "$schema": "https://turbo.build/schema.json",
+  "$schema": "https://turborepo.com/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", ".svelte-kit/**", ".vercel/**"]
+      "outputs": ["dist/**", ".svelte-kit/**", ".vercel/**"]
     },
     "lint": {},
-    "dev": {
+    "typecheck": {},
+    "test": {},
+    "test:watch": {
       "cache": false,
       "persistent": true
     },
-    "test": {},
-    "test:watch": {
-      "cache": false
+    "dev": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

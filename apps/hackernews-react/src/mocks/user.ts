@@ -1,16 +1,19 @@
 import { faker } from '@faker-js/faker'
+import type { UserData } from '@repo/hn-core'
 import { subDays } from 'date-fns'
 
 function randomize(range: number) {
   return Math.ceil(Math.random() * range)
 }
 
-export function mockUser(id: string, submitted: string[]): UserData {
+export function mockUser(id: string, submitted: number[]): UserData {
   return {
     id,
-    created: Math.floor(faker.date.between({ from: subDays(new Date(), 10), to: new Date() }).getTime() / 1000),
+    created: Math.floor(
+      faker.date.between({ from: subDays(new Date(), 10), to: new Date() }).getTime() / 1000,
+    ),
     karma: randomize(1000),
     about: faker.lorem.lines(10),
-    submitted
+    submitted,
   }
 }

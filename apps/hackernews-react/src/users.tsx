@@ -1,17 +1,22 @@
 import styled from '@emotion/styled'
 import { format } from 'date-fns'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import Story from './components/story'
 import Comment from './components/comment'
-import { Main } from './app'
+import { Main } from './components/main'
 import useFetch from './hooks/useFetch'
-import { itemURI, userURI } from './utils/api-list'
-
-type SubmissionFilter = 'STORIES' | 'COMMENTS'
+import {
+  itemURI,
+  userURI,
+  type CommentData,
+  type StoryData,
+  type SubmissionFilter,
+  type UserData,
+} from '@repo/hn-core'
 
 interface SubmissionProps {
-  id: string
+  id: number
   filter?: SubmissionFilter
 }
 
@@ -82,7 +87,7 @@ function Submission({ id, filter }: SubmissionProps) {
 
   if (!data) return null
 
-  switch(data.type) {
+  switch (data.type) {
     case 'story':
       return filter !== 'COMMENTS' ? (
         <li>
@@ -102,23 +107,31 @@ function Submission({ id, filter }: SubmissionProps) {
 
 export default function Users() {
   const { userid } = useParams()
-  const { data } = useFetch<UserData>(userURI(userid))
+  const { data } = useFetch<UserData>(userid ? userURI(userid) : null)
   const [filter, setFilter] = useState<SubmissionFilter>('STORIES')
 
-  if (!data) return <Main aria-label='user' />
+  if (!data) return <Main aria-label="user" />
 
   const { id, created, karma, about, submitted } = data
 
   const switchTab = (state: SubmissionFilter) => () => setFilter(state)
-  const setActiveClass = (state: SubmissionFilter) => filter === state ? 'active' : undefined
+  const setActiveClass = (state: SubmissionFilter) => (filter === state ? 'active' : undefined)
 
   return (
-    <Main aria-label='user'>
+    <Main aria-label="user">
       <Grid>
-        <span>User:</span><span>{id}</span>
-        <span>Karma:</span><span>{karma}</span>
-        <span>Created:</span><span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
-        {about && <><span>About:</span><About dangerouslySetInnerHTML={{ __html: about }} /></>}
+        <span>User:</span>
+        <span>{id}</span>
+        <span>Karma:</span>
+        <span>{karma}</span>
+        <span>Created:</span>
+        <span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
+        {about && (
+          <>
+            <span>About:</span>
+            <About dangerouslySetInnerHTML={{ __html: about }} />
+          </>
+        )}
       </Grid>
       <Submissions data-filter={filter}>
         <TabButton onClick={switchTab('STORIES')} className={setActiveClass('STORIES')}>
@@ -128,9 +141,9 @@ export default function Users() {
           Comments
         </TabButton>
         <List>
-          {(submitted && submitted.length > 0) && submitted.map(item => (
-            <Submission key={item} id={item} filter={filter} />
-          ))}
+          {submitted &&
+            submitted.length > 0 &&
+            submitted.map((item) => <Submission key={item} id={item} filter={filter} />)}
         </List>
       </Submissions>
     </Main>

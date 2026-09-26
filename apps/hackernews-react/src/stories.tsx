@@ -1,14 +1,22 @@
 import styled from '@emotion/styled'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 import Story from './components/story'
-import { Main } from './app'
+import { Main } from './components/main'
 import { ListItemShimmer } from './components/shimmer'
 import useFetch from './hooks/useFetch'
-import { getPage, paginateData, PAGE_SIZE } from './utils/pagination'
-import { itemURI, typeURI } from './utils/api-list'
+import {
+  firstItemIndex,
+  getPage,
+  itemURI,
+  pageCount,
+  paginateData,
+  typeURI,
+  type StoryData,
+  type StoryType,
+} from '@repo/hn-core'
 
 interface StoriesProps {
-  type: 'topstories' | 'newstories' | 'beststories' | 'askstories' | 'showstories' | 'jobstories'
+  type: StoryType
 }
 
 const List = styled.ol`
@@ -21,7 +29,7 @@ const SeeMore = styled.div`
   margin-left: 32px;
 `
 
-export const Container = styled.li`
+const Container = styled.li`
   color: var(--gray);
 
   & + & {
@@ -33,28 +41,36 @@ export const Container = styled.li`
   }
 `
 
-const StoryRenderer = ({ id }: { id: string }) => {
+const StoryRenderer = ({ id }: { id: number }) => {
   const { data } = useFetch<StoryData>(itemURI(id))
-  return data
-    ? <Container><Story data={data} showText={false} /></Container>
-    : <ListItemShimmer />
+  return data ? (
+    <Container>
+      <Story data={data} showText={false} />
+    </Container>
+  ) : (
+    <ListItemShimmer />
+  )
 }
 
 export default function Stories({ type }: StoriesProps) {
-  const [ params ] = useSearchParams()
-  const response = useFetch<string[]>(typeURI(type))
+  const [params] = useSearchParams()
+  const response = useFetch<number[]>(typeURI(type))
 
-  const page = getPage(params)
+  const page = getPage(params.get('page'))
   const data = response.data || []
 
   return (
     <Main aria-label={type}>
-      <List start={(page * 30) - 29}>
-        {paginateData(data, page).map((id: string) => <StoryRenderer key={id} id={id} />)}
+      <List start={firstItemIndex(page)}>
+        {paginateData(data, page).map((id) => (
+          <StoryRenderer key={id} id={id} />
+        ))}
       </List>
-      {page < Math.ceil(data.length / PAGE_SIZE) && (
+      {page < pageCount(data.length) && (
         <SeeMore>
-          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">Next Page</Link>
+          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">
+            Next Page
+          </Link>
         </SeeMore>
       )}
     </Main>
