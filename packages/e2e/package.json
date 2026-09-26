@@ -15,7 +15,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.13.6",
     "eslint": "^10.11.0",
-    "typescript": "~6.0.3"
+    "typescript": "~7.0.2"
   },
   "exports": {
     "./apps": "./apps.ts"
