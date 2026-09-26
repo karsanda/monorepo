@@ -1,0 +1,39 @@
+/*
+ * Theme tokens. Each app sets only `--brand` (its framework's color); everything else is
+ * derived from it. The theme follows the OS unless `<html data-theme="light|dark">` is set.
+ */
+:root {
+  color-scheme: light;
+  --brand: #ff6600;
+  --text: #132b32;
+  --muted: #595959;
+  --header-bg: #282c34;
+  --header-text: #ffffff;
+  --page-bg: color-mix(in oklab, var(--brand) 18%, #ffffff);
+  --surface: color-mix(in oklab, var(--brand) 8%, #ffffff);
+  --border: color-mix(in oklab, var(--text) 25%, transparent);
+  --focus-ring: var(--text);
+  --skeleton: color-mix(in oklab, var(--text) 12%, transparent);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --text: #e3e6ea;
+  --muted: #a7adb5;
+  --header-bg: #0f1115;
+  --page-bg: color-mix(in oklab, var(--brand) 8%, #1a1c21);
+  --surface: color-mix(in oklab, var(--brand) 12%, #22252b);
+  --focus-ring: var(--brand);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --text: #e3e6ea;
+    --muted: #a7adb5;
+    --header-bg: #0f1115;
+    --page-bg: color-mix(in oklab, var(--brand) 8%, #1a1c21);
+    --surface: color-mix(in oklab, var(--brand) 12%, #22252b);
+    --focus-ring: var(--brand);
+  }
+}
