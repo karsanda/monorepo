@@ -1,18 +1,66 @@
 # Hacker News, three ways
 
-The same [Hacker News](https://news.ycombinator.com/) reader built in **React**, **Vue** and **SvelteKit**, sharing data-access code in a pnpm + Turborepo monorepo. Each app has top/new/best/ask/show/job story lists with pagination, threaded comments with collapsing, and user pages with a submissions/comments filter.
+The same [Hacker News](https://news.ycombinator.com/) reader built three times, in **React**, **Vue** and **SvelteKit**. The apps live side by side in one pnpm + Turborepo monorepo, so you can compare how each framework handles the same features. All three read from the public [Hacker News API](https://github.com/HackerNews/API) and share their types and helpers through local packages.
 
-## Apps and packages
+## What's in this repo
 
-| Path                                                       | What                                                               | Dev port |
-| ---------------------------------------------------------- | ------------------------------------------------------------------ | -------- |
-| [`apps/hackernews-react`](apps/hackernews-react)           | React 19, React Router 8, Emotion, client-side via Firebase SDK    | 3000     |
-| [`apps/hackernews-vue`](apps/hackernews-vue)               | Vue 3.5 (`<script setup>`), vue-router 5, client-side via Firebase | 3001     |
-| [`apps/hackernews-svelte`](apps/hackernews-svelte)         | Svelte 5 (runes) + SvelteKit 2, server loads over REST, Vercel     | 5173     |
-| [`packages/hn-core`](packages/hn-core)                     | Shared types (`StoryData`, …), pagination and API path helpers     |          |
-| [`packages/firebase-adapter`](packages/firebase-adapter)   | Thin wrapper around the HN Firebase Realtime Database              |          |
-| [`packages/eslint-config`](packages/eslint-config)         | Shared ESLint flat configs (base / react / vue / svelte)           |          |
-| [`packages/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                            |          |
+```
+apps/
+  hackernews-react/    React 19 client-side app
+  hackernews-vue/      Vue 3.5 client-side app
+  hackernews-svelte/   SvelteKit 2 server-rendered app
+packages/
+  hn-core/             shared HN types, pagination and API path helpers
+  firebase-adapter/    wrapper around the HN Firebase database
+  eslint-config/       shared ESLint configs
+  typescript-config/   shared tsconfig bases
+```
+
+### Features (all three apps)
+
+Every app implements the same pages at the same URLs:
+
+| Route                                                                       | Page                                                                   |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `/`, `/topstories`                                                          | Top stories, 30 per page (`?page=2`, …)                                |
+| `/newstories`, `/beststories`, `/askstories`, `/showstories`, `/jobstories` | The other HN story lists                                               |
+| `/comments/:id`                                                             | A story with its threaded comments; each comment can be collapsed      |
+| `/user/:id`                                                                 | A user's karma, join date and bio, plus their submissions and comments |
+
+## Apps
+
+### [React](apps/hackernews-react) (`apps/hackernews-react`)
+
+- **Stack:** React 19, React Router 8, Emotion for styling, Vite 8.
+- **Data:** fetched in the browser through `@repo/firebase-adapter` by a `useFetch` hook.
+- **UI details:** shimmer placeholders while stories and comments load; "Next Page" pagination.
+- **Tests:** 38 Vitest + Testing Library unit tests, and a Cypress e2e test of the nav tabs.
+- **Dev server:** http://localhost:3000
+
+### [Vue](apps/hackernews-vue) (`apps/hackernews-vue`)
+
+- **Stack:** Vue 3.5 single-file components with `<script setup>`, vue-router 5, Vite 8.
+- **Data:** fetched in the browser through `@repo/firebase-adapter`; route params arrive as component props.
+- **UI details:** "Prev Page" / "Next Page" pagination.
+- **Tests:** Vitest + Vue Test Utils unit tests for the story info line.
+- **Dev server:** http://localhost:3001
+
+### [SvelteKit](apps/hackernews-svelte) (`apps/hackernews-svelte`)
+
+- **Stack:** Svelte 5 with runes, SvelteKit 2, Vite 8, deployed to Vercel.
+- **Data:** pages are rendered on the server, which calls the HN REST API. Story lists stream in after the page shell arrives. Comment replies and parent-story links are fetched in the browser over REST. The user page's Submissions/Comments tabs load through `@repo/firebase-adapter`.
+- **UI details:** "Prev Page" / "Next Page" pagination; unknown story types return a 404.
+- **Tests:** Playwright e2e tests for the home page, pagination, nav tabs and the 404.
+- **Dev server:** http://localhost:5173
+
+## Shared packages
+
+| Package                                                 | What it provides                                                                  |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`@repo/hn-core`](packages/hn-core)                     | HN types (`StoryData`, `CommentData`, `UserData`), pagination and API URL helpers |
+| [`@repo/firebase-adapter`](packages/firebase-adapter)   | Small wrapper around the HN Firebase database, used by all three apps             |
+| [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `react`, `vue`, `svelte`                             |
+| [`@repo/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                                           |
 
 ## Requirements
 
