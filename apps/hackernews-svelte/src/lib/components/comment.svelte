@@ -1,37 +1,39 @@
-<script lang='ts'>
+<script lang="ts">
+  import type { CommentData } from '@repo/hn-core'
+  import { resolve } from '$app/paths'
   import { formatDistance } from 'date-fns'
   import CommentChild from './comment-child.svelte'
-  import CommentParent from './comment-parent.svelte';
+  import CommentParent from './comment-parent.svelte'
 
-	export let data: CommentData
-	export let disableChildren: boolean = false
-	export let showParent: boolean = false
+  let {
+    data,
+    disableChildren = false,
+    showParent = false,
+  }: { data: CommentData; disableChildren?: boolean; showParent?: boolean } = $props()
 
-  let isCollapse: boolean = false
+  let isCollapse = $state(false)
 
-  function toggleCollapse(state: boolean) {
-    isCollapse = state
-  }
-
-  const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
+  const createdTime = $derived(
+    data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true }),
+  )
 </script>
 
 <article class='container' data-disable-children={disableChildren}>
-  {#if !data.dead && !data.deleted}
+  {#if !data.dead && !data.deleted && data.by}
     <div class='header'>
       {#if !disableChildren}
         <button
           class='collapsible-button'
           type='button'
           aria-label={`collapsible-button-${data.id}`}
-          on:click={() => toggleCollapse(!isCollapse)}
+          onclick={() => (isCollapse = !isCollapse)}
         >
           {isCollapse ? '▼' : '▲'}
         </button>
       {/if}
 
       <p class='info'>
-        <a href={`/user/${data.by}`}><strong>{data.by}</strong></a>
+        <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
         {createdTime}
         {#if showParent && data.parent}
           <CommentParent id={data.parent} />
@@ -45,7 +47,7 @@
 
     {#if !disableChildren && data.kids && !isCollapse}
       <div class='children'>
-        {#each data.kids as kid}
+        {#each data.kids as kid (kid)}
           <CommentChild id={kid} />
         {/each}
       </div>
@@ -59,7 +61,7 @@
     margin-left: 5px;
   }
 
-  .container + .container {
+  :global(.container) + .container {
     margin-top: 15px;
   }
 
@@ -99,11 +101,20 @@
     word-break: break-word;
   }
 
+  .content :global(p) {
+    margin: 10px 0;
+  }
+
+  .content :global(code),
+  .content :global(pre) {
+    white-space: pre-wrap;
+  }
+
   .children {
     margin-left: 25px;
   }
 
-  .children .header {
+  .children :global(.header) {
     margin-top: 10px;
   }
 </style>

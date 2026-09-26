@@ -1,20 +1,31 @@
-<script>
-	import './styles.css';
+<script lang="ts">
+  import { resolve } from '$app/paths'
+  import type { StoryType } from '@repo/hn-core'
+  import type { Snippet } from 'svelte'
+  import './styles.css'
+
+  let { children }: { children: Snippet } = $props()
+
+  const tabs: [label: string, slug: StoryType][] = [
+    ['New', 'newstories'],
+    ['Best', 'beststories'],
+    ['Ask', 'askstories'],
+    ['Show', 'showstories'],
+    ['Jobs', 'jobstories'],
+  ]
 </script>
 
 <div class='app'>
 	<header class='header'>
 		<nav class='navbar'>
-			<a class='navlink' href='/'><h1 class='title'>Hacker News - Svelte</h1></a>
-			<a class='navlink' href='/newstories'>New</a>
-			<a class='navlink' href='/beststories'>Best</a>
-			<a class='navlink' href='/askstories'>Ask</a>
-			<a class='navlink' href='/showstories'>Show</a>
-			<a class='navlink' href='/jobstories'>Jobs</a>
+			<a class='navlink' href={resolve('/')}><h1 class='title'>Hacker News - Svelte</h1></a>
+			{#each tabs as [label, slug] (slug)}
+				<a class='navlink' href={resolve('/[[slug=storytype]]', { slug })}>{label}</a>
+			{/each}
 		</nav>
 	</header>
 
-	<slot />
+	{@render children()}
 
 	<footer class='footer'>
 		©{new Date().getFullYear()} Karsanda

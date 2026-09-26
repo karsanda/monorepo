@@ -1,14 +1,11 @@
+import { userURI, type UserData } from '@repo/hn-core'
+import { error } from '@sveltejs/kit'
+import { getJSON } from '$lib/hn'
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ fetch, params }) => {
-	const res = await fetch(`https://hacker-news.firebaseio.com/v0/user/${params.id}.json`)
-	const user = await res.json()
+  const user = await getJSON<UserData>(fetch, userURI(params.id))
+  if (!user) error(404, 'User not found')
 
-	return { user }
-}
-
-async function getSubmissions(itemId: string) {
-	const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${itemId}.json`)
-	const item = await res.json()
-	return item
+  return { user }
 }

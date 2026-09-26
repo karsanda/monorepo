@@ -1,68 +1,59 @@
-<script lang='ts'>
+<script lang="ts">
+  import FirebaseAdapter from '@repo/firebase-adapter'
+  import { itemURI, type CommentData, type StoryData, type SubmissionFilter } from '@repo/hn-core'
   import { onMount } from 'svelte'
-  import FirebaseAdapter from 'firebase-adapter'
   import Story from './story.svelte'
   import Comment from './comment.svelte'
 
-  export let submissions: number[]
+  let { submissions }: { submissions: number[] } = $props()
 
-  let activeTab = 'STORIES'
-  let stories = [] as Array<StoryData>
-  let comments = [] as Array<CommentData>
-
-  function switchTab(tab: 'STORIES' | 'COMMENTS') {
-    activeTab = tab
-  }
+  let activeTab = $state<SubmissionFilter>('STORIES')
+  let stories = $state<StoryData[]>([])
+  let comments = $state<CommentData[]>([])
 
   const firebaseAdapter = new FirebaseAdapter({
-    onSuccess: (snapshot) => { return snapshot.val() },
-    onError: (error) => { console.error(error) }
+    onSuccess: (snapshot) => snapshot.val(),
+    onError: (error) => console.error(error),
   })
 
-  async function fetchItems(itemId: number) {
-    return await firebaseAdapter.fetchData(`/item/${itemId}`) as CommentData|StoryData
-  }
+  const fetchItem = (id: number) =>
+    firebaseAdapter.fetchData(itemURI(id)) as Promise<StoryData | CommentData | undefined>
 
   onMount(async () => {
-    const data = await Promise.all(submissions.map(fetchItems))
-    const filteredData = data.filter(item => !item.dead && !item.deleted)
+    const items = (await Promise.all(submissions.map(fetchItem))).filter(
+      (item) => item && !item.dead && !item.deleted,
+    )
 
-    stories = filteredData.filter(item => item.type === 'story') as Array<StoryData>
-    comments = filteredData.filter(item => item.type === 'comment') as Array<CommentData>
-	})
+    stories = items.filter((item): item is StoryData => item?.type === 'story')
+    comments = items.filter((item): item is CommentData => item?.type === 'comment')
+  })
 </script>
 
 <div class='submissions'>
-  <button class='tab-button' class:active={activeTab === 'STORIES'} on:click={() => switchTab('STORIES')} type='button'>
+  <button class='tab-button' class:active={activeTab === 'STORIES'} onclick={() => (activeTab = 'STORIES')} type='button'>
     Submissions
   </button>
-  <button class='tab-button' class:active={activeTab === 'COMMENTS'} on:click={() => switchTab('COMMENTS')} type='button'>
+  <button class='tab-button' class:active={activeTab === 'COMMENTS'} onclick={() => (activeTab = 'COMMENTS')} type='button'>
     Comments
   </button>
 
-  {#await stories then stories}
-    {#if activeTab === 'STORIES'}
-      <ol class='list'>
-        {#each stories as story}
-          <li>
-            <Story data={story} />
-          </li>
-        {/each}
-      </ol>
-    {/if}
-  {/await}
-
-  {#await comments then comments}
-    {#if activeTab === 'COMMENTS'}
-      <ol class='list'>
-        {#each comments as comment}
-          <li class='comment-item'>
-            <Comment data={comment} disableChildren={activeTab === 'COMMENTS'} showParent={true} />
-          </li>
-        {/each}
-      </ol>
-    {/if}
-  {/await}
+  {#if activeTab === 'STORIES'}
+    <ol class="list">
+      {#each stories as story (story.id)}
+        <li>
+          <Story data={story} />
+        </li>
+      {/each}
+    </ol>
+  {:else}
+    <ol class="list">
+      {#each comments as comment (comment.id)}
+        <li class="comment-item">
+          <Comment data={comment} disableChildren showParent />
+        </li>
+      {/each}
+    </ol>
+  {/if}
 </div>
 
 <style>

@@ -1,9 +1,9 @@
-<script lang='ts'>
-	import type { PageData } from './$types'
+<script lang="ts">
   import { format } from 'date-fns'
   import SubmissionList from '$lib/components/submission-list.svelte'
+  import type { PageProps } from './$types'
 
-	export let data: PageData
+  let { data }: PageProps = $props()
 </script>
 
 <main class='main' aria-label='user'>
@@ -19,7 +19,9 @@
     {/if}
   </div>
 
-  <SubmissionList submissions={data.user.submitted} />
+  {#key data.user.id}
+    <SubmissionList submissions={data.user.submitted ?? []} />
+  {/key}
 </main>
 
 <style>

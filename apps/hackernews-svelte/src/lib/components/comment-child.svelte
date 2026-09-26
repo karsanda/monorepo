@@ -1,18 +1,13 @@
-<script lang='ts'>
-  import { onMount } from 'svelte'
+<script lang="ts">
+  import type { CommentData } from '@repo/hn-core'
+  import { getItem } from '$lib/hn'
   import Comment from './comment.svelte'
 
-	export let id: number
-	export let showParent: boolean = false
-
-  let child = {} as CommentData
-
-  onMount(async () => {
-    const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-    child = await res.json()
-	})
+  let { id, showParent = false }: { id: number; showParent?: boolean } = $props()
 </script>
 
-{#if child}
-  <Comment data={child} showParent={showParent} />
-{/if}
+{#await getItem<CommentData>(fetch, id) then child}
+  {#if child}
+    <Comment data={child} {showParent} />
+  {/if}
+{/await}

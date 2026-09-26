@@ -1,16 +1,24 @@
-<script lang='ts'>
-	export let pagination
-	export let slug
+<script lang="ts">
+  import { resolve } from '$app/paths'
+  import type { StoryType } from '@repo/hn-core'
+
+  interface Pagination {
+    page: number
+    prev: boolean
+    next: boolean
+  }
+
+  let { pagination, slug }: { pagination: Pagination; slug: StoryType } = $props()
 </script>
 
 <div class='see-more'>
   {#if pagination.prev}
-    <a href={`/${slug}?page=${pagination.page - 1}`}>
+    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page - 1}">
       Prev Page
     </a>
   {/if}
   {#if pagination.next}
-    <a href={`/${slug}?page=${pagination.page + 1}`}>
+    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page + 1}">
       Next Page
     </a>
   {/if}

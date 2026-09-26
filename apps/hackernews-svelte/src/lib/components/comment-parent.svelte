@@ -1,25 +1,23 @@
-<script lang='ts'>
-  import { onMount } from 'svelte'
+<script lang="ts">
+  import type { CommentData, StoryData } from '@repo/hn-core'
+  import { resolve } from '$app/paths'
+  import { getItem } from '$lib/hn'
+  import Self from './comment-parent.svelte'
 
-	export let id: number
-
-  let data = {} as CommentData | StoryData
-
-  onMount(async () => {
-    const res = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-    data = await res.json()
-	})
+  let { id }: { id: number } = $props()
 </script>
 
-{#if data && !data.dead && !data.deleted}
-  {#if data.type === 'story'}
-    <span class='story'>
-      on <a href={`/comments/${data.id}`}>{data.title}</a>
-    </span>
-  {:else if data.type === 'comment'}
-    <svelte:self id={data.parent} />
+{#await getItem<CommentData | StoryData>(fetch, id) then data}
+  {#if data && !data.dead && !data.deleted}
+    {#if data.type === 'story'}
+      <span class="story">
+        on <a href={resolve('/comments/[id]', { id: String(data.id) })}>{data.title}</a>
+      </span>
+    {:else if data.type === 'comment'}
+      <Self id={data.parent} />
+    {/if}
   {/if}
-{/if}
+{/await}
 
 <style>
   .story {

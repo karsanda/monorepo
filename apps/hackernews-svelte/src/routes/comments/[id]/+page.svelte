@@ -1,9 +1,9 @@
-<script lang='ts'>
-	import type { PageData } from './$types'
-  import Story from '$lib/components/story.svelte';
+<script lang="ts">
+  import Story from '$lib/components/story.svelte'
   import Comment from '$lib/components/comment.svelte'
+  import type { PageProps } from './$types'
 
-  export let data: PageData
+  let { data }: PageProps = $props()
 </script>
 
 <main class='main' aria-label='comments'>
@@ -13,8 +13,10 @@
 
   <section class='comment-list'>
     {#await data.comments then comments}
-      {#each comments as comment}
-        <Comment data={comment} />
+      {#each comments as comment, i (comment?.id ?? i)}
+        {#if comment}
+          <Comment data={comment} />
+        {/if}
       {/each}
     {/await}
   </section>
