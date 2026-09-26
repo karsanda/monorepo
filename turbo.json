@@ -6,6 +6,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".svelte-kit/**", ".vercel/**", ".next/**", "!.next/cache/**"]
     },
+    "hackernews-nuxt#build": {
+      "dependsOn": ["^build", "hackernews-nuxt#typecheck", "hackernews-nuxt#test"],
+      "outputs": [".output/**", ".vercel/**"]
+    },
     "lint": {},
     "typecheck": {},
     "test": {},

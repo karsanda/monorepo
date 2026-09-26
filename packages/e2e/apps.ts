@@ -21,6 +21,11 @@ export const APPS = {
     port: 3000,
     command: `${bin('next')} build && exec ${bin('next')} start --port 3000`,
   },
+  nuxt: {
+    dir: 'apps/hackernews-nuxt',
+    port: 3001,
+    command: `${bin('nuxt')} build && PORT=3001 exec node .output/server/index.mjs`,
+  },
 } satisfies Record<string, AppTarget>
 
 export type AppName = keyof typeof APPS

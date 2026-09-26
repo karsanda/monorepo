@@ -6,4 +6,7 @@ coverage
 .svelte-kit
 .vercel
 .turbo
-apps/hackernews-react/favicons
+.next
+.nuxt
+.output
+next-env.d.ts
