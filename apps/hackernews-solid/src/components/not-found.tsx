@@ -9,7 +9,7 @@ export function NotFound() {
       <Title>{pageTitle('Not found')}</Title>
       <h1>Not found</h1>
       <p>
-        That page, story or user doesn't exist. <a href="/">Back to top stories</a>
+        That page, story or user doesn't exist. <a href="/">Back to the front page</a>
       </p>
     </div>
   )

@@ -26,7 +26,7 @@ beforeEach(() => {
 test('marks the current tab', async () => {
   renderAt('/newstories')
   expect(await screen.findByRole('link', { name: 'New' })).toHaveAttribute('aria-current', 'page')
-  expect(screen.getByRole('link', { name: 'Best' })).not.toHaveAttribute('aria-current')
+  expect(screen.getByRole('link', { name: 'Top' })).not.toHaveAttribute('aria-current')
 })
 
 test('toggles the theme and saves it in a cookie', async () => {

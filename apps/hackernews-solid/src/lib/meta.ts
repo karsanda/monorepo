@@ -1,6 +1,6 @@
 export const APP_NAME = 'Hacker News - Solid'
 
-/** Document title for a page, e.g. "Top stories | Hacker News - Solid". */
+/** Document title for a page, e.g. "Best stories | Hacker News - Solid". */
 export const pageTitle = (page: string) => `${page} | ${APP_NAME}`
 
 /** `?name=` value from Solid's search params, ignoring repeated keys. */

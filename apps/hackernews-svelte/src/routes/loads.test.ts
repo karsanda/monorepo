@@ -62,10 +62,10 @@ describe('story list', () => {
     expect((await data.stories).map((s: StoryData) => s.id)).not.toContain(32)
   })
 
-  test('defaults to top stories and fails with 502 when HN is down', async () => {
+  test('defaults to the home page list and fails with 502 when HN is down', async () => {
     mocked.getIds.mockRejectedValue(new Error('offline'))
     expect(await status(storiesLoad(event('/')))).toBe(502)
-    expect(mocked.getIds).toHaveBeenCalledWith('topstories')
+    expect(mocked.getIds).toHaveBeenCalledWith('beststories')
   })
 })
 

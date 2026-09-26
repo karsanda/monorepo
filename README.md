@@ -28,13 +28,13 @@ metrics/
 
 Every app implements the same pages at the same URLs:
 
-| Route                                                                       | Page                                                                   |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `/`, `/topstories`                                                          | Top stories, 30 per page (`?page=2`, …)                                |
-| `/newstories`, `/beststories`, `/askstories`, `/showstories`, `/jobstories` | The other HN story lists                                               |
-| `/comments/:id`                                                             | A story with its threaded comments; each comment can be collapsed      |
-| `/user/:id`                                                                 | A user's karma, join date and bio, plus their submissions and comments |
-| `/search?q=`                                                                | Story search through Algolia                                           |
+| Route                                                                      | Page                                                                   |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `/`, `/beststories`                                                        | Best stories, 30 per page (`?page=2`, …)                               |
+| `/topstories`, `/newstories`, `/askstories`, `/showstories`, `/jobstories` | The other HN story lists                                               |
+| `/comments/:id`                                                            | A story with its threaded comments; each comment can be collapsed      |
+| `/user/:id`                                                                | A user's karma, join date and bio, plus their submissions and comments |
+| `/search?q=`                                                               | Story search through Algolia                                           |
 
 ## Apps
 
@@ -78,19 +78,34 @@ Every app implements the same pages at the same URLs:
 - **Tests:** Vitest with Qwik's `createDOM` for the data loaders and components, plus the shared Playwright suite.
 - **Dev server:** http://localhost:3003
 
+### [Landing page](apps/landing) (`apps/landing`)
+
+The front door for the other five: one card per framework (what's distinctive about its app, its JS size and Lighthouse scores, and links to the live app and its source), followed by the full comparison table.
+
+- **Stack:** plain Vite 8 and HTML/CSS, using the shared `@repo/hn-styles` theme (light and dark follow the OS setting). No framework, and no JavaScript sent to the browser.
+- **Data:** a small Vite plugin ([`vite.config.ts`](apps/landing/vite.config.ts)) renders the page into `index.html` at build time from [`metrics/metrics.json`](metrics/metrics.json). To refresh the numbers, run `pnpm metrics` and rebuild; Turborepo rebuilds it whenever `metrics.json` changes.
+- **App links:** each card's "Open the app" link comes from a build-time variable: `LANDING_URL_NEXT`, `LANDING_URL_NUXT`, `LANDING_URL_SVELTE`, `LANDING_URL_SOLID` or `LANDING_URL_QWIK`. Without one, the card links only to the app's source.
+- **Tests:** Vitest unit tests for the page renderer.
+- **Dev server:** http://localhost:3004
+
+```sh
+pnpm --filter landing dev
+LANDING_URL_NEXT=https://monorepo-hn-react.vercel.app pnpm --filter landing build   # dist/
+```
+
 ## How they compare
 
-Every app's home page, measured by `pnpm metrics` (see [Metrics](#metrics) for how).
+Every app's home page, measured by `pnpm metrics` (see [Metrics](#metrics) for how). The same numbers appear on the [landing page](#landing-page-appslanding).
 
 <!-- metrics:start -->
 
 | App        |    JS (gzip) | JS (brotli) | CSS (gzip) | HTML (gzip) | Performance | Accessibility |     LCP |  TBT |   CLS | Build | Lines of code |
 | ---------- | -----------: | ----------: | ---------: | ----------: | ----------: | ------------: | ------: | ---: | ----: | ----: | ------------: |
-| SolidStart | 34.3 kB (11) |     30.9 kB |     4.6 kB |     10.3 kB |          97 |           100 | 2105 ms | 0 ms | 0.000 | 2.3 s |           852 |
-| SvelteKit  | 44.3 kB (17) |     39.8 kB |     1.7 kB |      7.1 kB |         100 |           100 | 1515 ms | 0 ms | 0.041 | 1.4 s |           619 |
-| Qwik City  | 46.7 kB (22) |     41.7 kB |     0.0 kB |     24.6 kB |         100 |           100 | 1357 ms | 0 ms | 0.000 | 1.7 s |           772 |
-| Nuxt       | 94.0 kB (16) |     84.4 kB |     1.7 kB |     10.9 kB |          90 |           100 | 2906 ms | 3 ms | 0.000 | 2.5 s |           585 |
-| Next.js    | 140.3 kB (8) |    120.6 kB |     1.7 kB |     10.2 kB |         100 |           100 | 1506 ms | 8 ms | 0.000 | 2.6 s |           788 |
+| SolidStart | 34.2 kB (10) |     30.9 kB |     4.6 kB |     15.2 kB |          97 |           100 | 2102 ms | 0 ms | 0.000 | 2.3 s |           852 |
+| SvelteKit  | 44.2 kB (16) |     39.8 kB |     1.7 kB |     11.6 kB |         100 |           100 | 1514 ms | 0 ms | 0.041 | 1.4 s |           626 |
+| Qwik City  | 46.8 kB (22) |     41.7 kB |     0.0 kB |     31.1 kB |         100 |           100 | 1358 ms | 0 ms | 0.000 | 1.7 s |           773 |
+| Nuxt       | 93.9 kB (14) |     84.3 kB |     1.7 kB |     17.6 kB |          89 |           100 | 3056 ms | 3 ms | 0.000 | 2.5 s |           588 |
+| Next.js    | 140.4 kB (8) |    120.6 kB |     1.7 kB |     16.1 kB |          99 |           100 | 2171 ms | 8 ms | 0.000 | 2.2 s |           796 |
 
 JS is what the browser downloads to show `/` (requests in brackets), compressed locally so every server is measured the same way; CSS inlined into the page counts as HTML. Lighthouse: mobile preset, median of runs. Measured 2026-09-26 on Node 24.14.0.
 
@@ -191,7 +206,7 @@ GitHub runners use UTC, so any test that involves dates should freeze time to an
 
 The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Nuxt app deploys to Vercel through Nitro's `vercel` preset, which Nitro picks automatically when it builds on Vercel (project root `apps/hackernews-nuxt`, Nuxt.js framework preset). The SolidStart app builds through Nitro's Vite plugin, which also picks the Vercel preset on Vercel (project root `apps/hackernews-solid`). The Qwik City app builds with its Vercel edge adapter into `.vercel/output` (project root `apps/hackernews-qwik`, build command `pnpm build`).
 
-The landing page ([`apps/landing`](apps/landing)) is static: Vite renders it at build time from `metrics/metrics.json`, and it ships no JavaScript. Deploy it with project root `apps/landing` (Vite preset) and set `LANDING_URL_NEXT`, `LANDING_URL_NUXT`, `LANDING_URL_SVELTE`, `LANDING_URL_SOLID` and `LANDING_URL_QWIK` to the apps' URLs so its cards link to them (without them, each card links to the app's source).
+The [landing page](#landing-page-appslanding) deploys as a static site: project root `apps/landing`, Vite preset, with the five `LANDING_URL_*` variables set to the apps' production URLs. Redeploy it after changing a variable, since they're read at build time.
 
 ## License
 

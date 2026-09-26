@@ -29,7 +29,7 @@ export default function App() {
                     <Title>{pageTitle('Something went wrong')}</Title>
                     <h1>Something went wrong</h1>
                     <p>
-                      Hacker News may be slow right now. <a href="/">Back to top stories</a>
+                      Hacker News may be slow right now. <a href="/">Back to the front page</a>
                     </p>
                   </div>
                 )}

@@ -38,7 +38,7 @@ test('every route has its own title, ending in the app name', async ({ page }) =
   const titles = new Set<string>()
   for (const path of ['/', '/newstories', '/comments/1', '/user/pg', '/not-a-real-page']) {
     await page.goto(path)
-    // e.g. "Top stories | Hacker News - Next"
+    // e.g. "Best stories | Hacker News - Next"
     await expect(page).toHaveTitle(/^.+ \| Hacker News - \w+$/)
     titles.add(await page.title())
   }
