@@ -1,5 +1,5 @@
 import { useEffect, useRef, useReducer } from 'react';
-import FirebaseAdapter from 'firebase-adapter';
+import FirebaseAdapter from '@repo/firebase-adapter';
 
 interface State<T> {
   state: 'idle' | 'loading' | 'fetched' | 'error';
@@ -14,7 +14,7 @@ type Action<T> =
   | { type: 'fetched'; payload: T }
   | { type: 'error'; payload: Error };
 
-function useFetch<T = unknown>(url: string): State<T> {
+function useFetch<T = unknown>(url: string | null): State<T> {
   const cache = useRef<Cache<T>>({});
   const cancelRequest = useRef<boolean>(false);
 

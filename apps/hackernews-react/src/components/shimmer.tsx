@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 
-export const ListItem = styled.li`
+const ListItem = styled.li`
   height: 35px;
   width: calc(100% - 25px);
   color: var(--gray);

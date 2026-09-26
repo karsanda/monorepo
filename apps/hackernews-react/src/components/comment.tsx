@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import styled from '@emotion/styled'
 import { formatDistance } from 'date-fns'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { ArticleShimmer } from './shimmer'
 import useFetch from '../hooks/useFetch'
-import { itemURI } from '../utils/api-list'
+import { itemURI, type CommentData, type StoryData } from '@repo/hn-core'
 
 interface CommentProps {
   data: CommentData
@@ -13,7 +13,7 @@ interface CommentProps {
 }
 
 type ParentProps = {
-  id: string
+  id: number
   title: string
 }
 
@@ -87,7 +87,7 @@ const Story = styled.span`
 `
 
 function CommentChildren({ id, showParent = false }: { id: number, showParent?: boolean }) {
-  const { data } = useFetch<CommentData>(itemURI(id.toString()))
+  const { data } = useFetch<CommentData>(itemURI(id))
   return data ? <Comment data={data} showParent={showParent} /> : <ArticleShimmer />
 }
 
@@ -96,7 +96,7 @@ function StoryLink({ id, title }: ParentProps) {
 }
 
 function Parent({ id }: { id?: number }) {
-  const { data } = useFetch<StoryData | CommentData>(itemURI(id?.toString()))
+  const { data } = useFetch<StoryData | CommentData>(id ? itemURI(id) : null)
 
   if (!data || data.dead || data.deleted) return null
 
@@ -113,11 +113,9 @@ function Parent({ id }: { id?: number }) {
 function Information({ data, showParent }: CommentProps) {
   const createdTime = data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true })
 
-  const UserLink = () => <Link to={`/user/${data.by}`}><b>{data.by}</b></Link>
-
   return (
     <Info>
-      <UserLink /> {createdTime} {(showParent && data.parent) && <Parent id={data.parent} />}
+      <Link to={`/user/${data.by}`}><b>{data.by}</b></Link> {createdTime} {(showParent && data.parent) && <Parent id={data.parent} />}
     </Info>
   )
 }

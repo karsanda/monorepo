@@ -1,17 +1,22 @@
 import styled from '@emotion/styled'
 import { format } from 'date-fns'
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import Story from './components/story'
 import Comment from './components/comment'
-import { Main } from './app'
+import { Main } from './components/main'
 import useFetch from './hooks/useFetch'
-import { itemURI, userURI } from './utils/api-list'
-
-type SubmissionFilter = 'STORIES' | 'COMMENTS'
+import {
+  itemURI,
+  userURI,
+  type CommentData,
+  type StoryData,
+  type SubmissionFilter,
+  type UserData,
+} from '@repo/hn-core'
 
 interface SubmissionProps {
-  id: string
+  id: number
   filter?: SubmissionFilter
 }
 
@@ -102,7 +107,7 @@ function Submission({ id, filter }: SubmissionProps) {
 
 export default function Users() {
   const { userid } = useParams()
-  const { data } = useFetch<UserData>(userURI(userid))
+  const { data } = useFetch<UserData>(userid ? userURI(userid) : null)
   const [filter, setFilter] = useState<SubmissionFilter>('STORIES')
 
   if (!data) return <Main aria-label='user' />

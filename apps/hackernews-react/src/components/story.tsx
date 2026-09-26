@@ -1,6 +1,7 @@
 import { formatDistance } from 'date-fns'
 import styled from '@emotion/styled'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
+import type { StoryData } from '@repo/hn-core'
 
 interface StoryProps {
   data: StoryData
@@ -60,13 +61,11 @@ function Information({ data }: { data: StoryData }) {
 
   if (data.type === 'job') return <Subtitle>{createdTime}</Subtitle>
 
-  const UserLink = () => <Link to={`/user/${data.by}`}><b>{data.by}</b></Link>
-
-  const CommentLink = () => <Link to={`/comments/${data.id}`}>{data.descendants} comments</Link>
+  const userLink = <Link to={`/user/${data.by}`}><b>{data.by}</b></Link>
 
   return data.descendants && data.descendants > 0
-    ? <Subtitle>{data.score} points by <UserLink /> {createdTime} | <CommentLink/></Subtitle>
-    : <Subtitle>{data.score} points by <UserLink /> {createdTime}</Subtitle>
+    ? <Subtitle>{data.score} points by {userLink} {createdTime} | <Link to={`/comments/${data.id}`}>{data.descendants} comments</Link></Subtitle>
+    : <Subtitle>{data.score} points by {userLink} {createdTime}</Subtitle>
 }
 
 export default function Story({ data, showText = false }: StoryProps) {

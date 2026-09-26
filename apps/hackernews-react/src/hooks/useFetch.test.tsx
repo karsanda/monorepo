@@ -1,9 +1,10 @@
-import FirebaseAdapter from 'firebase-adapter';
+import FirebaseAdapter from '@repo/firebase-adapter';
 import { renderHook, waitFor } from '@testing-library/react';
 import type { DataSnapshot } from 'firebase/database';
 import useFetch from './useFetch';
 
 test('should return loading state when fetch is in progress', () => {
+  vi.spyOn(FirebaseAdapter.prototype, 'get').mockReturnValue(new Promise(() => {}));
   const { result } = renderHook(() => useFetch('/item/1'));
   expect(result.current).toEqual({
     state: 'loading',
@@ -13,14 +14,14 @@ test('should return loading state when fetch is in progress', () => {
 });
 
 test('should return fetched state when fetch is success', async () => {
-  jest.spyOn(FirebaseAdapter.prototype, 'get').mockResolvedValue({
+  vi.spyOn(FirebaseAdapter.prototype, 'get').mockResolvedValue({
     exists: () => true,
     val: () => 'this is dummy data',
   } as unknown as DataSnapshot);
 
   const { result } = renderHook(() => useFetch('/item/1'));
 
-  waitFor(() => {
+  await waitFor(() => {
     expect(result.current).toEqual({
       state: 'fetched',
       data: 'this is dummy data',
@@ -31,10 +32,10 @@ test('should return fetched state when fetch is success', async () => {
 
 test('should return error state when fetch is error', async () => {
   const errorData = { text: 'this is error data' };
-  jest.spyOn(FirebaseAdapter.prototype, 'get').mockRejectedValue(errorData);
+  vi.spyOn(FirebaseAdapter.prototype, 'get').mockRejectedValue(errorData);
   const { result } = renderHook(() => useFetch('/item/1'));
 
-  waitFor(() => {
+  await waitFor(() => {
     expect(result.current).toEqual({
       state: 'error',
       data: undefined,

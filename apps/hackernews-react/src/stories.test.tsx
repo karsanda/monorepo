@@ -1,11 +1,12 @@
+import type { Mock } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter } from 'react-router'
 import useFetch from './hooks/useFetch'
 import { mockStories } from './mocks/stories'
 import Stories from './stories'
 
-jest.mock('./hooks/useFetch.tsx', () => jest.fn())
-const mockedUseFetch = useFetch as jest.Mock
+vi.mock('./hooks/useFetch.tsx', () => ({ default: vi.fn() }))
+const mockedUseFetch = useFetch as Mock
 
 test('should be able to render successfully', () => {
   mockedUseFetch.mockImplementation((url: string) => {

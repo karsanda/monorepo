@@ -1,12 +1,13 @@
+import type { Mock } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { MemoryRouter, Routes, Route } from 'react-router'
 import Comments from './comments'
 import useFetch from './hooks/useFetch'
 import { mockStoryWithText } from './mocks/story'
 import { mockComment } from './mocks/comment'
 
-jest.mock('./hooks/useFetch.tsx', () => jest.fn())
-const mockedUseFetch = useFetch as jest.Mock
+vi.mock('./hooks/useFetch.tsx', () => ({ default: vi.fn() }))
+const mockedUseFetch = useFetch as Mock
 
 function renderCommentsPage(itemid: string) {
   return render(
@@ -33,7 +34,7 @@ test('should render story with text and comment', () => {
       return {
         state: 'fetched',
         data: {
-          ...mockStoryWithText('777'),
+          ...mockStoryWithText(777),
           descendants: 1,
           kids: [555]
         }
@@ -48,7 +49,7 @@ test('should render story with text and comment', () => {
       return {
         state: 'fetched',
         data: {
-          ...mockComment('555', '777'),
+          ...mockComment(555, 777),
           kids: undefined
         }
       }
@@ -67,7 +68,7 @@ test('it should render shimmer on comment if data is undefined', () => {
       return {
         state: 'fetched',
         data: {
-          ...mockStoryWithText('777'),
+          ...mockStoryWithText(777),
           descendants: 1,
           kids: [444]
         }
