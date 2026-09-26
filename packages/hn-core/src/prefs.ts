@@ -36,3 +36,10 @@ export function parseTheme(value: string | null | undefined): Theme | undefined 
 export function themeCookie(theme: Theme): string {
   return `${THEME_COOKIE}=${theme}; path=/; max-age=31536000; samesite=lax`
 }
+
+const THEME_IN_COOKIES = new RegExp(`(?:^|;\\s*)${THEME_COOKIE}=([^;]*)`)
+
+/** The saved theme from a raw `Cookie` request header, for servers without a cookie API. */
+export function themeFromCookieHeader(header: string | null | undefined): Theme | undefined {
+  return parseTheme(THEME_IN_COOKIES.exec(header ?? '')?.[1])
+}

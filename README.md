@@ -1,6 +1,6 @@
-# Hacker News, three ways
+# Hacker News, five ways
 
-The same [Hacker News](https://news.ycombinator.com/) reader built three times, in **Next.js**, **Nuxt** and **SvelteKit**. The apps live side by side in one pnpm + Turborepo monorepo, so you can compare how each framework handles the same features. All three read from the public [Hacker News API](https://github.com/HackerNews/API) and share their types and helpers through local packages.
+The same [Hacker News](https://news.ycombinator.com/) reader built five times, in **Next.js**, **Nuxt**, **SvelteKit**, **SolidStart** and **Qwik City**. The apps live side by side in one pnpm + Turborepo monorepo, so you can compare how each framework handles the same features. All five read from the public [Hacker News API](https://github.com/HackerNews/API) and share their types and helpers through local packages.
 
 ## What's in this repo
 
@@ -9,6 +9,8 @@ apps/
   hackernews-next/     Next.js 16 server-rendered app (React 19, App Router)
   hackernews-nuxt/     Nuxt 4 server-rendered app (Vue 3.5)
   hackernews-svelte/   SvelteKit 2 server-rendered app
+  hackernews-solid/    SolidStart 2 server-rendered app (Solid 1.9)
+  hackernews-qwik/     Qwik City 1 resumable app
 packages/
   hn-core/             shared HN types, data client, formatting and pagination helpers
   hn-styles/           shared CSS: light/dark theme tokens and component classes
@@ -17,7 +19,7 @@ packages/
   typescript-config/   shared tsconfig bases
 ```
 
-### Features (all three apps)
+### Features (all five apps)
 
 Every app implements the same pages at the same URLs:
 
@@ -27,6 +29,7 @@ Every app implements the same pages at the same URLs:
 | `/newstories`, `/beststories`, `/askstories`, `/showstories`, `/jobstories` | The other HN story lists                                               |
 | `/comments/:id`                                                             | A story with its threaded comments; each comment can be collapsed      |
 | `/user/:id`                                                                 | A user's karma, join date and bio, plus their submissions and comments |
+| `/search?q=`                                                                | Story search through Algolia                                           |
 
 ## Apps
 
@@ -54,6 +57,22 @@ Every app implements the same pages at the same URLs:
 - **Tests:** Vitest unit tests for the server loads, the route matcher and the comment component, plus the shared Playwright suite.
 - **Dev server:** http://localhost:5173
 
+### [SolidStart](apps/hackernews-solid) (`apps/hackernews-solid`)
+
+- **Stack:** Solid 1.9 with SolidStart 2 (Vite 8 plugin, Nitro 3 server) and Solid Router, deployed to Vercel.
+- **Data:** routes load through the shared `@repo/hn-core` client with Solid Router's `query` + `createAsync`, preloaded on link hover and serialized from the server render. Story lists, comment threads and search results stream in through `<Suspense>`; items and users use `deferStream` so a missing one can still answer with a 404 status (`<HttpStatusCode>`).
+- **Features:** the same as the SvelteKit app, with `@solidjs/meta` titles.
+- **Tests:** Vitest + `@solidjs/testing-library` for the data loaders and components, plus the shared Playwright suite.
+- **Dev server:** http://localhost:3002
+
+### [Qwik City](apps/hackernews-qwik) (`apps/hackernews-qwik`)
+
+- **Stack:** Qwik 1.20 and Qwik City on Vite 7 (Qwik City doesn't support Vite 8 yet), deployed to Vercel's edge runtime.
+- **Data:** every page loads in a `routeLoader$` on the server (client-side navigations fetch the loader data, never HN directly), except the user page's "Load more", which runs in the browser. The page is resumed rather than hydrated: no component code runs in the browser until you interact with it.
+- **Features:** the same as the SvelteKit app, with `head` exports for titles.
+- **Tests:** Vitest with Qwik's `createDOM` for the data loaders and components, plus the shared Playwright suite.
+- **Dev server:** http://localhost:3003
+
 ## Shared packages
 
 | Package                                                 | What it provides                                                                                                                                                                  |
@@ -61,12 +80,12 @@ Every app implements the same pages at the same URLs:
 | [`@repo/hn-core`](packages/hn-core)                     | HN types, a fetch-based client for the HN REST API and Algolia (caching, concurrency limit, one-request comment threads, search), date/domain formatting, nav tabs and pagination |
 | [`@repo/hn-styles`](packages/hn-styles)                 | Shared CSS: light/dark theme tokens derived from one `--brand` color, base styles and component classes                                                                           |
 | [`@repo/e2e`](packages/e2e)                             | The shared Playwright suite; `APP=<name>` picks the app to build, serve and test                                                                                                  |
-| [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `next`, `vue`, `svelte`                                                                                                                              |
+| [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `next`, `vue`, `svelte`, `solid`, `qwik`                                                                                                             |
 | [`@repo/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                                                                                                                                           |
 
 ## Requirements
 
-- Node.js ≥ 22.22 (CI uses the version in [`.nvmrc`](.nvmrc))
+- Node.js 24 (the version in [`.nvmrc`](.nvmrc); SolidStart 2 requires it)
 - pnpm 12 (pinned via `packageManager`; `corepack enable` or a pnpm that auto-switches versions)
 
 ## Commands
@@ -75,11 +94,11 @@ Run from the repo root (Turborepo fans each out to every package):
 
 ```sh
 pnpm install
-pnpm dev          # all three apps
+pnpm dev          # all five apps
 pnpm build
 pnpm test         # Vitest unit tests
 pnpm lint         # ESLint
-pnpm typecheck    # tsc / nuxt typecheck / svelte-check
+pnpm typecheck    # tsc / vue-tsc / svelte-check
 pnpm format       # Prettier (write)
 pnpm format:check # Prettier (check only, as in CI)
 ```
@@ -92,16 +111,16 @@ Unit tests use Vitest everywhere and never touch the network.
 
 End-to-end tests run against a production build and hit the live HN API.
 
-[`packages/e2e`](packages/e2e) holds the shared suite that every app has to pass: same routes, same accessible names, same behavior (search, dark mode, hidden stories, 404s, per-page titles and more). All three apps pass it.
+[`packages/e2e`](packages/e2e) holds the shared suite that every app has to pass: same routes, same accessible names, same behavior (search, dark mode, hidden stories, 404s, per-page titles and more). All five apps pass it.
 
 ```sh
 pnpm --filter @repo/e2e exec playwright install chromium   # once
-APP=svelte pnpm --filter @repo/e2e e2e   # or APP=next, APP=nuxt
+APP=svelte pnpm --filter @repo/e2e e2e   # or next, nuxt, solid, qwik
 ```
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (`svelte`, `next` and `nuxt`) and uploads traces when a test fails.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (`svelte`, `next`, `nuxt`, `solid` and `qwik`) and uploads traces when a test fails.
 
 To reproduce a CI run locally:
 
@@ -121,11 +140,11 @@ GitHub runners use UTC, so any test that involves dates should freeze time to an
 
 - **`minimumReleaseAge: 1440`.** pnpm won't install a package version that has been public for less than 24 hours. If `pnpm install` fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, either wait or use the previous release.
 - **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) opens grouped weekly update PRs and waits a day after each release, so its PRs respect the rule above.
-- **`allowBuilds`.** Dependency install scripts are blocked unless listed there. Only `esbuild` is allowed. If a new dependency needs its install script, add it with `pnpm approve-builds`.
+- **`allowBuilds`.** Dependency install scripts are blocked unless listed there. Only `esbuild` is allowed; `sharp` (pulled in by Qwik City, unused) is explicitly skipped. If a new dependency needs its install script, add it with `pnpm approve-builds`.
 
 ## Deployment
 
-The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Nuxt app deploys to Vercel through Nitro's `vercel` preset, which Nitro picks automatically when it builds on Vercel (project root `apps/hackernews-nuxt`, Nuxt.js framework preset).
+The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Nuxt app deploys to Vercel through Nitro's `vercel` preset, which Nitro picks automatically when it builds on Vercel (project root `apps/hackernews-nuxt`, Nuxt.js framework preset). The SolidStart app builds through Nitro's Vite plugin, which also picks the Vercel preset on Vercel (project root `apps/hackernews-solid`). The Qwik City app builds with its Vercel edge adapter into `.vercel/output` (project root `apps/hackernews-qwik`, build command `pnpm build`).
 
 ## License
 

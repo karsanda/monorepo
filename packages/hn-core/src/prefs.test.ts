@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest'
-import { loadIds, parseTheme, saveIds, themeCookie } from './prefs'
+import { loadIds, parseTheme, saveIds, themeCookie, themeFromCookieHeader } from './prefs'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -53,4 +53,12 @@ test('theme helpers', () => {
   expect(parseTheme('dark')).toBe('dark')
   expect(parseTheme('blue')).toBeUndefined()
   expect(themeCookie('light')).toMatch(/^theme=light; path=\//)
+})
+
+test('reads the theme from a Cookie header', () => {
+  expect(themeFromCookieHeader('a=1; theme=dark; b=2')).toBe('dark')
+  expect(themeFromCookieHeader('theme=light')).toBe('light')
+  expect(themeFromCookieHeader('mytheme=dark')).toBeUndefined()
+  expect(themeFromCookieHeader('theme=purple')).toBeUndefined()
+  expect(themeFromCookieHeader(null)).toBeUndefined()
 })

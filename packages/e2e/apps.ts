@@ -26,6 +26,17 @@ export const APPS = {
     port: 3001,
     command: `${bin('nuxt')} build && PORT=3001 exec node .output/server/index.mjs`,
   },
+  solid: {
+    dir: 'apps/hackernews-solid',
+    port: 3002,
+    command: `${bin('vite')} build && PORT=3002 exec node .output/server/index.mjs`,
+  },
+  qwik: {
+    dir: 'apps/hackernews-qwik',
+    port: 3003,
+    // Qwik's production preview (Node); deployments use the Vercel edge build instead.
+    command: `${bin('vite')} build && ${bin('vite')} build --ssr src/entry.preview.tsx && exec ${bin('vite')} preview --port 3003 --strictPort`,
+  },
 } satisfies Record<string, AppTarget>
 
 export type AppName = keyof typeof APPS

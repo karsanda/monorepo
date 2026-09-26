@@ -8,3 +8,6 @@ minimumReleaseAge: 1440
 
 allowBuilds:
   esbuild: true
+  # Pulled in by Qwik City's image plugin, which the Qwik app doesn't use; sharp ships prebuilt
+  # binaries, so its fallback build script isn't needed.
+  sharp: false

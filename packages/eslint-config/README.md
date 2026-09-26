@@ -8,6 +8,8 @@ Shared ESLint flat configs.
 | `@repo/eslint-config/next`   | Next.js apps (React hooks + `@next/eslint-plugin-next`)  |
 | `@repo/eslint-config/vue`    | Vue SFCs                                                 |
 | `@repo/eslint-config/svelte` | Svelte / SvelteKit (a function taking the Svelte config) |
+| `@repo/eslint-config/solid`  | SolidStart apps (`eslint-plugin-solid`)                  |
+| `@repo/eslint-config/qwik`   | Qwik City apps (`eslint-plugin-qwik`, type-aware)        |
 
 ```js
 // eslint.config.js
