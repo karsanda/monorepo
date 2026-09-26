@@ -1,3 +1,10 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  cypress: true
+  esbuild: true
+  # Not needed: firebase is configured explicitly, and protobufjs only runs a version check.
+  '@firebase/util': false
+  protobufjs: false
