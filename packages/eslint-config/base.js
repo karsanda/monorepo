@@ -12,6 +12,7 @@ export default defineConfig([
     '**/coverage',
     '**/.svelte-kit',
     '**/.vercel',
+    '**/.next',
   ]),
   js.configs.recommended,
   tseslint.configs.recommended,

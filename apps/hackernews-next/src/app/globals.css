@@ -1,0 +1,5 @@
+@import '@repo/hn-styles/index.css';
+
+:root {
+  --brand: #0070f3;
+}
