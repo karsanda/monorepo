@@ -19,7 +19,7 @@ export default defineConfig({
   },
   projects: [{ name: app.name, use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: app.command,
+    command: `${app.build} && exec ${app.serve}`,
     cwd: `${root}/${app.dir}`,
     port: app.port,
     timeout: 180_000,

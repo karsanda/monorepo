@@ -1,0 +1,7 @@
+{
+  "svelte": { "maxJsGzipKb": 55, "minAccessibility": 100 },
+  "next": { "maxJsGzipKb": 165, "minAccessibility": 100 },
+  "nuxt": { "maxJsGzipKb": 110, "minAccessibility": 100 },
+  "solid": { "maxJsGzipKb": 40, "minAccessibility": 100 },
+  "qwik": { "maxJsGzipKb": 55, "minAccessibility": 100 }
+}

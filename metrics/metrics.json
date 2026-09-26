@@ -1,0 +1,176 @@
+{
+  "generatedAt": "2026-09-26T11:35:18.034Z",
+  "node": "24.14.0",
+  "results": [
+    {
+      "app": "svelte",
+      "label": "SvelteKit",
+      "buildSeconds": 1.3504495790000002,
+      "js": {
+        "raw": 118869,
+        "gzip": 45360,
+        "brotli": 40797,
+        "requests": 17
+      },
+      "css": {
+        "raw": 5088,
+        "gzip": 1700,
+        "brotli": 1470,
+        "requests": 1
+      },
+      "html": {
+        "raw": 17726,
+        "gzip": 7237,
+        "brotli": 5622,
+        "requests": 1
+      },
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "lcpMs": 1515.3038500000002,
+        "tbtMs": 0,
+        "cls": 0.04149512203753731
+      },
+      "loc": {
+        "files": 27,
+        "lines": 619
+      }
+    },
+    {
+      "app": "next",
+      "label": "Next.js",
+      "buildSeconds": 2.553619036,
+      "js": {
+        "raw": 481448,
+        "gzip": 143656,
+        "brotli": 123462,
+        "requests": 8
+      },
+      "css": {
+        "raw": 5098,
+        "gzip": 1706,
+        "brotli": 1470,
+        "requests": 1
+      },
+      "html": {
+        "raw": 44193,
+        "gzip": 10459,
+        "brotli": 8326,
+        "requests": 1
+      },
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "lcpMs": 1506.1457999999998,
+        "tbtMs": 8.499999999999773,
+        "cls": 0
+      },
+      "loc": {
+        "files": 28,
+        "lines": 788
+      }
+    },
+    {
+      "app": "nuxt",
+      "label": "Nuxt",
+      "buildSeconds": 2.456958605000007,
+      "js": {
+        "raw": 257136,
+        "gzip": 96278,
+        "brotli": 86381,
+        "requests": 16
+      },
+      "css": {
+        "raw": 5067,
+        "gzip": 1699,
+        "brotli": 1464,
+        "requests": 1
+      },
+      "html": {
+        "raw": 42543,
+        "gzip": 11200,
+        "brotli": 8531,
+        "requests": 1
+      },
+      "lighthouse": {
+        "performance": 90,
+        "accessibility": 100,
+        "lcpMs": 2905.7405,
+        "tbtMs": 3,
+        "cls": 0
+      },
+      "loc": {
+        "files": 28,
+        "lines": 585
+      }
+    },
+    {
+      "app": "solid",
+      "label": "SolidStart",
+      "buildSeconds": 2.2845828410000104,
+      "js": {
+        "raw": 92989,
+        "gzip": 35089,
+        "brotli": 31689,
+        "requests": 11
+      },
+      "css": {
+        "raw": 21943,
+        "gzip": 4676,
+        "brotli": 4145,
+        "requests": 1
+      },
+      "html": {
+        "raw": 52450,
+        "gzip": 10574,
+        "brotli": 7959,
+        "requests": 1
+      },
+      "lighthouse": {
+        "performance": 97,
+        "accessibility": 100,
+        "lcpMs": 2104.9743000000003,
+        "tbtMs": 0,
+        "cls": 0
+      },
+      "loc": {
+        "files": 29,
+        "lines": 852
+      }
+    },
+    {
+      "app": "qwik",
+      "label": "Qwik City",
+      "buildSeconds": 1.6735791880000033,
+      "js": {
+        "raw": 116653,
+        "gzip": 47871,
+        "brotli": 42677,
+        "requests": 22
+      },
+      "css": {
+        "raw": 0,
+        "gzip": 0,
+        "brotli": 0,
+        "requests": 0
+      },
+      "html": {
+        "raw": 109831,
+        "gzip": 25176,
+        "brotli": 16706,
+        "requests": 1
+      },
+      "lighthouse": {
+        "performance": 100,
+        "accessibility": 100,
+        "lcpMs": 1357.0532,
+        "tbtMs": 0,
+        "cls": 0
+      },
+      "loc": {
+        "files": 28,
+        "lines": 772
+      }
+    }
+  ]
+}

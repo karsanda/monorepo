@@ -11,12 +11,17 @@ apps/
   hackernews-svelte/   SvelteKit 2 server-rendered app
   hackernews-solid/    SolidStart 2 server-rendered app (Solid 1.9)
   hackernews-qwik/     Qwik City 1 resumable app
+  landing/             static page linking the five apps, with their measurements
 packages/
   hn-core/             shared HN types, data client, formatting and pagination helpers
   hn-styles/           shared CSS: light/dark theme tokens and component classes
   e2e/                 one Playwright suite that every app must pass
+  metrics/             builds, serves and measures every app (pnpm metrics)
   eslint-config/       shared ESLint configs
   typescript-config/   shared tsconfig bases
+metrics/
+  metrics.json         the latest measurements
+  budgets.json         per-app limits that CI enforces
 ```
 
 ### Features (all five apps)
@@ -73,6 +78,24 @@ Every app implements the same pages at the same URLs:
 - **Tests:** Vitest with Qwik's `createDOM` for the data loaders and components, plus the shared Playwright suite.
 - **Dev server:** http://localhost:3003
 
+## How they compare
+
+Every app's home page, measured by `pnpm metrics` (see [Metrics](#metrics) for how).
+
+<!-- metrics:start -->
+
+| App        |    JS (gzip) | JS (brotli) | CSS (gzip) | HTML (gzip) | Performance | Accessibility |     LCP |  TBT |   CLS | Build | Lines of code |
+| ---------- | -----------: | ----------: | ---------: | ----------: | ----------: | ------------: | ------: | ---: | ----: | ----: | ------------: |
+| SolidStart | 34.3 kB (11) |     30.9 kB |     4.6 kB |     10.3 kB |          97 |           100 | 2105 ms | 0 ms | 0.000 | 2.3 s |           852 |
+| SvelteKit  | 44.3 kB (17) |     39.8 kB |     1.7 kB |      7.1 kB |         100 |           100 | 1515 ms | 0 ms | 0.041 | 1.4 s |           619 |
+| Qwik City  | 46.7 kB (22) |     41.7 kB |     0.0 kB |     24.6 kB |         100 |           100 | 1357 ms | 0 ms | 0.000 | 1.7 s |           772 |
+| Nuxt       | 94.0 kB (16) |     84.4 kB |     1.7 kB |     10.9 kB |          90 |           100 | 2906 ms | 3 ms | 0.000 | 2.5 s |           585 |
+| Next.js    | 140.3 kB (8) |    120.6 kB |     1.7 kB |     10.2 kB |         100 |           100 | 1506 ms | 8 ms | 0.000 | 2.6 s |           788 |
+
+JS is what the browser downloads to show `/` (requests in brackets), compressed locally so every server is measured the same way; CSS inlined into the page counts as HTML. Lighthouse: mobile preset, median of runs. Measured 2026-09-26 on Node 24.14.0.
+
+<!-- metrics:end -->
+
 ## Shared packages
 
 | Package                                                 | What it provides                                                                                                                                                                  |
@@ -101,6 +124,7 @@ pnpm lint         # ESLint
 pnpm typecheck    # tsc / vue-tsc / svelte-check
 pnpm format       # Prettier (write)
 pnpm format:check # Prettier (check only, as in CI)
+pnpm metrics      # build, serve and measure every app (see Metrics)
 ```
 
 Scope to one app with a filter, e.g. `pnpm --filter hackernews-nuxt dev`.
@@ -118,9 +142,30 @@ pnpm --filter @repo/e2e exec playwright install chromium   # once
 APP=svelte pnpm --filter @repo/e2e e2e   # or next, nuxt, solid, qwik
 ```
 
+## Metrics
+
+[`packages/metrics`](packages/metrics) builds and serves each app's production build (the same commands the e2e suite uses), then records:
+
+- **Build time** of the production build.
+- **JS, CSS and HTML for `/`**: what a fresh Chromium downloads until the network is idle, with service workers blocked. Each file is gzipped and brotli-compressed locally, so every server's own compression settings are ignored.
+- **Lighthouse** performance and accessibility scores, LCP, TBT and CLS: the mobile preset, three runs, keeping the run with the median performance score.
+- **Lines of code**: non-blank lines of hand-written source (tests excluded).
+
+```sh
+pnpm --filter @repo/e2e exec playwright install chromium   # once
+pnpm metrics                        # all apps, writes metrics/metrics.json and metrics.md
+pnpm metrics --apps next,qwik       # only some apps; the others keep their last results
+pnpm metrics --skip-build --runs 1  # quicker, reusing existing builds
+pnpm metrics --readme               # also refresh the table above
+pnpm metrics --report-only --readme # just rewrite the table from metrics.json
+pnpm metrics --check                # fail if an app is over metrics/budgets.json
+```
+
+[`metrics/budgets.json`](metrics/budgets.json) caps each app's gzipped JS for `/` and sets a minimum accessibility score. Performance scores vary too much between machines to budget.
+
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (`svelte`, `next`, `nuxt`, `solid` and `qwik`) and uploads traces when a test fails.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (`svelte`, `next`, `nuxt`, `solid` and `qwik`) and uploads traces when a test fails. A `metrics` job runs `pnpm metrics --check`, which fails when an app goes over its budget, writes the table to the job summary and uploads `metrics/` as an artifact.
 
 To reproduce a CI run locally:
 
@@ -145,6 +190,8 @@ GitHub runners use UTC, so any test that involves dates should freeze time to an
 ## Deployment
 
 The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`, and the Next.js app deploys to Vercel natively (project root `apps/hackernews-next`, Next.js framework preset). The Nuxt app deploys to Vercel through Nitro's `vercel` preset, which Nitro picks automatically when it builds on Vercel (project root `apps/hackernews-nuxt`, Nuxt.js framework preset). The SolidStart app builds through Nitro's Vite plugin, which also picks the Vercel preset on Vercel (project root `apps/hackernews-solid`). The Qwik City app builds with its Vercel edge adapter into `.vercel/output` (project root `apps/hackernews-qwik`, build command `pnpm build`).
+
+The landing page ([`apps/landing`](apps/landing)) is static: Vite renders it at build time from `metrics/metrics.json`, and it ships no JavaScript. Deploy it with project root `apps/landing` (Vite preset) and set `LANDING_URL_NEXT`, `LANDING_URL_NUXT`, `LANDING_URL_SVELTE`, `LANDING_URL_SOLID` and `LANDING_URL_QWIK` to the apps' URLs so its cards link to them (without them, each card links to the app's source).
 
 ## License
 

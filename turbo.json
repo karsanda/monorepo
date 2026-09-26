@@ -18,6 +18,12 @@
       "dependsOn": ["^build", "hackernews-nuxt#typecheck", "hackernews-nuxt#test"],
       "outputs": [".output/**", ".vercel/**"]
     },
+    "landing#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/metrics/metrics.json"],
+      "outputs": ["dist/**"],
+      "env": ["LANDING_URL_*"]
+    },
     "lint": {},
     "typecheck": {},
     "test": {},
