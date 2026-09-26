@@ -32,11 +32,11 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-  .list-item {
-    color: var(--gray);
+.list-item {
+  color: var(--gray);
 
-    & + & {
-      margin-top: 10px;
-    }
+  & + & {
+    margin-top: 10px;
   }
+}
 </style>

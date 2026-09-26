@@ -11,15 +11,18 @@ test('should render story item correctly', () => {
   render(
     <BrowserRouter>
       <Story data={story} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.getByRole('link', { name: story.title })).toHaveAttribute('href', story.url)
   expect(screen.getByRole('link', { name: story.by })).toHaveAttribute('href', `/user/${story.by}`)
-  expect(screen.getByRole('link', { name: `${story.descendants} comments` })).toHaveAttribute('href', '/comments/1')
+  expect(screen.getByRole('link', { name: `${story.descendants} comments` })).toHaveAttribute(
+    'href',
+    '/comments/1',
+  )
 
   expect(screen.getByText(`points`, { exact: false })).toHaveTextContent(
-    `${story.score} points by ${story.by} about 1 hour ago | ${story.descendants} comments`
+    `${story.score} points by ${story.by} about 1 hour ago | ${story.descendants} comments`,
   )
 })
 
@@ -27,7 +30,7 @@ test('should be able to render text when showText is true', () => {
   render(
     <BrowserRouter>
       <Story data={mockStoryWithText(3)} showText />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.getByTestId('dummy-paragraph')).toHaveTextContent('This is a paragraph')
 })
@@ -37,17 +40,19 @@ test('should not render comment page link if there is no comment', () => {
   render(
     <BrowserRouter>
       <Story data={story} showText />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
-  expect(screen.queryByRole('link', { name: `${story.descendants} comments` })).not.toBeInTheDocument()
+  expect(
+    screen.queryByRole('link', { name: `${story.descendants} comments` }),
+  ).not.toBeInTheDocument()
 })
 
 test('should render time only if type is job', () => {
-  const story = { ...mockJob(5), time: oneHourAgo}
+  const story = { ...mockJob(5), time: oneHourAgo }
   render(
     <BrowserRouter>
       <Story data={story} showText />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.getByText('about 1 hour ago')).toBeInTheDocument()
 })
@@ -57,7 +62,7 @@ test('should render null if data is deleted', () => {
   render(
     <BrowserRouter>
       <Story data={deletedStory} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
 })
@@ -67,7 +72,7 @@ test('should render null if data is dead', () => {
   render(
     <BrowserRouter>
       <Story data={deletedStory} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
 })

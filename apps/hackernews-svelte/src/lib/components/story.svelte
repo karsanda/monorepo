@@ -7,15 +7,20 @@
 </script>
 
 {#if !data.dead && !data.deleted && data.by}
-  <article class='item'>
+  <article class="item">
     {#if data.url}
       <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external story URL, not an app route -->
-      <a class='title-link' href={data.url} target='_blank' rel='noreferrer'>
-        <h2 class='title'>{data.title}</h2>
+      <a class="title-link" href={data.url} target="_blank" rel="noreferrer">
+        <h2 class="title">{data.title}</h2>
       </a>
     {:else}
-      <a class='title-link' href={resolve('/comments/[id]', { id: String(data.id) })} target='_blank' rel='noreferrer'>
-        <h2 class='title'>{data.title}</h2>
+      <a
+        class="title-link"
+        href={resolve('/comments/[id]', { id: String(data.id) })}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <h2 class="title">{data.title}</h2>
       </a>
     {/if}
 

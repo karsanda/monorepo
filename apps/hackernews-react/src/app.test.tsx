@@ -7,7 +7,7 @@ test('should render successfully', () => {
   const { baseElement } = render(
     <BrowserRouter>
       <App />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(baseElement).toBeTruthy()
 
@@ -20,7 +20,7 @@ describe('navigation', () => {
     render(
       <BrowserRouter>
         <App />
-      </BrowserRouter>
+      </BrowserRouter>,
     )
   })
 
@@ -41,7 +41,7 @@ describe('navigation', () => {
     ['Best', 'beststories'],
     ['Ask', 'askstories'],
     ['Show', 'showstories'],
-    ['Jobs', 'jobstories']
+    ['Jobs', 'jobstories'],
   ])('when %s is clicked, should be able to navigate to /%s', async (text, name) => {
     await userEvent.click(screen.getByText(text))
     expect(screen.getByRole('main', { name })).toBeTruthy()
@@ -52,7 +52,7 @@ test('should be able to render user page', () => {
   render(
     <MemoryRouter initialEntries={['/user/johndoe']}>
       <App />
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 
   expect(screen.getByRole('main', { name: 'user' })).toBeTruthy()
@@ -62,7 +62,7 @@ test('should be able to render comments page', () => {
   render(
     <MemoryRouter initialEntries={['/comments/123']}>
       <App />
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 
   expect(screen.getByRole('main', { name: 'comments' })).toBeTruthy()

@@ -6,14 +6,14 @@
   let { data }: PageProps = $props()
 </script>
 
-<main class='main' aria-label='user'>
-  <div class='grid'>
+<main class="main" aria-label="user">
+  <div class="grid">
     <span>User:</span><span>{data.user.id}</span>
     <span>Karma:</span><span>{data.user.karma}</span>
     <span>Created:</span><span>{format(data.user.created * 1000, 'MMMM dd, yyyy')}</span>
     {#if data.user.about}
       <span>About:</span>
-      <span class='about'>
+      <span class="about">
         {@html data.user.about}
       </span>
     {/if}

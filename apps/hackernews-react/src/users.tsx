@@ -87,7 +87,7 @@ function Submission({ id, filter }: SubmissionProps) {
 
   if (!data) return null
 
-  switch(data.type) {
+  switch (data.type) {
     case 'story':
       return filter !== 'COMMENTS' ? (
         <li>
@@ -110,20 +110,28 @@ export default function Users() {
   const { data } = useFetch<UserData>(userid ? userURI(userid) : null)
   const [filter, setFilter] = useState<SubmissionFilter>('STORIES')
 
-  if (!data) return <Main aria-label='user' />
+  if (!data) return <Main aria-label="user" />
 
   const { id, created, karma, about, submitted } = data
 
   const switchTab = (state: SubmissionFilter) => () => setFilter(state)
-  const setActiveClass = (state: SubmissionFilter) => filter === state ? 'active' : undefined
+  const setActiveClass = (state: SubmissionFilter) => (filter === state ? 'active' : undefined)
 
   return (
-    <Main aria-label='user'>
+    <Main aria-label="user">
       <Grid>
-        <span>User:</span><span>{id}</span>
-        <span>Karma:</span><span>{karma}</span>
-        <span>Created:</span><span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
-        {about && <><span>About:</span><About dangerouslySetInnerHTML={{ __html: about }} /></>}
+        <span>User:</span>
+        <span>{id}</span>
+        <span>Karma:</span>
+        <span>{karma}</span>
+        <span>Created:</span>
+        <span>{format(created * 1000, 'MMMM dd, yyyy')}</span>
+        {about && (
+          <>
+            <span>About:</span>
+            <About dangerouslySetInnerHTML={{ __html: about }} />
+          </>
+        )}
       </Grid>
       <Submissions data-filter={filter}>
         <TabButton onClick={switchTab('STORIES')} className={setActiveClass('STORIES')}>
@@ -133,9 +141,9 @@ export default function Users() {
           Comments
         </TabButton>
         <List>
-          {(submitted && submitted.length > 0) && submitted.map(item => (
-            <Submission key={item} id={item} filter={filter} />
-          ))}
+          {submitted &&
+            submitted.length > 0 &&
+            submitted.map((item) => <Submission key={item} id={item} filter={filter} />)}
         </List>
       </Submissions>
     </Main>

@@ -5,7 +5,14 @@ import tseslint from 'typescript-eslint'
 
 /** Shared rules for every TypeScript package in the repo. */
 export default defineConfig([
-  globalIgnores(['**/node_modules', '**/dist', '**/build', '**/coverage', '**/.svelte-kit', '**/.vercel']),
+  globalIgnores([
+    '**/node_modules',
+    '**/dist',
+    '**/build',
+    '**/coverage',
+    '**/.svelte-kit',
+    '**/.vercel',
+  ]),
   js.configs.recommended,
   tseslint.configs.recommended,
   {

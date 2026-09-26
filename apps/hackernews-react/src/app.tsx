@@ -24,17 +24,17 @@ const App = () => (
       <NavBar />
     </Header>
     <Routes>
-      <Route index element={<Stories type='topstories' />} />
-      <Route path='/topstories' element={<Stories type='topstories' />} />
-      <Route path='/newstories' element={<Stories type='newstories' />} />
-      <Route path='/beststories' element={<Stories type='beststories' />} />
-      <Route path='/askstories' element={<Stories type='askstories' />} />
-      <Route path='/showstories' element={<Stories type='showstories' />} />
-      <Route path='/jobstories' element={<Stories type='jobstories' />} />
-      <Route path='/comments/:itemid' element={<Comments />} />
-      <Route path='/user/:userid' element={<Users />} />
+      <Route index element={<Stories type="topstories" />} />
+      <Route path="/topstories" element={<Stories type="topstories" />} />
+      <Route path="/newstories" element={<Stories type="newstories" />} />
+      <Route path="/beststories" element={<Stories type="beststories" />} />
+      <Route path="/askstories" element={<Stories type="askstories" />} />
+      <Route path="/showstories" element={<Stories type="showstories" />} />
+      <Route path="/jobstories" element={<Stories type="jobstories" />} />
+      <Route path="/comments/:itemid" element={<Comments />} />
+      <Route path="/user/:userid" element={<Users />} />
     </Routes>
-    <Footer aria-label='footer'>
+    <Footer aria-label="footer">
       ©{new Date().getFullYear()} Karsanda
       <a href="https://github.com/karsanda/monorepo/tree/main/apps/hackernews-react">
         Hacker News - React

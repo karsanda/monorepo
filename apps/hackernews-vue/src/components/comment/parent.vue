@@ -15,17 +15,20 @@ onBeforeMount(async () => {
 
 <template>
   <span v-if="item?.type === 'story'" class="story">
-    on <router-link :to="`/comments/${item.id}`" target="_blank" rel="noreferrer">{{ item.title }}</router-link> 
+    on
+    <router-link :to="`/comments/${item.id}`" target="_blank" rel="noreferrer">{{
+      item.title
+    }}</router-link>
   </span>
   <CommentParent v-else-if="item?.type === 'comment'" :item-id="item.parent" />
 </template>
 
 <style scoped>
-  .story {
-    color: var(--gray);
+.story {
+  color: var(--gray);
 
-    & > a {
-      color: var(--gray);
-    }
+  & > a {
+    color: var(--gray);
   }
+}
 </style>

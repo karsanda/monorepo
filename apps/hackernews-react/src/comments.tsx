@@ -21,17 +21,18 @@ export default function Comments() {
   const { itemid } = useParams()
   const { data } = useFetch<StoryData | CommentData>(itemid ? itemURI(itemid) : null)
 
-  if (!data) return (
-    <Main aria-label='comments'>
-      <ArticleShimmer />
-    </Main>
-  )
+  if (!data)
+    return (
+      <Main aria-label="comments">
+        <ArticleShimmer />
+      </Main>
+    )
 
   return (
-    <Main aria-label='comments'>
+    <Main aria-label="comments">
       {data.type === 'story' && <Story data={data} showText />}
       <CommentsList>
-        {data.kids && data.kids.map(kid => <CommentRenderer key={kid} id={kid} />)}
+        {data.kids && data.kids.map((kid) => <CommentRenderer key={kid} id={kid} />)}
       </CommentsList>
     </Main>
   )

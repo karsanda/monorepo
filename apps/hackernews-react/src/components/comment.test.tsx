@@ -19,7 +19,7 @@ test('should be able to render successfully', () => {
   render(
     <BrowserRouter>
       <Comment data={comment} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.getByTestId('dummy-comment')).toHaveTextContent('This is a comment')
@@ -36,7 +36,7 @@ test('should be able to render its story parent successfully', () => {
   render(
     <BrowserRouter>
       <Comment data={comment} showParent />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.getByTestId('story-444')).toBeInTheDocument()
@@ -55,7 +55,7 @@ test('should be able to render its story parent successfully when comment has ma
   render(
     <BrowserRouter>
       <Comment data={comment} showParent />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.getByTestId('story-4')).toBeInTheDocument()
@@ -72,7 +72,7 @@ test('should render no information when type is not story or comment', () => {
   render(
     <BrowserRouter>
       <Comment data={comment} showParent />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.queryByTestId('story-444')).not.toBeInTheDocument()
@@ -80,10 +80,11 @@ test('should render no information when type is not story or comment', () => {
 
 test('should render no information when story or comment is deleted or dead', () => {
   mockedUseFetch.mockImplementation((url: string) => {
-    if (url === '/item/444') return {
-      state: 'fetched',
-      data: { ...mockStory(444), deleted: true, dead: true }
-    }
+    if (url === '/item/444')
+      return {
+        state: 'fetched',
+        data: { ...mockStory(444), deleted: true, dead: true },
+      }
 
     return { state: 'fetched' }
   })
@@ -92,7 +93,7 @@ test('should render no information when story or comment is deleted or dead', ()
   render(
     <BrowserRouter>
       <Comment data={comment} showParent />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.queryByTestId('story-444')).not.toBeInTheDocument()
@@ -103,7 +104,7 @@ test('should render null if data is deleted', () => {
   render(
     <BrowserRouter>
       <Comment data={deletedComment} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
 })
@@ -113,7 +114,7 @@ test('should render null if data is dead', () => {
   render(
     <BrowserRouter>
       <Comment data={deletedComment} />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
   expect(screen.queryByRole('article')).not.toBeInTheDocument()
 })
@@ -133,13 +134,13 @@ test('should collapse the children of comments when arrow is clicked', async () 
   render(
     <BrowserRouter>
       <Comment data={commentWithKid} showParent />
-    </BrowserRouter>
+    </BrowserRouter>,
   )
 
   expect(screen.getByTestId('comment-555')).toBeInTheDocument()
   expect(screen.getByTestId('comment-666')).toBeInTheDocument()
 
-  await userEvent.click(await screen.findByRole('button', { name: 'collapsible-button-555'}))
+  await userEvent.click(await screen.findByRole('button', { name: 'collapsible-button-555' }))
 
   expect(screen.getByTestId('comment-555')).toBeInTheDocument()
   expect(screen.queryByTestId('comment-666')).not.toBeInTheDocument()

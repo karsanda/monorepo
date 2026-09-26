@@ -16,9 +16,9 @@ function renderUserPage(userid: string) {
   return render(
     <MemoryRouter initialEntries={[`/user/${userid}`]}>
       <Routes>
-        <Route path='/user/:userid' element={<Users />} />
+        <Route path="/user/:userid" element={<Users />} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 }
 
@@ -66,8 +66,8 @@ test('should be able to see user stories & comments', async () => {
 
   renderUserPage('dummy-name')
 
-  const storyFilterButton = await screen.findByRole('button', { name: 'Submissions'})
-  const commentFilterButton = await screen.findByRole('button', { name: 'Comments'})
+  const storyFilterButton = await screen.findByRole('button', { name: 'Submissions' })
+  const commentFilterButton = await screen.findByRole('button', { name: 'Comments' })
 
   expect(screen.getByTestId('story-11')).toBeInTheDocument()
   expect(screen.getByTestId('story-12')).toBeInTheDocument()

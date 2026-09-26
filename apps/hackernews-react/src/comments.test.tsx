@@ -13,9 +13,9 @@ function renderCommentsPage(itemid: string) {
   return render(
     <MemoryRouter initialEntries={[`/comments/${itemid}`]}>
       <Routes>
-        <Route path='/comments/:itemid' element={<Comments />} />
+        <Route path="/comments/:itemid" element={<Comments />} />
       </Routes>
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 }
 
@@ -36,8 +36,8 @@ test('should render story with text and comment', () => {
         data: {
           ...mockStoryWithText(777),
           descendants: 1,
-          kids: [555]
-        }
+          kids: [555],
+        },
       }
     }
 
@@ -50,8 +50,8 @@ test('should render story with text and comment', () => {
         state: 'fetched',
         data: {
           ...mockComment(555, 777),
-          kids: undefined
-        }
+          kids: undefined,
+        },
       }
     }
 
@@ -70,8 +70,8 @@ test('it should render shimmer on comment if data is undefined', () => {
         data: {
           ...mockStoryWithText(777),
           descendants: 1,
-          kids: [444]
-        }
+          kids: [444],
+        },
       }
     }
 

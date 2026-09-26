@@ -1,26 +1,31 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import type { CommentData } from '@repo/hn-core'
-  import CommentInfo from './info.vue'
-  import CommentRenderer from './comment-renderer.vue'
+import { ref } from 'vue'
+import type { CommentData } from '@repo/hn-core'
+import CommentInfo from './info.vue'
+import CommentRenderer from './comment-renderer.vue'
 
-  defineProps<{
-    comment: CommentData
-    disableChildren: boolean
-    showParent: boolean
-  }>()
+defineProps<{
+  comment: CommentData
+  disableChildren: boolean
+  showParent: boolean
+}>()
 
-  const isCollapse = ref(false)
+const isCollapse = ref(false)
 
-  function collapse() {
-    isCollapse.value = !isCollapse.value
-  }
+function collapse() {
+  isCollapse.value = !isCollapse.value
+}
 </script>
 
 <template>
   <article class="container" :data-disable-children="disableChildren">
     <div class="header">
-      <button class="collapsible-button" :aria-label="`collapsible-button-${comment.id}`" @click="collapse()" v-if="comment.kids && !disableChildren">
+      <button
+        class="collapsible-button"
+        :aria-label="`collapsible-button-${comment.id}`"
+        @click="collapse()"
+        v-if="comment.kids && !disableChildren"
+      >
         <span v-if="isCollapse">▼</span>
         <span v-else>▲</span>
       </button>
@@ -34,54 +39,55 @@
 </template>
 
 <style scoped>
-  .container {
-    margin-right: 10px;
+.container {
+  margin-right: 10px;
+  margin-left: 5px;
+
+  & + & {
+    margin-top: 15px;
+  }
+
+  &[data-disable-children='true'] > div {
     margin-left: 5px;
+  }
+}
 
-    & + & {
-      margin-top: 15px;
-    }
+.header {
+  display: flex;
+  align-items: center;
+}
 
-    &[data-disable-children="true"] > div {
-      margin-left: 5px;
-    }
+.content {
+  margin-left: 17px;
+  font-size: 12px;
+  word-break: break-word;
+
+  & > :deep(p) {
+    margin: 10px 0;
   }
 
-  .header {
-    display: flex;
-    align-items: center;
+  & :deep(code),
+  & :deep(pre) {
+    white-space: pre-wrap;
   }
+}
 
-  .content {
-    margin-left: 17px;
-    font-size: 12px;
-    word-break: break-word;
+.collapsible-button {
+  font-size: 12px;
+  background: none;
+  outline: none;
+  border: none;
+  margin: 0 5px 0 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--gray);
+}
 
-    & > :deep(p) {
-      margin: 10px 0;
-    }
+.children {
+  margin-left: 25px;
 
-    & :deep(code), & :deep(pre) {
-      white-space: pre-wrap;
-    }
+  & .header {
+    margin-top: 10px;
   }
-
-  .collapsible-button {
-    font-size: 12px;
-    background: none;
-    outline: none;
-    border: none;
-    margin: 0 5px 0 0;
-    padding: 0;
-    cursor: pointer;
-    color: var(--gray);
-  }
-
-  .children {
-    margin-left: 25px;
-
-    & .header {
-      margin-top: 10px;
-    }
-  }
+}
 </style>

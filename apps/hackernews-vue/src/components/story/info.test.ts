@@ -22,7 +22,7 @@ afterEach(() => {
 test('should render created time only if story type is job', () => {
   const wrapper = mount(Info, {
     global: {
-      plugins: [router]
+      plugins: [router],
     },
     props: {
       story: {
@@ -31,9 +31,9 @@ test('should render created time only if story type is job', () => {
         by: '',
         id: 1,
         score: 0,
-        title: ''
-      }
-    }
+        title: '',
+      },
+    },
   })
 
   expect(wrapper.text()).toContain('about 5 hours ago')
@@ -42,7 +42,7 @@ test('should render created time only if story type is job', () => {
 test('should render story point, user, created time, and # of comment if story.descendants exists', () => {
   const wrapper = mount(Info, {
     global: {
-      plugins: [router]
+      plugins: [router],
     },
     props: {
       story: {
@@ -52,9 +52,9 @@ test('should render story point, user, created time, and # of comment if story.d
         time: 1701489130,
         type: 'story',
         id: 1,
-        title: ''
-      }
-    }
+        title: '',
+      },
+    },
   })
 
   expect(wrapper.text()).toContain('320 points by dummy user about 5 hours ago | 32 comments')
@@ -63,7 +63,7 @@ test('should render story point, user, created time, and # of comment if story.d
 test('should render story point, user, create time if story.descendants exists', () => {
   const wrapper = mount(Info, {
     global: {
-      plugins: [router]
+      plugins: [router],
     },
     props: {
       story: {
@@ -72,11 +72,10 @@ test('should render story point, user, create time if story.descendants exists',
         time: 1701489130,
         type: 'story',
         id: 1,
-        title: ''
-      }
-    }
+        title: '',
+      },
+    },
   })
 
   expect(wrapper.text()).toContain('320 points by dummy user about 5 hours ago')
 })
-

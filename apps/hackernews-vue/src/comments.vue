@@ -18,7 +18,7 @@ watch(
 </script>
 
 <template>
-  <main class='main' aria-label="comments">
+  <main class="main" aria-label="comments">
     <StoryRenderer v-if="item?.type === 'story'" :story-id="item.id" :show-text="true" />
     <section class="comment-list">
       <CommentRenderer v-for="comment in item?.kids" :key="comment" :comment-id="comment" />
@@ -27,8 +27,8 @@ watch(
 </template>
 
 <style scoped>
-  .comment-list {
-    margin-top: 15px;
-    margin-bottom: 10px;
-  }
+.comment-list {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
 </style>

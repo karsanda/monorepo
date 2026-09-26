@@ -29,17 +29,22 @@ onBeforeMount(async () => {
     <li v-if="renderAsList" class="list-item">
       <Comment :comment="comment" :disable-children="disableChildren" :show-parent="showParent" />
     </li>
-    <Comment v-else :comment="comment" :disable-children="disableChildren" :show-parent="showParent" />
+    <Comment
+      v-else
+      :comment="comment"
+      :disable-children="disableChildren"
+      :show-parent="showParent"
+    />
   </template>
 </template>
 
 <style scoped>
-  .list-item {
-    list-style: '▲';
+.list-item {
+  list-style: '▲';
 
-    &::marker {
-      font-size: 11px;
-      color: var(--gray);
-    }
+  &::marker {
+    font-size: 11px;
+    color: var(--gray);
   }
+}
 </style>

@@ -4,15 +4,15 @@ The same [Hacker News](https://news.ycombinator.com/) reader built in **React**,
 
 ## Apps and packages
 
-| Path                                                   | What                                                               | Dev port |
-| ------------------------------------------------------ | ------------------------------------------------------------------ | -------- |
-| [`apps/hackernews-react`](apps/hackernews-react)       | React 19, React Router 8, Emotion, client-side via Firebase SDK     | 3000     |
-| [`apps/hackernews-vue`](apps/hackernews-vue)           | Vue 3.5 (`<script setup>`), vue-router 5, client-side via Firebase | 3001     |
-| [`apps/hackernews-svelte`](apps/hackernews-svelte)     | Svelte 5 (runes) + SvelteKit 2, server loads over REST, Vercel      | 5173     |
-| [`packages/hn-core`](packages/hn-core)                 | Shared types (`StoryData`, …), pagination and API path helpers     |          |
-| [`packages/firebase-adapter`](packages/firebase-adapter) | Thin wrapper around the HN Firebase Realtime Database            |          |
-| [`packages/eslint-config`](packages/eslint-config)     | Shared ESLint flat configs (base / react / vue / svelte)           |          |
-| [`packages/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                         |          |
+| Path                                                       | What                                                               | Dev port |
+| ---------------------------------------------------------- | ------------------------------------------------------------------ | -------- |
+| [`apps/hackernews-react`](apps/hackernews-react)           | React 19, React Router 8, Emotion, client-side via Firebase SDK    | 3000     |
+| [`apps/hackernews-vue`](apps/hackernews-vue)               | Vue 3.5 (`<script setup>`), vue-router 5, client-side via Firebase | 3001     |
+| [`apps/hackernews-svelte`](apps/hackernews-svelte)         | Svelte 5 (runes) + SvelteKit 2, server loads over REST, Vercel     | 5173     |
+| [`packages/hn-core`](packages/hn-core)                     | Shared types (`StoryData`, …), pagination and API path helpers     |          |
+| [`packages/firebase-adapter`](packages/firebase-adapter)   | Thin wrapper around the HN Firebase Realtime Database              |          |
+| [`packages/eslint-config`](packages/eslint-config)         | Shared ESLint flat configs (base / react / vue / svelte)           |          |
+| [`packages/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                            |          |
 
 ## Requirements
 

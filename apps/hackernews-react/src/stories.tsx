@@ -43,13 +43,17 @@ const Container = styled.li`
 
 const StoryRenderer = ({ id }: { id: number }) => {
   const { data } = useFetch<StoryData>(itemURI(id))
-  return data
-    ? <Container><Story data={data} showText={false} /></Container>
-    : <ListItemShimmer />
+  return data ? (
+    <Container>
+      <Story data={data} showText={false} />
+    </Container>
+  ) : (
+    <ListItemShimmer />
+  )
 }
 
 export default function Stories({ type }: StoriesProps) {
-  const [ params ] = useSearchParams()
+  const [params] = useSearchParams()
   const response = useFetch<number[]>(typeURI(type))
 
   const page = getPage(params.get('page'))
@@ -58,11 +62,15 @@ export default function Stories({ type }: StoriesProps) {
   return (
     <Main aria-label={type}>
       <List start={firstItemIndex(page)}>
-        {paginateData(data, page).map((id) => <StoryRenderer key={id} id={id} />)}
+        {paginateData(data, page).map((id) => (
+          <StoryRenderer key={id} id={id} />
+        ))}
       </List>
       {page < pageCount(data.length) && (
         <SeeMore>
-          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">Next Page</Link>
+          <Link to={`/${type}?page=${page + 1}`} rel="noreferrer">
+            Next Page
+          </Link>
         </SeeMore>
       )}
     </Main>

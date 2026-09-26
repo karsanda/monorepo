@@ -11,23 +11,24 @@
 </script>
 
 {#if data.type === 'job'}
-  <p class='subtitle'>{createdTime}</p>
+  <p class="subtitle">{createdTime}</p>
 {:else if data.descendants && data.descendants > 0}
-  <p class='subtitle'>
+  <p class="subtitle">
     {data.score} points by
     <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
     {createdTime} |
     <a href={resolve('/comments/[id]', { id: String(data.id) })}>{data.descendants} comments</a>
   </p>
 {:else}
-  <p class='subtitle'>
-    {data.score} points by <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
+  <p class="subtitle">
+    {data.score} points by
+    <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
     {createdTime}
   </p>
 {/if}
 
 {#if showText && data.text}
-  <div class='text'>{@html data.text}</div>
+  <div class="text">{@html data.text}</div>
 {/if}
 
 <style>

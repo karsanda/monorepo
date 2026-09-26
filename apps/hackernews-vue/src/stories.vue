@@ -28,7 +28,7 @@ watch(
 </script>
 
 <template>
-  <main class='main' aria-label="stories">
+  <main class="main" aria-label="stories">
     <ol class="list" :start="firstItemIndex(page)">
       <StoryRenderer
         v-for="story in paginateData(stories, page)"
@@ -42,7 +42,11 @@ watch(
       <router-link class="prev-page" :to="`/${type}?page=${page - 1}`" v-if="page > 1">
         Prev Page
       </router-link>
-      <router-link class="next-page" :to="`/${type}?page=${page + 1}`" v-if="page < pageCount(stories.length)">
+      <router-link
+        class="next-page"
+        :to="`/${type}?page=${page + 1}`"
+        v-if="page < pageCount(stories.length)"
+      >
         Next Page
       </router-link>
     </section>
@@ -50,10 +54,10 @@ watch(
 </template>
 
 <style scoped>
-  .pagination {
-    display: flex;
-    margin: 15px 32px 5px;
-    justify-content: center;
-    gap: 15px;
-  }
+.pagination {
+  display: flex;
+  margin: 15px 32px 5px;
+  justify-content: center;
+  gap: 15px;
+}
 </style>

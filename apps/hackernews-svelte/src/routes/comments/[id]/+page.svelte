@@ -6,12 +6,12 @@
   let { data }: PageProps = $props()
 </script>
 
-<main class='main' aria-label='comments'>
+<main class="main" aria-label="comments">
   {#if data.story.type === 'story'}
     <Story data={data.story} showText={true} />
   {/if}
 
-  <section class='comment-list'>
+  <section class="comment-list">
     {#await data.comments then comments}
       {#each comments as comment, i (comment?.id ?? i)}
         {#if comment}

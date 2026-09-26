@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import { formatDistance } from 'date-fns'
-  import type { CommentData } from '@repo/hn-core'
-  import Parent from './parent.vue'
+import { formatDistance } from 'date-fns'
+import type { CommentData } from '@repo/hn-core'
+import Parent from './parent.vue'
 
-  defineProps<{
-    comment: CommentData
-    showParent: boolean
-  }>()
+defineProps<{
+  comment: CommentData
+  showParent: boolean
+}>()
 </script>
 
 <template>
@@ -22,17 +22,17 @@
 </template>
 
 <style scoped>
-  .info {
-    margin: 5px 0;
+.info {
+  margin: 5px 0;
+  color: var(--gray);
+  font-size: 11px;
+
+  & > a {
     color: var(--gray);
-    font-size: 11px;
-
-    & > a {
-      color: var(--gray);
-    }
   }
+}
 
-  .time {
-    margin-left: 4px;
-  }
+.time {
+  margin-left: 4px;
+}
 </style>

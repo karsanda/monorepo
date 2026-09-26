@@ -1,4 +1,11 @@
-import { getPage, pageCount, paginateData, typeURI, type StoryData, type StoryType } from '@repo/hn-core'
+import {
+  getPage,
+  pageCount,
+  paginateData,
+  typeURI,
+  type StoryData,
+  type StoryType,
+} from '@repo/hn-core'
 import { getItem, getJSON } from '$lib/hn'
 import type { PageServerLoad } from './$types'
 

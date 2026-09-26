@@ -6,7 +6,7 @@ test('should render successfully', () => {
   const { baseElement } = render(
     <MemoryRouter initialEntries={['/']}>
       <NavBar />
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 
   expect(baseElement).toBeTruthy()
@@ -16,7 +16,7 @@ test('active page should be bold', () => {
   render(
     <MemoryRouter initialEntries={['/askstories']}>
       <NavBar />
-    </MemoryRouter>
+    </MemoryRouter>,
   )
 
   expect(screen.getByRole('link', { name: 'Ask' })).toHaveStyle('font-weight: 600')

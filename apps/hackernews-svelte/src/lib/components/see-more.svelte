@@ -11,16 +11,12 @@
   let { pagination, slug }: { pagination: Pagination; slug: StoryType } = $props()
 </script>
 
-<div class='see-more'>
+<div class="see-more">
   {#if pagination.prev}
-    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page - 1}">
-      Prev Page
-    </a>
+    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page - 1}"> Prev Page </a>
   {/if}
   {#if pagination.next}
-    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page + 1}">
-      Next Page
-    </a>
+    <a href="{resolve('/[[slug=storytype]]', { slug })}?page={pagination.page + 1}"> Next Page </a>
   {/if}
 </div>
 

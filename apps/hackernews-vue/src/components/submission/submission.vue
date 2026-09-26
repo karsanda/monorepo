@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import type { SubmissionFilter } from '@repo/hn-core'
-  import StoryRenderer from '../story/story-renderer.vue'
-  import CommentRenderer from '../comment/comment-renderer.vue'
+import type { SubmissionFilter } from '@repo/hn-core'
+import StoryRenderer from '../story/story-renderer.vue'
+import CommentRenderer from '../comment/comment-renderer.vue'
 
-  const { id, filter } = defineProps<{
-    id: number
-    filter: SubmissionFilter
-  }>()
+const { id, filter } = defineProps<{
+  id: number
+  filter: SubmissionFilter
+}>()
 </script>
 
 <template>

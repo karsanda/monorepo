@@ -42,12 +42,24 @@ function NavBar() {
   const { pathname } = useLocation()
   return (
     <Nav>
-      <Link to='/' data-page='topstories'><Title>Hacker News - React</Title></Link>
-      <Link to='/newstories' css={NavLink(pathname, 'newstories')} data-page='newstories'>New</Link>
-      <Link to='/beststories' css={NavLink(pathname, 'beststories')} data-page='beststories'>Best</Link>
-      <Link to='/askstories' css={NavLink(pathname, 'askstories')} data-page='askstories'>Ask</Link>
-      <Link to='/showstories' css={NavLink(pathname, 'showstories')} data-page='showstories'>Show</Link>
-      <Link to='/jobstories' css={NavLink(pathname, 'jobstories')} data-page='jobstories'>Jobs</Link>
+      <Link to="/" data-page="topstories">
+        <Title>Hacker News - React</Title>
+      </Link>
+      <Link to="/newstories" css={NavLink(pathname, 'newstories')} data-page="newstories">
+        New
+      </Link>
+      <Link to="/beststories" css={NavLink(pathname, 'beststories')} data-page="beststories">
+        Best
+      </Link>
+      <Link to="/askstories" css={NavLink(pathname, 'askstories')} data-page="askstories">
+        Ask
+      </Link>
+      <Link to="/showstories" css={NavLink(pathname, 'showstories')} data-page="showstories">
+        Show
+      </Link>
+      <Link to="/jobstories" css={NavLink(pathname, 'jobstories')} data-page="jobstories">
+        Jobs
+      </Link>
     </Nav>
   )
 }

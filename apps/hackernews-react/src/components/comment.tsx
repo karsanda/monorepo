@@ -25,7 +25,7 @@ const Container = styled.article`
     margin-top: 15px;
   }
 
-  &[data-disable-children="true"] > div {
+  &[data-disable-children='true'] > div {
     margin-left: 5px;
   }
 `
@@ -65,7 +65,8 @@ const Content = styled.div`
     margin: 10px 0;
   }
 
-  & code, & pre {
+  & code,
+  & pre {
     white-space: pre-wrap;
   }
 `
@@ -73,7 +74,7 @@ const Content = styled.div`
 const Children = styled.div`
   margin-left: 25px;
 
-  & div[data-testid="header"] {
+  & div[data-testid='header'] {
     margin-top: 10px;
   }
 `
@@ -86,13 +87,17 @@ const Story = styled.span`
   }
 `
 
-function CommentChildren({ id, showParent = false }: { id: number, showParent?: boolean }) {
+function CommentChildren({ id, showParent = false }: { id: number; showParent?: boolean }) {
   const { data } = useFetch<CommentData>(itemURI(id))
   return data ? <Comment data={data} showParent={showParent} /> : <ArticleShimmer />
 }
 
 function StoryLink({ id, title }: ParentProps) {
-  return <Link to={`/comments/${id}`} target="_blank" rel="noreferrer">{title}</Link>
+  return (
+    <Link to={`/comments/${id}`} target="_blank" rel="noreferrer">
+      {title}
+    </Link>
+  )
 }
 
 function Parent({ id }: { id?: number }) {
@@ -100,9 +105,13 @@ function Parent({ id }: { id?: number }) {
 
   if (!data || data.dead || data.deleted) return null
 
-  switch(data.type) {
+  switch (data.type) {
     case 'story':
-      return <Story data-testid={`story-${data.id}`}>on <StoryLink id={data.id} title={data.title} /></Story>
+      return (
+        <Story data-testid={`story-${data.id}`}>
+          on <StoryLink id={data.id} title={data.title} />
+        </Story>
+      )
     case 'comment':
       return <Parent id={data.parent} />
     default:
@@ -115,30 +124,42 @@ function Information({ data, showParent }: CommentProps) {
 
   return (
     <Info>
-      <Link to={`/user/${data.by}`}><b>{data.by}</b></Link> {createdTime} {(showParent && data.parent) && <Parent id={data.parent} />}
+      <Link to={`/user/${data.by}`}>
+        <b>{data.by}</b>
+      </Link>{' '}
+      {createdTime} {showParent && data.parent && <Parent id={data.parent} />}
     </Info>
   )
 }
 
-export default function Comment({ data, disableChildren = false, showParent = false }: CommentProps) {
-  const [ isCollapse, setIsCollapse ] = useState(false)
+export default function Comment({
+  data,
+  disableChildren = false,
+  showParent = false,
+}: CommentProps) {
+  const [isCollapse, setIsCollapse] = useState(false)
 
   if (data.dead || data.deleted) return null
 
   return (
     <Container data-disable-children={disableChildren} data-testid={`comment-${data.id}`}>
-      <Header data-testid='header'>
+      <Header data-testid="header">
         {!disableChildren && (
-          <CollapsibleButton onClick={() => setIsCollapse(!isCollapse)} aria-label={`collapsible-button-${data.id}`}>
+          <CollapsibleButton
+            onClick={() => setIsCollapse(!isCollapse)}
+            aria-label={`collapsible-button-${data.id}`}
+          >
             {isCollapse ? '▼' : '▲'}
           </CollapsibleButton>
         )}
         <Information data={data} showParent={showParent} />
       </Header>
-      {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} /> }
-      {(!disableChildren && data.kids && !isCollapse) && (
+      {data.text && <Content dangerouslySetInnerHTML={{ __html: data.text }} />}
+      {!disableChildren && data.kids && !isCollapse && (
         <Children>
-          {data.kids.map(kid => <CommentChildren id={kid} key={kid} />)}
+          {data.kids.map((kid) => (
+            <CommentChildren id={kid} key={kid} />
+          ))}
         </Children>
       )}
     </Container>

@@ -18,13 +18,13 @@
   )
 </script>
 
-<article class='container' data-disable-children={disableChildren}>
+<article class="container" data-disable-children={disableChildren}>
   {#if !data.dead && !data.deleted && data.by}
-    <div class='header'>
+    <div class="header">
       {#if !disableChildren}
         <button
-          class='collapsible-button'
-          type='button'
+          class="collapsible-button"
+          type="button"
           aria-label={`collapsible-button-${data.id}`}
           onclick={() => (isCollapse = !isCollapse)}
         >
@@ -32,7 +32,7 @@
         </button>
       {/if}
 
-      <p class='info'>
+      <p class="info">
         <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
         {createdTime}
         {#if showParent && data.parent}
@@ -42,11 +42,11 @@
     </div>
 
     {#if data.text}
-      <div class='content'>{@html data.text}</div>
+      <div class="content">{@html data.text}</div>
     {/if}
 
     {#if !disableChildren && data.kids && !isCollapse}
-      <div class='children'>
+      <div class="children">
         {#each data.kids as kid (kid)}
           <CommentChild id={kid} />
         {/each}
@@ -83,7 +83,7 @@
     padding: 0;
     cursor: pointer;
     color: var(--gray);
-    }
+  }
 
   .info {
     margin: 5px 0;

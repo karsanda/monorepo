@@ -29,11 +29,21 @@
   })
 </script>
 
-<div class='submissions'>
-  <button class='tab-button' class:active={activeTab === 'STORIES'} onclick={() => (activeTab = 'STORIES')} type='button'>
+<div class="submissions">
+  <button
+    class="tab-button"
+    class:active={activeTab === 'STORIES'}
+    onclick={() => (activeTab = 'STORIES')}
+    type="button"
+  >
     Submissions
   </button>
-  <button class='tab-button' class:active={activeTab === 'COMMENTS'} onclick={() => (activeTab = 'COMMENTS')} type='button'>
+  <button
+    class="tab-button"
+    class:active={activeTab === 'COMMENTS'}
+    onclick={() => (activeTab = 'COMMENTS')}
+    type="button"
+  >
     Comments
   </button>
 
@@ -94,5 +104,4 @@
     font-size: 11px;
     color: var(--gray);
   }
-
 </style>

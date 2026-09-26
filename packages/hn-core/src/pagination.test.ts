@@ -23,7 +23,9 @@ describe('paginateData', () => {
   })
 
   test('returns a partial last page', () => {
-    expect(paginateData(data, 3)).toEqual([61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75])
+    expect(paginateData(data, 3)).toEqual([
+      61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75,
+    ])
   })
 
   test('returns an empty array past the end', () => {
