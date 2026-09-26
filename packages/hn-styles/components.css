@@ -1,0 +1,306 @@
+/* Component classes shared by every app, so the five UIs look and behave the same. */
+
+/* Layout */
+.app {
+  width: 85%;
+  margin: 0 auto;
+  background-color: var(--page-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 10px;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+}
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 0;
+  line-height: 1em;
+}
+
+.brand {
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.navlink {
+  padding: 0 8px;
+}
+
+.navlink + .navlink {
+  border-left: 1px solid currentColor;
+}
+
+.navlink[aria-current='page'] {
+  font-weight: 700;
+}
+
+.navbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-form input {
+  width: 12em;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.main {
+  flex: 1;
+  padding: 10px 5px 10px 0;
+}
+
+.footer {
+  border-top: 2px solid var(--brand);
+  margin: 0 5px;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 11px;
+}
+
+.footer a {
+  text-decoration: underline;
+}
+
+/* Status messages: loading, empty, error, not found */
+.status {
+  margin: 20px 10px;
+  color: var(--muted);
+}
+
+.status[role='alert'] {
+  color: var(--text);
+}
+
+.skeleton {
+  display: block;
+  height: 0.9em;
+  margin: 6px 0;
+  border-radius: 3px;
+  background: var(--skeleton);
+  animation: skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+/* Story lists */
+.story-list {
+  margin: 0;
+  color: var(--muted);
+}
+
+.story-list > li + li {
+  margin-top: 10px;
+}
+
+.story {
+  margin-left: 5px;
+}
+
+.story--read .story-title {
+  color: var(--muted);
+}
+
+.story-title {
+  display: inline;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.25em;
+  color: var(--text);
+}
+
+.story-domain {
+  margin-left: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.subtitle {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.subtitle a {
+  color: var(--muted);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.item-text {
+  margin-top: 15px;
+  margin-left: 6px;
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.item-text p,
+.comment-content p {
+  margin: 10px 0;
+}
+
+.item-text :is(code, pre),
+.comment-content :is(code, pre) {
+  white-space: pre-wrap;
+}
+
+.item-text a,
+.comment-content a,
+.about a {
+  text-decoration: underline;
+}
+
+.pager {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  margin-left: 32px;
+}
+
+/* Comments */
+.comment-list {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.comment {
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.comment + .comment {
+  margin-top: 15px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.comment-header a {
+  color: var(--muted);
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  margin: 0 5px 0 0;
+  padding: 0 2px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.comment-content {
+  margin-top: 5px;
+  margin-left: 17px;
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.comment-children {
+  margin-left: 25px;
+}
+
+.comment-children > .comment {
+  margin-top: 10px;
+}
+
+/* User page */
+.user-grid {
+  margin-left: 5px;
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  row-gap: 4px;
+}
+
+.about {
+  word-break: break-word;
+}
+
+.tabs {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.tab-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  line-height: 1em;
+}
+
+.tab-button + .tab-button {
+  border-left: 1px solid var(--text);
+}
+
+.tab-button[aria-pressed='true'] {
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 768px) {
+  .app {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .navlink {
+    font-size: 12px;
+    padding: 0 7px;
+  }
+
+  .story-list,
+  .user-grid {
+    font-size: 13px;
+  }
+
+  .search-form input {
+    width: 9em;
+  }
+}

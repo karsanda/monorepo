@@ -20,7 +20,7 @@ export interface StoryData {
   text?: string
   time: number
   title: string
-  type: 'story' | 'job'
+  type: 'story' | 'job' | 'poll'
   url?: string
   dead?: boolean
   deleted?: boolean
@@ -48,4 +48,42 @@ export interface UserData {
 
 export function isStoryType(value: string): value is StoryType {
   return (STORY_TYPES as readonly string[]).includes(value)
+}
+
+export type ItemData = StoryData | CommentData
+
+/** A comment in a thread loaded in one request (see `HnClient.getThread`). */
+export interface ThreadComment {
+  id: number
+  /** `null` for deleted comments. */
+  by: string | null
+  /** `null` for deleted comments. */
+  text: string | null
+  time: number
+  parent: number
+  kids: ThreadComment[]
+}
+
+export interface SearchHit {
+  id: number
+  title: string
+  url?: string
+  by: string
+  score: number
+  comments: number
+  time: number
+}
+
+export interface SearchResult {
+  hits: SearchHit[]
+  /** 1-based, like `?page=`. */
+  page: number
+  pageCount: number
+}
+
+/** False for missing, dead and deleted items. */
+export function isLive<T extends { dead?: boolean; deleted?: boolean }>(
+  item: T | null | undefined,
+): item is T {
+  return !!item && !item.dead && !item.deleted
 }

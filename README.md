@@ -10,7 +10,9 @@ apps/
   hackernews-vue/      Vue 3.5 client-side app
   hackernews-svelte/   SvelteKit 2 server-rendered app
 packages/
-  hn-core/             shared HN types, pagination and API path helpers
+  hn-core/             shared HN types, data client, formatting and pagination helpers
+  hn-styles/           shared CSS: light/dark theme tokens and component classes
+  e2e/                 one Playwright suite that every app must pass
   firebase-adapter/    wrapper around the HN Firebase database
   eslint-config/       shared ESLint configs
   typescript-config/   shared tsconfig bases
@@ -55,16 +57,18 @@ Every app implements the same pages at the same URLs:
 
 ## Shared packages
 
-| Package                                                 | What it provides                                                                  |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [`@repo/hn-core`](packages/hn-core)                     | HN types (`StoryData`, `CommentData`, `UserData`), pagination and API URL helpers |
-| [`@repo/firebase-adapter`](packages/firebase-adapter)   | Small wrapper around the HN Firebase database, used by all three apps             |
-| [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `react`, `vue`, `svelte`                             |
-| [`@repo/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                                           |
+| Package                                                 | What it provides                                                                                                                                                                  |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@repo/hn-core`](packages/hn-core)                     | HN types, a fetch-based client for the HN REST API and Algolia (caching, concurrency limit, one-request comment threads, search), date/domain formatting, nav tabs and pagination |
+| [`@repo/hn-styles`](packages/hn-styles)                 | Shared CSS: light/dark theme tokens derived from one `--brand` color, base styles and component classes                                                                           |
+| [`@repo/e2e`](packages/e2e)                             | The shared Playwright suite; `APP=<name>` picks the app to build, serve and test                                                                                                  |
+| [`@repo/firebase-adapter`](packages/firebase-adapter)   | Small wrapper around the HN Firebase database, used by all three apps                                                                                                             |
+| [`@repo/eslint-config`](packages/eslint-config)         | ESLint flat configs: `base`, `react`, `vue`, `svelte`                                                                                                                             |
+| [`@repo/typescript-config`](packages/typescript-config) | Shared `tsconfig` bases                                                                                                                                                           |
 
 ## Requirements
 
-- Node.js ≥ 22.22
+- Node.js ≥ 22.22 (CI uses the version in [`.nvmrc`](.nvmrc))
 - pnpm 12 (pinned via `packageManager`; `corepack enable` or a pnpm that auto-switches versions)
 
 ## Commands
@@ -98,6 +102,13 @@ pnpm --filter hackernews-svelte test:integration                 # Playwright, p
 
 The Vue app has no e2e suite.
 
+[`packages/e2e`](packages/e2e) holds the shared suite that every app will have to pass: same routes, same accessible names, same behavior. It describes the target feature set (search, dark mode, hidden stories, 404s, per-page titles) and replaces the per-app suites as each app is brought up to it:
+
+```sh
+pnpm --filter @repo/e2e exec playwright install chromium   # once
+APP=svelte pnpm --filter @repo/e2e e2e
+```
+
 ## CI
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. E2E tests don't run in CI.
@@ -117,8 +128,13 @@ GitHub runners use UTC, so any test that involves dates should freeze time to an
 [`pnpm-workspace.yaml`](pnpm-workspace.yaml) sets two supply-chain rules that apply locally, in CI and on Vercel:
 
 - **`minimumReleaseAge: 1440`.** pnpm won't install a package version that has been public for less than 24 hours. If `pnpm install` fails with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, either wait or use the previous release.
+- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)) opens grouped weekly update PRs and waits a day after each release, so its PRs respect the rule above.
 - **`allowBuilds`.** Dependency install scripts are blocked unless listed there. Only `cypress` and `esbuild` are allowed. If a new dependency needs its install script, add it with `pnpm approve-builds`.
 
 ## Deployment
 
 The SvelteKit app deploys to Vercel through `@sveltejs/adapter-vercel`. The React and Vue apps build to static `dist/` folders.
+
+## License
+
+[MIT](LICENSE)

@@ -16,3 +16,7 @@ test('isStoryType', () => {
   expect(isStoryType('jobstories')).toBe(true)
   expect(isStoryType('favicon.ico')).toBe(false)
 })
+
+test('isStoryType rejects inherited keys', () => {
+  expect(isStoryType('toString')).toBe(false)
+})

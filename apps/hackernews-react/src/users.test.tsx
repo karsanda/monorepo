@@ -41,10 +41,13 @@ test('should be able to see user info', () => {
 
   renderUserPage('dummy-name')
 
-  expect(screen.findByText(`User: ${user.id}`))
-  expect(screen.findByText(`Karma: ${user.karma}`))
-  expect(screen.findByText(`Created: ${format(user.created * 1000, 'MMMM dd, yyyy')}`))
-  expect(screen.findByText(`About: ${user.about}`))
+  // Each label and its value are sibling cells in the info grid.
+  const valueOf = (label: string) => screen.getByText(label).nextElementSibling
+
+  expect(valueOf('User:')).toHaveTextContent(user.id)
+  expect(valueOf('Karma:')).toHaveTextContent(String(user.karma))
+  expect(valueOf('Created:')).toHaveTextContent(format(user.created * 1000, 'MMMM dd, yyyy'))
+  expect(valueOf('About:')).toHaveTextContent(user.about!.replace(/\s+/g, ' '))
 })
 
 test('should be able to see user stories & comments', async () => {

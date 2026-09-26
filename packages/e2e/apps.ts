@@ -1,0 +1,28 @@
+/**
+ * How to build and serve each app for the suite. Commands run in the app's directory and call
+ * binaries directly (not through pnpm) so Playwright can stop the server when it's done.
+ */
+export interface AppTarget {
+  dir: string
+  port: number
+  command: string
+}
+
+const bin = (cmd: string) => `./node_modules/.bin/${cmd}`
+
+export const APPS = {
+  svelte: {
+    dir: 'apps/hackernews-svelte',
+    port: 4173,
+    command: `${bin('vite')} build && exec ${bin('vite')} preview --port 4173 --strictPort`,
+  },
+} satisfies Record<string, AppTarget>
+
+export type AppName = keyof typeof APPS
+
+export function getApp(name = process.env.APP): AppTarget & { name: AppName } {
+  if (!name || !(name in APPS)) {
+    throw new Error(`Set APP to one of: ${Object.keys(APPS).join(', ')} (got ${name ?? 'nothing'})`)
+  }
+  return { name: name as AppName, ...APPS[name as AppName] }
+}
