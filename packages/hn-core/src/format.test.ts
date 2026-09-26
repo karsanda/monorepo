@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest'
 import { domainOf, isoTime, timeAgo } from './format'
-import { NAV_TABS } from './nav'
 import { isLive } from './types'
 
 test('timeAgo', () => {
@@ -26,14 +25,4 @@ test('isLive', () => {
   expect(isLive({ dead: true })).toBe(false)
   expect(isLive({ deleted: true })).toBe(false)
   expect(isLive(null)).toBe(false)
-})
-
-test('NAV_TABS covers every story type except the home page', () => {
-  expect(NAV_TABS.map((t) => t.type)).toEqual([
-    'newstories',
-    'beststories',
-    'askstories',
-    'showstories',
-    'jobstories',
-  ])
 })

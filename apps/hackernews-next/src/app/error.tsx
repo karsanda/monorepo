@@ -13,7 +13,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
         <button className="link-button" type="button" onClick={reset}>
           Try again
         </button>{' '}
-        or <Link href="/">go back to top stories</Link>.
+        or <Link href="/">go back to the front page</Link>.
       </p>
     </div>
   )

@@ -4,7 +4,7 @@ import { StoriesPage, storiesMetadata } from '@/components/stories-page'
 
 export async function generateMetadata({ params, searchParams }: PageProps<'/[type]'>) {
   const { type } = await params
-  return isStoryType(type) ? storiesMetadata(type, searchParams) : {}
+  return isStoryType(type) ? storiesMetadata(type, searchParams) : { title: 'Not found' }
 }
 
 export default async function StoryTypePage({ params, searchParams }: PageProps<'/[type]'>) {

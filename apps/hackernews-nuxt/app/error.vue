@@ -16,7 +16,7 @@ useHead({ title: heading })
       <h1>{{ heading }}</h1>
       <p>
         {{ notFound ? "That page, story or user doesn't exist." : error.statusMessage }}
-        <a href="/" @click.prevent="clearError({ redirect: '/' })">Back to top stories</a>
+        <a href="/" @click.prevent="clearError({ redirect: '/' })">Back to the front page</a>
       </p>
     </div>
   </NuxtLayout>

@@ -3,10 +3,16 @@ import { expect, test } from '@playwright/test'
 const stories = (page: import('@playwright/test').Page) =>
   page.getByRole('list', { name: 'Stories' })
 
-test('home page lists 30 top stories', async ({ page }) => {
+test('home page lists 30 best stories', async ({ page }) => {
   await page.goto('/')
   await expect(stories(page).getByRole('listitem')).toHaveCount(30)
-  await expect(page).toHaveTitle(/Top stories/)
+  await expect(page).toHaveTitle(/^Best stories/)
+})
+
+test('best stories also have their own URL', async ({ page }) => {
+  await page.goto('/beststories')
+  await expect(stories(page).getByRole('listitem')).toHaveCount(30)
+  await expect(page).toHaveTitle(/^Best stories/)
 })
 
 test('pagination moves to the next 30 stories', async ({ page }) => {
@@ -21,8 +27,8 @@ test('nav tabs route to each story type and mark the current one', async ({ page
   const nav = page.getByRole('navigation')
 
   for (const [label, type, title] of [
+    ['Top', 'topstories', /Top stories/],
     ['New', 'newstories', /New stories/],
-    ['Best', 'beststories', /Best stories/],
     ['Ask', 'askstories', /Ask HN/],
     ['Show', 'showstories', /Show HN/],
     ['Jobs', 'jobstories', /Jobs/],

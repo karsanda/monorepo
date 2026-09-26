@@ -14,6 +14,6 @@
   <h1>{heading}</h1>
   <p>
     {page.status === 404 ? "That page, story or user doesn't exist." : page.error?.message}
-    <a href={resolve('/')}>Back to top stories</a>
+    <a href={resolve('/')}>Back to the front page</a>
   </p>
 </div>

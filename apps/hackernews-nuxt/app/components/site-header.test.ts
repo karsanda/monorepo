@@ -14,7 +14,7 @@ beforeEach(() => {
 test('marks the current tab', async () => {
   const wrapper = await mountSuspended(SiteHeader, { route: '/newstories' })
   expect(wrapper.get('a[href="/newstories"]').attributes('aria-current')).toBe('page')
-  expect(wrapper.get('a[href="/beststories"]').attributes('aria-current')).toBeUndefined()
+  expect(wrapper.get('a[href="/topstories"]').attributes('aria-current')).toBeUndefined()
 })
 
 test('toggles the theme and saves it in a cookie', async () => {

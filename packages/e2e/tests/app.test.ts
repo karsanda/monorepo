@@ -34,13 +34,15 @@ test('keyboard focus is visible', async ({ page }) => {
   expect(outline).not.toBe('none')
 })
 
-test('every route has its own title', async ({ page }) => {
+test('every route has its own title, ending in the app name', async ({ page }) => {
   const titles = new Set<string>()
-  for (const path of ['/', '/newstories', '/comments/1', '/user/pg']) {
+  for (const path of ['/', '/newstories', '/comments/1', '/user/pg', '/not-a-real-page']) {
     await page.goto(path)
+    // e.g. "Best stories | Hacker News - Next"
+    await expect(page).toHaveTitle(/^.+ \| Hacker News - \w+$/)
     titles.add(await page.title())
   }
-  expect(titles.size).toBe(4)
+  expect(titles.size).toBe(5)
 })
 
 test('the app is installable', async ({ page }) => {
