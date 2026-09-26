@@ -1,120 +1,45 @@
 <script lang="ts">
-  import type { CommentData } from '@repo/hn-core'
+  import { isoTime, timeAgo, type ThreadComment } from '@repo/hn-core'
   import { resolve } from '$app/paths'
-  import { formatDistance } from 'date-fns'
-  import CommentChild from './comment-child.svelte'
-  import CommentParent from './comment-parent.svelte'
+  import Self from './comment.svelte'
 
-  let {
-    data,
-    disableChildren = false,
-    showParent = false,
-  }: { data: CommentData; disableChildren?: boolean; showParent?: boolean } = $props()
+  let { comment }: { comment: ThreadComment } = $props()
 
-  let isCollapse = $state(false)
-
-  const createdTime = $derived(
-    data.time && formatDistance(data.time * 1000, new Date(), { addSuffix: true }),
-  )
+  let collapsed = $state(false)
 </script>
 
-<article class="container" data-disable-children={disableChildren}>
-  {#if !data.dead && !data.deleted && data.by}
-    <div class="header">
-      {#if !disableChildren}
-        <button
-          class="collapsible-button"
-          type="button"
-          aria-label={`collapsible-button-${data.id}`}
-          onclick={() => (isCollapse = !isCollapse)}
-        >
-          {isCollapse ? '▼' : '▲'}
-        </button>
+<!-- Deleted comments are only worth showing when they have replies. -->
+{#if comment.by || comment.kids.length}
+  <article class="comment">
+    <div class="comment-header">
+      <button
+        class="collapse-button"
+        type="button"
+        aria-expanded={!collapsed}
+        aria-label="{collapsed ? 'Expand' : 'Collapse'} comment by {comment.by ?? 'deleted user'}"
+        onclick={() => (collapsed = !collapsed)}
+      >
+        <span aria-hidden="true">{collapsed ? '▶' : '▼'}</span>
+      </button>
+      {#if comment.by}
+        <a href={resolve('/user/[id]', { id: comment.by })}><strong>{comment.by}</strong></a>
+      {:else}
+        [deleted]
       {/if}
-
-      <p class="info">
-        <a href={resolve('/user/[id]', { id: data.by })}><strong>{data.by}</strong></a>
-        {createdTime}
-        {#if showParent && data.parent}
-          <CommentParent id={data.parent} />
-        {/if}
-      </p>
+      &nbsp;<time datetime={isoTime(comment.time)}>{timeAgo(comment.time)}</time>
     </div>
 
-    {#if data.text}
-      <div class="content">{@html data.text}</div>
+    {#if !collapsed}
+      {#if comment.text}
+        <div class="comment-content">{@html comment.text}</div>
+      {/if}
+      {#if comment.kids.length}
+        <div class="comment-children">
+          {#each comment.kids as kid (kid.id)}
+            <Self comment={kid} />
+          {/each}
+        </div>
+      {/if}
     {/if}
-
-    {#if !disableChildren && data.kids && !isCollapse}
-      <div class="children">
-        {#each data.kids as kid (kid)}
-          <CommentChild id={kid} />
-        {/each}
-      </div>
-    {/if}
-  {/if}
-</article>
-
-<style>
-  .container {
-    margin-right: 10px;
-    margin-left: 5px;
-  }
-
-  :global(.container) + .container {
-    margin-top: 15px;
-  }
-
-  .container[data-disable-children='true'] > div {
-    margin-left: 5px;
-  }
-
-  .header {
-    display: flex;
-    align-items: center;
-  }
-
-  .collapsible-button {
-    font-size: 12px;
-    background: none;
-    outline: none;
-    border: none;
-    margin: 0 5px 0 0;
-    padding: 0;
-    cursor: pointer;
-    color: var(--gray);
-  }
-
-  .info {
-    margin: 5px 0;
-    color: var(--gray);
-    font-size: 11px;
-  }
-
-  .info > a {
-    color: var(--gray);
-  }
-
-  .content {
-    margin-left: 17px;
-    font-size: 12px;
-    word-break: break-word;
-  }
-
-  .content :global(p) {
-    margin: 10px 0;
-  }
-
-  .content :global(code),
-  .content :global(pre) {
-    white-space: pre-wrap;
-  }
-
-  .children {
-    margin-left: 25px;
-  }
-
-  .children :global(.header) {
-    margin-top: 10px;
-  }
-</style>
+  </article>
+{/if}

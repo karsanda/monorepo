@@ -39,7 +39,7 @@ test('nav tabs route to each story type and mark the current one', async ({ page
 test('stories show their domain and link to their comments', async ({ page }) => {
   await page.goto('/')
   const first = stories(page).getByRole('listitem').first()
-  await expect(first.getByRole('link', { name: /comment|discuss/i })).toHaveAttribute(
+  await expect(first.getByRole('link', { name: /^(\d+ comments?|discuss)$/ })).toHaveAttribute(
     'href',
     /\/comments\/\d+$/,
   )

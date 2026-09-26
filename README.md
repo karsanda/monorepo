@@ -49,10 +49,10 @@ Every app implements the same pages at the same URLs:
 
 ### [SvelteKit](apps/hackernews-svelte) (`apps/hackernews-svelte`)
 
-- **Stack:** Svelte 5 with runes, SvelteKit 2, Vite 8, deployed to Vercel.
-- **Data:** pages are rendered on the server, which calls the HN REST API. Story lists stream in after the page shell arrives. Comment replies and parent-story links are fetched in the browser over REST. The user page's Submissions/Comments tabs load through `@repo/firebase-adapter`.
-- **UI details:** "Prev Page" / "Next Page" pagination; unknown story types return a 404.
-- **Tests:** Playwright e2e tests for the home page, pagination, nav tabs and the 404.
+- **Stack:** Svelte 5 with runes, SvelteKit 2, Vite 8, deployed to Vercel. This is the reference app: it passes the shared e2e suite, and the other apps are being brought up to it.
+- **Data:** every page is rendered on the server through the shared `@repo/hn-core` client. Story lists and comment threads stream in after the page shell, and a whole comment thread is one Algolia request. The user page's Submissions/Comments tabs page through Algolia, 30 at a time.
+- **Features:** search (`/search?q=`), a light/dark theme toggle saved in a cookie (no flash on load), hide stories and dimmed read stories (saved in localStorage), story domains, per-page titles, a styled 404/error page, and offline support through a service worker and web app manifest.
+- **Tests:** Vitest unit tests for the server loads, the route matcher and the comment component, plus the shared Playwright suite.
 - **Dev server:** http://localhost:5173
 
 ## Shared packages
@@ -92,26 +92,20 @@ Scope to one app with a filter, e.g. `pnpm --filter hackernews-vue dev`.
 
 Unit tests use Vitest everywhere and never touch the network. The one live test in `packages/firebase-adapter` is opt-in: `HN_LIVE=1 pnpm --filter @repo/firebase-adapter test`.
 
-End-to-end tests run against a production build (`vite preview`) and hit the live HN API:
+End-to-end tests run against a production build and hit the live HN API.
 
-```sh
-pnpm --filter hackernews-react e2e                               # Cypress, port 3000
-pnpm --filter hackernews-svelte exec playwright install chromium # once, to get the browser
-pnpm --filter hackernews-svelte test:integration                 # Playwright, port 4173
-```
-
-The Vue app has no e2e suite.
-
-[`packages/e2e`](packages/e2e) holds the shared suite that every app will have to pass: same routes, same accessible names, same behavior. It describes the target feature set (search, dark mode, hidden stories, 404s, per-page titles) and replaces the per-app suites as each app is brought up to it:
+[`packages/e2e`](packages/e2e) holds the shared suite that every app has to pass: same routes, same accessible names, same behavior (search, dark mode, hidden stories, 404s, per-page titles and more). The SvelteKit app passes it today; the others join as they are brought up to it.
 
 ```sh
 pnpm --filter @repo/e2e exec playwright install chromium   # once
 APP=svelte pnpm --filter @repo/e2e e2e
 ```
 
+Until then, the React app keeps its own Cypress test (`pnpm --filter hackernews-react e2e`, port 3000), and the Vue app has none.
+
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. E2E tests don't run in CI.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs with `--frozen-lockfile`, runs `pnpm format:check`, then runs `pnpm turbo run lint typecheck test build`. When that passes, an `e2e` job runs the shared Playwright suite once per app in its matrix (currently `svelte`) and uploads traces when a test fails.
 
 To reproduce a CI run locally:
 

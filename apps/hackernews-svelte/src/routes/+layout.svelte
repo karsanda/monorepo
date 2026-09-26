@@ -1,90 +1,78 @@
 <script lang="ts">
+  import { NAV_TABS, themeCookie, type Theme } from '@repo/hn-core'
+  import '@repo/hn-styles/index.css'
   import { resolve } from '$app/paths'
-  import type { StoryType } from '@repo/hn-core'
-  import type { Snippet } from 'svelte'
-  import './styles.css'
+  import { page } from '$app/state'
+  import { APP_NAME } from '$lib/meta'
+  import { prefs } from '$lib/prefs.svelte'
+  import { onMount } from 'svelte'
+  import type { LayoutProps } from './$types'
 
-  let { children }: { children: Snippet } = $props()
+  let { data, children }: LayoutProps = $props()
 
-  const tabs: [label: string, slug: StoryType][] = [
-    ['New', 'newstories'],
-    ['Best', 'beststories'],
-    ['Ask', 'askstories'],
-    ['Show', 'showstories'],
-    ['Jobs', 'jobstories'],
-  ]
+  let chosenTheme = $state<Theme>()
+  let systemDark = $state(false)
+  const theme = $derived(chosenTheme ?? data.theme ?? (systemDark ? 'dark' : 'light'))
+
+  onMount(() => {
+    prefs.load()
+    const query = matchMedia('(prefers-color-scheme: dark)')
+    systemDark = query.matches
+    const onChange = () => (systemDark = query.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  })
+
+  function toggleTheme() {
+    chosenTheme = theme === 'dark' ? 'light' : 'dark'
+    document.documentElement.dataset.theme = chosenTheme
+    document.cookie = themeCookie(chosenTheme)
+  }
 </script>
 
 <div class="app">
   <header class="header">
-    <nav class="navbar">
-      <a class="navlink" href={resolve('/')}><h1 class="title">Hacker News - Svelte</h1></a>
-      {#each tabs as [label, slug] (slug)}
-        <a class="navlink" href={resolve('/[[slug=storytype]]', { slug })}>{label}</a>
+    <nav class="navbar" aria-label="Main">
+      <a class="brand" href={resolve('/')}>{APP_NAME}</a>
+      {#each NAV_TABS as tab (tab.type)}
+        <a
+          class="navlink"
+          href={resolve('/[[slug=storytype]]', { slug: tab.type })}
+          aria-current={page.url.pathname === `/${tab.type}` ? 'page' : undefined}
+        >
+          {tab.label}
+        </a>
       {/each}
+      <div class="navbar-actions">
+        <form class="search-form" role="search" action={resolve('/search')}>
+          <input
+            type="search"
+            name="q"
+            placeholder="Search"
+            aria-label="Search stories"
+            value={page.url.pathname === '/search' ? page.url.searchParams.get('q') : ''}
+          />
+        </form>
+        <button class="theme-toggle" type="button" onclick={toggleTheme}>
+          <span aria-hidden="true">{theme === 'dark' ? '☀' : '☾'}</span>
+          <span class="visually-hidden">Switch to {theme === 'dark' ? 'light' : 'dark'} theme</span>
+        </button>
+      </div>
     </nav>
   </header>
 
-  {@render children()}
+  <main class="main">
+    {@render children()}
+  </main>
 
   <footer class="footer">
-    ©{new Date().getFullYear()} Karsanda
-    <a href="https://github.com/karsanda/monorepo/tree/main/apps/hackernews-svelte">
-      Hacker News - Svelte
-    </a>
+    ©{new Date().getFullYear()} Karsanda ·
+    <a href="https://github.com/karsanda/monorepo/tree/main/apps/hackernews-svelte">Source</a>
   </footer>
 </div>
 
 <style>
-  .navbar {
-    display: flex;
-    align-items: center;
-    line-height: 1em;
-  }
-
-  .navlink {
-    color: var(--white);
-    padding: 0 8px;
-    font-weight: 400;
-    height: 14px;
-  }
-
-  .title {
-    color: var(--primary-color);
-    font-size: 14px;
-    margin-right: 10px;
-    font-weight: 600;
-  }
-
-  .header {
-    padding: 10px;
-    background-color: var(--dark-bg);
-  }
-
-  .footer {
-    border-top: 2px solid var(--primary-color);
-    margin: 0 5px;
-    padding: 10px 0;
-    text-align: center;
-    font-size: 11px;
-  }
-
-  @media only screen and (max-width: 400px) {
-    .title {
-      font-size: 14px;
-    }
-
-    .navlink {
-      font-size: 12px;
-      padding: 0 7px;
-      height: 12px;
-    }
-  }
-
-  @media only screen and (max-width: 360px) {
-    .title {
-      font-size: 13px;
-      margin-right: 7px;
-    }
+  :global(:root) {
+    --brand: #ff3e00;
   }
 </style>

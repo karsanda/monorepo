@@ -129,7 +129,7 @@ describe('createHnClient', () => {
     ])
   })
 
-  test('search maps hits and uses 1-based pages', async () => {
+  test('search maps hits to stories and uses 1-based pages', async () => {
     const fetch = vi.fn(async (_url: string | URL | Request) =>
       json({
         page: 1,
@@ -151,10 +151,47 @@ describe('createHnClient', () => {
     expect(await hn.search('svelte', 2)).toEqual({
       page: 2,
       pageCount: 5,
-      hits: [
-        { id: 42, title: 'SvelteKit 1.0', url: undefined, by: 'x', score: 9, comments: 3, time: 1 },
+      items: [
+        {
+          id: 42,
+          type: 'story',
+          title: 'SvelteKit 1.0',
+          url: undefined,
+          by: 'x',
+          score: 9,
+          descendants: 3,
+          time: 1,
+        },
       ],
     })
-    expect(String(fetch.mock.calls[0]![0])).toContain('page=1')
+    const url = String(fetch.mock.calls[0]![0])
+    expect(url).toContain('/search?')
+    expect(url).toContain('page=1')
+  })
+
+  test("getUserComments lists a user's comments with their stories, newest first", async () => {
+    const fetch = vi.fn(async (_url: string | URL | Request) =>
+      json({
+        page: 0,
+        nbPages: 1,
+        hits: [
+          {
+            objectID: '7',
+            author: 'pg',
+            comment_text: 'hi',
+            created_at_i: 5,
+            story_id: 3,
+            story_title: 'A story',
+          },
+        ],
+      }),
+    )
+    const hn = createHnClient({ fetch })
+    expect((await hn.getUserComments('pg')).items).toEqual([
+      { id: 7, by: 'pg', text: 'hi', time: 5, storyId: 3, storyTitle: 'A story' },
+    ])
+    const url = decodeURIComponent(String(fetch.mock.calls[0]![0]))
+    expect(url).toContain('/search_by_date?')
+    expect(url).toContain('tags=comment,author_pg')
   })
 })

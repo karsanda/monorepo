@@ -1,28 +1,21 @@
-import {
-  getPage,
-  pageCount,
-  paginateData,
-  typeURI,
-  type StoryData,
-  type StoryType,
-} from '@repo/hn-core'
-import { getItem, getJSON } from '$lib/hn'
+import { getPage, isLive, pageCount, paginateData, type StoryData } from '@repo/hn-core'
+import { error } from '@sveltejs/kit'
+import { hn } from '$lib/hn'
 import type { PageServerLoad } from './$types'
 
-export const load: PageServerLoad = async ({ fetch, url, params }) => {
-  const slug = (params.slug ?? 'topstories') as StoryType
+export const load: PageServerLoad = async ({ url, params }) => {
+  const type = params.slug ?? 'topstories'
   const page = getPage(url.searchParams.get('page'))
 
-  const ids = (await getJSON<number[]>(fetch, typeURI(slug))) ?? []
-  const stories = Promise.all(paginateData(ids, page).map((id) => getItem<StoryData>(fetch, id)))
+  const ids = await hn.getIds(type).catch(() => error(502, "Couldn't reach Hacker News"))
 
   return {
-    slug,
-    stories,
-    pagination: {
-      page,
-      prev: page > 1,
-      next: page < pageCount(ids.length),
-    },
+    type,
+    page,
+    pageCount: pageCount(ids.length),
+    // Streamed: the page shell renders while the 30 items load.
+    stories: hn
+      .getItems<StoryData>(paginateData(ids, page))
+      .then((items) => items.filter((item) => isLive(item))),
   }
 }

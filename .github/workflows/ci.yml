@@ -18,3 +18,31 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm turbo run lint typecheck test build
+
+  e2e:
+    needs: ci
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Each app joins this list once it passes the shared suite in packages/e2e.
+        app: [svelte]
+    name: e2e (${{ matrix.app }})
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @repo/e2e exec playwright install --with-deps chromium
+      - run: pnpm --filter @repo/e2e e2e
+        env:
+          APP: ${{ matrix.app }}
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-${{ matrix.app }}-results
+          path: packages/e2e/test-results
+          retention-days: 7
