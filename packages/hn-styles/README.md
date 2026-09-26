@@ -3,7 +3,7 @@
 Shared CSS for every Hacker News app: theme tokens (light and dark), base styles and the component classes (`.story`, `.comment`, `.tab-button`, …) that keep the UIs identical.
 
 ```css
-@import '@repo/hn-styles';
+@import '@repo/hn-styles/index.css';
 
 :root {
   --brand: #ff3e00; /* the app's framework color; everything else derives from it */

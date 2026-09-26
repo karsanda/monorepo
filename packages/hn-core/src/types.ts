@@ -64,18 +64,19 @@ export interface ThreadComment {
   kids: ThreadComment[]
 }
 
-export interface SearchHit {
+/** A comment in a user's comment list, with the story it belongs to. */
+export interface UserComment {
   id: number
-  title: string
-  url?: string
   by: string
-  score: number
-  comments: number
+  text: string
   time: number
+  storyId: number
+  storyTitle: string
 }
 
-export interface SearchResult {
-  hits: SearchHit[]
+/** One page of results from Algolia. */
+export interface ResultPage<T> {
+  items: T[]
   /** 1-based, like `?page=`. */
   page: number
   pageCount: number

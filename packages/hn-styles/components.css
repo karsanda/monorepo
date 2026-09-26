@@ -259,6 +259,10 @@
   row-gap: 4px;
 }
 
+.user-grid dd {
+  margin: 0;
+}
+
 .about {
   word-break: break-word;
 }

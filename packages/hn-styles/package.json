@@ -5,6 +5,7 @@
   "description": "Shared CSS for the Hacker News apps: theme tokens, base styles and component classes",
   "exports": {
     ".": "./index.css",
+    "./index.css": "./index.css",
     "./tokens.css": "./tokens.css",
     "./base.css": "./base.css",
     "./components.css": "./components.css"

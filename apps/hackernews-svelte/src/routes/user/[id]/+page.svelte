@@ -1,43 +1,31 @@
 <script lang="ts">
-  import { format } from 'date-fns'
-  import SubmissionList from '$lib/components/submission-list.svelte'
+  import { formatJoinDate } from '@repo/hn-core'
+  import Submissions from '$lib/components/submissions.svelte'
+  import { pageTitle } from '$lib/meta'
   import type { PageProps } from './$types'
 
   let { data }: PageProps = $props()
 </script>
 
-<main class="main" aria-label="user">
-  <div class="grid">
-    <span>User:</span><span>{data.user.id}</span>
-    <span>Karma:</span><span>{data.user.karma}</span>
-    <span>Created:</span><span>{format(data.user.created * 1000, 'MMMM dd, yyyy')}</span>
-    {#if data.user.about}
-      <span>About:</span>
-      <span class="about">
-        {@html data.user.about}
-      </span>
-    {/if}
-  </div>
+<svelte:head>
+  <title>{pageTitle(`Profile: ${data.user.id}`)}</title>
+</svelte:head>
 
-  {#key data.user.id}
-    <SubmissionList submissions={data.user.submitted ?? []} />
-  {/key}
-</main>
+<h1 class="visually-hidden">Profile: {data.user.id}</h1>
 
-<style>
-  .grid {
-    margin-left: 5px;
-    display: grid;
-    grid-template-columns: 80px calc(100% - 80px);
-  }
+<dl class="user-grid">
+  <dt>User:</dt>
+  <dd>{data.user.id}</dd>
+  <dt>Karma:</dt>
+  <dd>{data.user.karma}</dd>
+  <dt>Created:</dt>
+  <dd>{formatJoinDate(data.user.created)}</dd>
+  {#if data.user.about}
+    <dt>About:</dt>
+    <dd class="about">{@html data.user.about}</dd>
+  {/if}
+</dl>
 
-  .about {
-    word-break: break-word;
-  }
-
-  @media only screen and (max-width: 400px) {
-    .grid {
-      font-size: 12px;
-    }
-  }
-</style>
+{#key data.user.id}
+  <Submissions user={data.user.id} firstStories={data.stories} />
+{/key}

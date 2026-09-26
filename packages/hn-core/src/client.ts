@@ -1,6 +1,14 @@
 import { itemURI, restURL, typeURI, userURI } from './api'
 import { PAGE_SIZE } from './pagination'
-import type { ItemData, SearchHit, SearchResult, StoryType, ThreadComment, UserData } from './types'
+import type {
+  ItemData,
+  ResultPage,
+  StoryData,
+  StoryType,
+  ThreadComment,
+  UserComment,
+  UserData,
+} from './types'
 
 export const ALGOLIA_API_BASE = 'https://hn.algolia.com/api/v1'
 
@@ -46,12 +54,15 @@ interface AlgoliaItem {
 
 interface AlgoliaHit {
   objectID: string
-  title: string | null
-  url: string | null
+  title?: string | null
+  url?: string | null
   author: string
-  points: number | null
-  num_comments: number | null
+  points?: number | null
+  num_comments?: number | null
   created_at_i: number
+  comment_text?: string | null
+  story_id?: number | null
+  story_title?: string | null
 }
 
 interface AlgoliaSearch {
@@ -97,15 +108,27 @@ function toThreadComment(item: AlgoliaItem): ThreadComment {
   }
 }
 
-function toSearchHit(hit: AlgoliaHit): SearchHit {
+function hitToStory(hit: AlgoliaHit): StoryData {
   return {
     id: Number(hit.objectID),
+    type: 'story',
     title: hit.title ?? '',
     url: hit.url ?? undefined,
     by: hit.author,
     score: hit.points ?? 0,
-    comments: hit.num_comments ?? 0,
+    descendants: hit.num_comments ?? 0,
     time: hit.created_at_i,
+  }
+}
+
+function hitToComment(hit: AlgoliaHit): UserComment {
+  return {
+    id: Number(hit.objectID),
+    by: hit.author,
+    text: hit.comment_text ?? '',
+    time: hit.created_at_i,
+    storyId: hit.story_id ?? 0,
+    storyTitle: hit.story_title ?? '',
   }
 }
 
@@ -147,6 +170,22 @@ export function createHnClient({
     return withSignal(response, signal)
   }
 
+  async function algoliaPage<T>(
+    endpoint: 'search' | 'search_by_date',
+    query: Record<string, string>,
+    page: number,
+    map: (hit: AlgoliaHit) => T,
+    options?: RequestOptions,
+  ): Promise<ResultPage<T>> {
+    const params = new URLSearchParams({
+      ...query,
+      page: String(page - 1),
+      hitsPerPage: String(PAGE_SIZE),
+    })
+    const res = await getJSON<AlgoliaSearch>(`${ALGOLIA_API_BASE}/${endpoint}?${params}`, options)
+    return { items: res?.hits.map(map) ?? [], page, pageCount: res?.nbPages ?? 0 }
+  }
+
   const rest = <T>(path: string, options?: RequestOptions) => getJSON<T>(restURL(path), options)
 
   return {
@@ -175,19 +214,25 @@ export function createHnClient({
     },
 
     /** Stories matching `query`, most relevant first. `page` is 1-based. */
-    async search(query: string, page = 1, options?: RequestOptions): Promise<SearchResult> {
-      const params = new URLSearchParams({
-        query,
-        tags: 'story',
-        page: String(page - 1),
-        hitsPerPage: String(PAGE_SIZE),
-      })
-      const res = await getJSON<AlgoliaSearch>(`${ALGOLIA_API_BASE}/search?${params}`, options)
-      return {
-        hits: res?.hits.map(toSearchHit) ?? [],
+    search(query: string, page = 1, options?: RequestOptions) {
+      return algoliaPage('search', { query, tags: 'story' }, page, hitToStory, options)
+    },
+
+    /** A user's stories, newest first. `page` is 1-based. */
+    getUserStories(id: string, page = 1, options?: RequestOptions) {
+      return algoliaPage(
+        'search_by_date',
+        { tags: `story,author_${id}` },
         page,
-        pageCount: res?.nbPages ?? 0,
-      }
+        hitToStory,
+        options,
+      )
+    },
+
+    /** A user's comments, newest first, each with its story. `page` is 1-based. */
+    getUserComments(id: string, page = 1, options?: RequestOptions) {
+      const tags = `comment,author_${id}`
+      return algoliaPage('search_by_date', { tags }, page, hitToComment, options)
     },
   }
 }
