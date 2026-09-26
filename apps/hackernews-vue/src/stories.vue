@@ -39,13 +39,13 @@ watch(
       />
     </ol>
     <section class="pagination">
-      <router-link class="prev-page" :to="`/${type}?page=${page - 1}`" v-if="page > 1">
+      <router-link v-if="page > 1" class="prev-page" :to="`/${type}?page=${page - 1}`">
         Prev Page
       </router-link>
       <router-link
+        v-if="page < pageCount(stories.length)"
         class="next-page"
         :to="`/${type}?page=${page + 1}`"
-        v-if="page < pageCount(stories.length)"
       >
         Next Page
       </router-link>

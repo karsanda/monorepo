@@ -14,7 +14,7 @@ defineProps<{
     <router-link :to="`/user/${comment.by}`">
       <b>{{ comment.by }}</b>
     </router-link>
-    <time class="time" v-if="comment.time">
+    <time v-if="comment.time" class="time">
       {{ formatDistance(comment.time * 1000, new Date(), { addSuffix: true }) }}
     </time>
     <Parent v-if="showParent && comment.parent" :item-id="comment.parent" />

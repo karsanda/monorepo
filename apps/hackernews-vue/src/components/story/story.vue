@@ -24,7 +24,7 @@ defineProps<{
     </router-link>
     <Info :story="story" />
   </article>
-  <div class="text" v-if="showText && story.text" v-html="story.text" />
+  <div v-if="showText && story.text" class="text" v-html="story.text" />
 </template>
 
 <style scoped>

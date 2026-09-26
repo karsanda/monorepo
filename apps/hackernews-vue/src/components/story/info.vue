@@ -10,11 +10,11 @@ function getCreatedTime(time: number): string | 0 {
 </script>
 
 <template>
-  <p class="subtitle" v-if="story.type === 'job'">
+  <p v-if="story.type === 'job'" class="subtitle">
     {{ getCreatedTime(story.time) }}
   </p>
 
-  <p class="subtitle" v-else-if="story.descendants && story.descendants > 0">
+  <p v-else-if="story.descendants && story.descendants > 0" class="subtitle">
     {{ story.score }} points by
     <router-link :to="`/user/${story.by}`"
       ><b>{{ story.by }}</b></router-link
@@ -23,7 +23,7 @@ function getCreatedTime(time: number): string | 0 {
     <router-link :to="`/comments/${story.id}`">{{ story.descendants }} comments</router-link>
   </p>
 
-  <p class="subtitle" v-else>
+  <p v-else class="subtitle">
     {{ story.score }} points by
     <router-link :to="`/user/${story.by}`"
       ><b>{{ story.by }}</b></router-link

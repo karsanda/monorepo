@@ -11,7 +11,8 @@ const router = createRouter({
 beforeEach(() => {
   vi.useFakeTimers()
 
-  const date = new Date(2023, 11, 2, 16)
+  // Absolute time so the result doesn't depend on the machine's timezone (~5h after the story).
+  const date = new Date('2023-12-02T09:00:00Z')
   vi.setSystemTime(date)
 })
 

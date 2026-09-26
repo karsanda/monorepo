@@ -29,24 +29,24 @@ watch(
       <span>Created:</span
       ><span v-if="user.created">{{ format(user.created * 1000, 'MMMM dd, yyyy') }}</span>
       <span v-if="user.about">About:</span
-      ><span class="about" v-html="user.about" v-if="user.about"></span>
+      ><span v-if="user.about" class="about" v-html="user.about"></span>
     </div>
     <div v-if="user" class="submissions">
       <button
         class="button-tab"
-        @click="switchTab('STORIES')"
         :class="{ active: filter === 'STORIES' }"
+        @click="switchTab('STORIES')"
       >
         Submissions
       </button>
       <button
         class="button-tab"
-        @click="switchTab('COMMENTS')"
         :class="{ active: filter === 'COMMENTS' }"
+        @click="switchTab('COMMENTS')"
       >
         Comments
       </button>
-      <ol class="list" v-if="user.submitted && user.submitted.length > 0">
+      <ol v-if="user.submitted && user.submitted.length > 0" class="list">
         <Submission v-for="item in user.submitted" :id="item" :key="item" :filter="filter" />
       </ol>
     </div>

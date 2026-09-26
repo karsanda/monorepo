@@ -21,19 +21,19 @@ function collapse() {
   <article class="container" :data-disable-children="disableChildren">
     <div class="header">
       <button
+        v-if="comment.kids && !disableChildren"
         class="collapsible-button"
         :aria-label="`collapsible-button-${comment.id}`"
         @click="collapse()"
-        v-if="comment.kids && !disableChildren"
       >
         <span v-if="isCollapse">▼</span>
         <span v-else>▲</span>
       </button>
       <CommentInfo :comment="comment" :show-parent="showParent" />
     </div>
-    <div class="content" v-if="comment.text" v-html="comment.text" />
-    <div class="children" v-if="!disableChildren && comment.kids && !isCollapse">
-      <CommentRenderer :comment-id="kid" v-for="kid in comment.kids" :key="kid" />
+    <div v-if="comment.text" class="content" v-html="comment.text" />
+    <div v-if="!disableChildren && comment.kids && !isCollapse" class="children">
+      <CommentRenderer v-for="kid in comment.kids" :key="kid" :comment-id="kid" />
     </div>
   </article>
 </template>
