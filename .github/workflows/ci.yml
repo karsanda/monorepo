@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         # Each app joins this list once it passes the shared suite in packages/e2e.
-        app: [svelte, next, nuxt]
+        app: [svelte, next, nuxt, solid, qwik]
     name: e2e (${{ matrix.app }})
     steps:
       - uses: actions/checkout@v5

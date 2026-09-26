@@ -10,3 +10,5 @@ coverage
 .nuxt
 .output
 next-env.d.ts
+apps/hackernews-qwik/server
+apps/hackernews-qwik/tmp

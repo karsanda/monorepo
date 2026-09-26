@@ -4,7 +4,15 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".svelte-kit/**", ".vercel/**", ".next/**", "!.next/cache/**"]
+      "outputs": [
+        "dist/**",
+        ".svelte-kit/**",
+        ".vercel/**",
+        ".next/**",
+        "!.next/cache/**",
+        ".output/**",
+        "server/**"
+      ]
     },
     "hackernews-nuxt#build": {
       "dependsOn": ["^build", "hackernews-nuxt#typecheck", "hackernews-nuxt#test"],

@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "@builder.io/qwik",
+    "types": ["node", "vite/client"],
+    "paths": { "~/*": ["./src/*"] }
+  },
+  "include": ["src", "adapters", "*.ts"]
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "types": ["vite/client", "@solidjs/start/env", "@testing-library/jest-dom", "node"],
+    "paths": { "~/*": ["./src/*"] }
+  },
+  "include": ["src", "*.ts"]
+}
