@@ -9,6 +9,8 @@
   --muted: #595959;
   --header-bg: #282c34;
   --header-text: #ffffff;
+  /* The brand name on the dark header, lightened so any brand color passes WCAG AA (4.5:1). */
+  --header-brand: color-mix(in oklab, var(--brand) 65%, #ffffff);
   --page-bg: color-mix(in oklab, var(--brand) 18%, #ffffff);
   --surface: color-mix(in oklab, var(--brand) 8%, #ffffff);
   --border: color-mix(in oklab, var(--text) 25%, transparent);

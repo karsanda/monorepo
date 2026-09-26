@@ -1,49 +1,77 @@
 /**
- * How to build and serve each app for the suite. Commands run in the app's directory and call
- * binaries directly (not through pnpm) so Playwright can stop the server when it's done.
+ * How to build and serve each app, shared by the e2e suite and the metrics script. Commands run
+ * in the app's directory and call binaries directly (not through pnpm), so whoever started the
+ * server can stop it.
  */
 export interface AppTarget {
+  /** Display name. */
+  label: string
   dir: string
+  /** Hand-written source, relative to `dir`, for the lines-of-code count. */
+  sourceDir: string
   port: number
-  command: string
+  build: string
+  /** Serves the production build on `port`. */
+  serve: string
 }
 
 const bin = (cmd: string) => `./node_modules/.bin/${cmd}`
 
 export const APPS = {
   svelte: {
+    label: 'SvelteKit',
     dir: 'apps/hackernews-svelte',
+    sourceDir: 'src',
     port: 4173,
-    command: `${bin('vite')} build && exec ${bin('vite')} preview --port 4173 --strictPort`,
+    build: `${bin('vite')} build`,
+    serve: `${bin('vite')} preview --port 4173 --strictPort`,
   },
   next: {
+    label: 'Next.js',
     dir: 'apps/hackernews-next',
+    sourceDir: 'src',
     port: 3000,
-    command: `${bin('next')} build && exec ${bin('next')} start --port 3000`,
+    build: `${bin('next')} build`,
+    serve: `${bin('next')} start --port 3000`,
   },
   nuxt: {
+    label: 'Nuxt',
     dir: 'apps/hackernews-nuxt',
+    sourceDir: 'app',
     port: 3001,
-    command: `${bin('nuxt')} build && PORT=3001 exec node .output/server/index.mjs`,
+    build: `${bin('nuxt')} build`,
+    serve: `env PORT=3001 node .output/server/index.mjs`,
   },
   solid: {
+    label: 'SolidStart',
     dir: 'apps/hackernews-solid',
+    sourceDir: 'src',
     port: 3002,
-    command: `${bin('vite')} build && PORT=3002 exec node .output/server/index.mjs`,
+    build: `${bin('vite')} build`,
+    serve: `env PORT=3002 node .output/server/index.mjs`,
   },
   qwik: {
+    label: 'Qwik City',
     dir: 'apps/hackernews-qwik',
+    sourceDir: 'src',
     port: 3003,
     // Qwik's production preview (Node); deployments use the Vercel edge build instead.
-    command: `${bin('vite')} build && ${bin('vite')} build --ssr src/entry.preview.tsx && exec ${bin('vite')} preview --port 3003 --strictPort`,
+    build: `${bin('vite')} build && ${bin('vite')} build --ssr src/entry.preview.tsx`,
+    serve: `${bin('vite')} preview --port 3003 --strictPort`,
   },
 } satisfies Record<string, AppTarget>
 
 export type AppName = keyof typeof APPS
 
+export const APP_NAMES = Object.keys(APPS) as AppName[]
+
+export function isAppName(name: string): name is AppName {
+  return name in APPS
+}
+
 export function getApp(name = process.env.APP): AppTarget & { name: AppName } {
-  if (!name || !(name in APPS)) {
-    throw new Error(`Set APP to one of: ${Object.keys(APPS).join(', ')} (got ${name ?? 'nothing'})`)
+  if (!name || !isAppName(name)) {
+    throw new Error(`Set APP to one of: ${APP_NAMES.join(', ')} (got ${name ?? 'nothing'})`)
   }
-  return { name: name as AppName, ...APPS[name as AppName] }
+  return { name, ...APPS[name] }
 }

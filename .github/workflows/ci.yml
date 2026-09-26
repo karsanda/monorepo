@@ -46,3 +46,26 @@ jobs:
           name: e2e-${{ matrix.app }}-results
           path: packages/e2e/test-results
           retention-days: 7
+
+  metrics:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @repo/e2e exec playwright install --with-deps chromium
+      # Builds and serves every app, measures it, and fails if one is over metrics/budgets.json.
+      - run: pnpm metrics --check
+      - if: always() && hashFiles('metrics/metrics.md') != ''
+        run: cat metrics/metrics.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: metrics
+          path: metrics/
+          retention-days: 30

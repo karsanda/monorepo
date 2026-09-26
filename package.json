@@ -10,7 +10,8 @@
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "metrics": "pnpm --filter @repo/metrics metrics"
   },
   "devDependencies": {
     "prettier": "^3.9.9",
