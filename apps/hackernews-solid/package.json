@@ -17,9 +17,9 @@
     "@repo/hn-styles": "workspace:*",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^1.0.0",
-    "@solidjs/start": "^2.0.5",
+    "@solidjs/start": "^2.0.6",
     "nitro": "3.0.260903-beta",
-    "solid-js": "^1.9.15"
+    "solid-js": "^1.9.17"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -28,11 +28,11 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.7",
     "@types/node": "^24.13.6",
-    "eslint": "^10.11.0",
-    "jsdom": "^30.1.1",
+    "eslint": "^10.12.0",
+    "jsdom": "^30.1.2",
     "typescript": "~6.0.3",
     "vite": "^8.3.1",
     "vite-plugin-solid": "^2.11.14",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.3"
   }
 }
